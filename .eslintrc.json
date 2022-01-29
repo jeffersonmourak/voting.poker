@@ -175,12 +175,8 @@
       "alias": {
         "map": [
           [
-            "@client-root",
-            "./services/diesel-site/node/app/scripts/client"
-          ],
-          [
-            "@storybook-root",
-            "./services/diesel-site/node/__storybook__"
+            "@root",
+            "."
           ]
         ],
         "extensions": [
