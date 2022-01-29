@@ -1,0 +1,37 @@
+import {Grid, Theme, Typography} from '@mui/material';
+import {makeStyles} from '@mui/styles';
+interface BasePageProps {
+    children: React.ReactNode;
+}
+
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        width: '100%',
+        height: '100vh',
+    },
+    content: {
+        flex: 1,
+    },
+    footer: {
+        height: theme.spacing(4),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+}));
+
+const BasePage = ({children}: BasePageProps) => {
+    const classes = useStyles();
+    return (
+        <Grid className={classes.root} container direction="column">
+            <Grid className={classes.content} item>
+                {children}
+            </Grid>
+            <Grid item className={classes.footer}>
+                Made with ❤️ by Instrument team
+            </Grid>
+        </Grid>
+    );
+};
+
+export default BasePage;
