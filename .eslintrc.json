@@ -1,3 +1,206 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "node": true,
+    "es6": true,
+    "commonjs": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jsx-a11y/recommended",
+    "prettier",
+    "next/core-web-vitals"
+  ],
+  "globals": {
+    "__dirname": false,
+    "$": false,
+    "console": false,
+    "document": false,
+    "module": false,
+    "require": false,
+    "JSX": true
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.tsx"
+      ],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": 10,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "import",
+    "@typescript-eslint",
+    "babel",
+    "react",
+    "prettier",
+    "jsx-a11y",
+    "react-hooks"
+  ],
+  "root": true,
+  "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-object-literal-type-assertion": "off",
+    "comma-dangle": "off",
+    "curly": [
+      2,
+      "all"
+    ],
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "@typescript-eslint/no-unused-vars": 1,
+    "no-fallthrough": 0,
+    "import/no-extraneous-dependencies": [
+      2,
+      {
+        "devDependencies": [
+          "**/*.{,*.}{mock,test,spec,stories,images}.{t,j}s{,x}",
+          "**/__mock{,s}__/**",
+          "**/__msw-mocks__/**",
+          "**/__storybook{,s}__/**",
+          "**/__test{,s}__/**",
+          "**/{config,build}/**",
+          "dangerfile.ts"
+        ]
+      }
+    ],
+    "no-param-reassign": [
+      2,
+      {
+        "props": false
+      }
+    ],
+    "strict": [
+      2,
+      "global"
+    ],
+    "max-len": [
+      1,
+      180,
+      4
+    ],
+    "new-cap": [
+      1,
+      {
+        "capIsNew": false
+      }
+    ],
+    "no-console": 0,
+    "no-debugger": 1,
+    "block-spacing": 0,
+    "no-underscore-dangle": 0,
+    "prefer-template": 1,
+    "object-shorthand": 1,
+    "default-case": 1,
+    "eqeqeq": 1,
+    "no-unused-expressions": [
+      1,
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true
+      }
+    ],
+    "no-useless-return": 1,
+    "no-undef": 1,
+    "eol-last": [
+      2,
+      "always"
+    ],
+    "no-restricted-globals": [
+      2,
+      "document"
+    ],
+    "no-restricted-syntax": 0,
+    "prefer-arrow-callback": 1,
+    "brace-style": [
+      2,
+      "1tbs",
+      {
+        "allowSingleLine": true
+      }
+    ],
+    "import/first": 0,
+    "import/extensions": 0,
+    "import/prefer-default-export": 0,
+    "react/destructuring-assignment": 0,
+    "react/forbid-prop-types": 0,
+    "react/jsx-boolean-value": 0,
+    "react/display-name": 0,
+    "react/jsx-filename-extension": 0,
+    "react/no-danger": 1,
+    "guard-for-in": 2,
+    "no-eval": 2,
+    "no-with": 2,
+    "no-continue": 0,
+    "prefer-const": 2,
+    "no-alert": 2,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/camelcase": 0,
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": false
+      }
+    ]
+  },
+  "parser": "@typescript-eslint/parser",
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    },
+    "import/resolver": {
+      "typescript": {},
+      "alias": {
+        "map": [
+          [
+            "@client-root",
+            "./services/diesel-site/node/app/scripts/client"
+          ],
+          [
+            "@storybook-root",
+            "./services/diesel-site/node/__storybook__"
+          ]
+        ],
+        "extensions": [
+          ".ts",
+          ".tsx",
+          ".js"
+        ]
+      },
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".json",
+          ".ts",
+          ".tsx"
+        ]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  }
 }
