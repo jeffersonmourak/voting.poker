@@ -3,7 +3,9 @@ import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import BasePage from '@root/shared/components/BasePage';
+import useAddRoom from '@root/shared/hooks/useAddRoom';
 import {NextPage} from 'next';
+import { useRouter } from 'next/router'
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {
@@ -35,6 +37,13 @@ const useStyle = makeStyles((theme: Theme) => ({
 
 const Home: NextPage = () => {
     const classes = useStyle();
+    const router = useRouter();
+    const {room, addRoom} = useAddRoom();
+
+    if (room) {
+        router.push(`/${room.id}`);
+    }
+
     return (
         <BasePage>
             <Box className={classes.content}>
@@ -43,7 +52,7 @@ const Home: NextPage = () => {
                     <Typography variant="subtitle1">Agile Planning Tool for cool teams</Typography>
                 </Box>
                 <Box className={classes.action}>
-                    <Button>
+                    <Button onClick={() => addRoom()}>
                         <Box className={classes.button}>
                             Create a room
                             <ArrowIcon />

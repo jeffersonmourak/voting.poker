@@ -1,13 +1,15 @@
-import {Grid, Theme, Typography} from '@mui/material';
+import {ReactNode} from 'react';
+import {Grid, Theme} from '@mui/material';
 import {makeStyles} from '@mui/styles';
 interface BasePageProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         width: '100%',
         height: '100vh',
+        flexWrap: 'nowrap',
     },
     content: {
         flex: 1,
