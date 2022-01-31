@@ -4,6 +4,16 @@ import BaseModel from './BaseModel';
 import SessionsSubData from './SessionSubData';
 import UsersSubData from './UsersSubData';
 
+function makeid(length: number) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 class RoomModel extends BaseModel<Room> {
     sessions: SessionsSubData<RoomModel> | null = null;
     users: UsersSubData<RoomModel> | null = null;
@@ -14,7 +24,7 @@ class RoomModel extends BaseModel<Room> {
         this.isNew = !id;
 
         this.data = {
-            id: id || uuidv4(),
+            id: id || makeid(7),
             name: '',
             createdAt: new Date(),
             users: [],

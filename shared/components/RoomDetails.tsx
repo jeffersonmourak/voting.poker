@@ -35,8 +35,16 @@ const RoomDetails = ({roomId, ended}: RoomDetailsProps) => {
         <Box className={classes.root}>
             <Paper className={classes.section} variant="outlined">
                 <Typography variant="h6">Actions</Typography>
-                {!ended && <Button onClick={endSession}>End voting</Button>}
-                {ended && <Button onClick={newSession}>New session</Button>}
+                {!ended && (
+                    <Button variant="contained" color="secondary" onClick={endSession}>
+                        End voting
+                    </Button>
+                )}
+                {ended && (
+                    <Button variant="contained" color="secondary" onClick={newSession}>
+                        New session
+                    </Button>
+                )}
             </Paper>
 
             <Paper className={classes.section} variant="outlined">

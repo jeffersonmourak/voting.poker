@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexWrap: 'wrap',
         justifyContent: 'center',
         margin: theme.spacing(2, 0, 2),
+        gap: theme.spacing(2),
     },
 }));
 

@@ -52,7 +52,7 @@ const Home: NextPage = () => {
                     <Typography variant="subtitle1">Agile Planning Tool for cool teams</Typography>
                 </Box>
                 <Box className={classes.action}>
-                    <Button onClick={() => addRoom()}>
+                    <Button variant="contained" onClick={() => addRoom()}>
                         <Box className={classes.button}>
                             Create a room
                             <ArrowIcon />

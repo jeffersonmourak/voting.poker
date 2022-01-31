@@ -6,7 +6,7 @@ import {cx} from '@emotion/css';
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         width: '100%',
-        backgroundColor: lighten(theme.palette.secondary.main, 0.1),
+        backgroundColor: lighten(theme.palette.primary.main, 0.1),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         right: theme.spacing(2),
     },
     selected: {
-        backgroundColor: lighten(theme.palette.success.main, 0.6),
+        backgroundColor: lighten(theme.palette.success.main, 0.2),
     },
 }));
 

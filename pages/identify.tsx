@@ -64,8 +64,8 @@ const Identify: NextPage = () => {
             </Box>
             <Box className={classes.action}>
                 <form onSubmit={handleSubmit}>
-                    <TextField onChange={handleTextChange} />
-                    <Button type="submit" onClick={() => null}>
+                    <TextField color="primary" label="Your name" onChange={handleTextChange} />
+                    <Button variant="contained" type="submit" onClick={() => null}>
                         <Box className={classes.button}>
                             Join
                             <ArrowIcon />

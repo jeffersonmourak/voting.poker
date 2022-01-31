@@ -59,10 +59,8 @@ const Results = ({users, roomId}: ResultsProps) => {
     ).map(([value, users]) => ({
         title: value,
         value: users.length,
-        color: stringToColor(value),
+        color: stringToColor(value, true),
     }));
-
-    console.log();
 
     return (
         <Box className={classes.content}>
