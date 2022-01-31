@@ -24,15 +24,17 @@ const Cards = ({roomId}: CardsProps) => {
     const {vote} = useVote(roomId);
 
     useEffect(() => {
-        vote(selected);
+        if (selected !== '') {
+            vote(selected);
+        }
     }, [selected]);
 
     const classes = useStyles();
 
     return (
-        <Grid container spacing={3} className={classes.root}>
+        <Grid container spacing={2} className={classes.root}>
             {CARD_VALUES.map((value) => (
-                <Grid key={value} className={classes.card} item md={3} xs={12}>
+                <Grid key={value} className={classes.card} item md={2} xs={12}>
                     <Card
                         value={value}
                         onClick={() => setSelected(value)}

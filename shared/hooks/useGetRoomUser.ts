@@ -1,5 +1,4 @@
 import {Room} from '@root/types/Room';
-import {User} from '@root/types/User';
 import {useContext, useState} from 'react';
 
 import {get} from '../../helpers/request';

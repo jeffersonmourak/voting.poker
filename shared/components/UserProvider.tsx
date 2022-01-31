@@ -1,8 +1,6 @@
 import {User} from '@root/types/User';
 import React, {createContext, useState} from 'react';
 
-import {get} from '@root/helpers/request';
-
 interface UserContextInterface {
     user: User | null;
     setUser: (user: User, roomId: string) => void;

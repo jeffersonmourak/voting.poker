@@ -52,8 +52,6 @@ const Identify: NextPage = () => {
         addUser({name: username});
     };
 
-    console.log(user);
-
     if (user) {
         router.push(`/${roomId}`);
     }

@@ -42,6 +42,18 @@ class SessionsSubData<P> extends BaseSubData<Session, P> {
             vote,
         };
     }
+
+    end() {
+        const session = this.latestSession();
+
+        if (!session) {
+            return;
+        }
+
+        session.ended = true;
+
+        this.update(session.id, session);
+    }
 }
 
 export default SessionsSubData;

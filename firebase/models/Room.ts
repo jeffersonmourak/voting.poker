@@ -1,6 +1,4 @@
 import {Room} from '@root/types/Room';
-import {User} from '@root/types/User';
-import {Session} from '@root/types/Session';
 import {v4 as uuidv4} from 'uuid';
 import BaseModel from './BaseModel';
 import SessionsSubData from './SessionSubData';

@@ -1,6 +1,4 @@
-import {Room} from '@root/types/Room';
-import {User} from '@root/types/User';
-import {useContext, useState} from 'react';
+import {useContext} from 'react';
 
 import {remove} from '@root/helpers/request';
 import {UserContext} from '../components/UserProvider';

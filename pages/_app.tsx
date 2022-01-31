@@ -20,6 +20,9 @@ function MyApp({
             <ThemeProvider theme={theme}>
                 <UserProvider>
                     <CssBaseline />
+                    <Head>
+                        <title> Voting Poker </title>
+                    </Head>
                     <Component {...pageProps} />
                 </UserProvider>
             </ThemeProvider>
