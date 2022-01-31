@@ -60,10 +60,10 @@ const Home: NextPage = () => {
                     <Typography variant="subtitle1">Agile Planning Tool for cool teams</Typography>
                 </Box>
                 <Box className={classes.action}>
-                    <Button variant="contained" onClick={() => addRoom()}>
+                    <Button variant="contained" color="secondary" onClick={() => addRoom()}>
                         <Box className={classes.button}>
                             Create a room
-                            <ArrowIcon />
+                            <ArrowIcon color="#000" />
                         </Box>
                     </Button>
                     <Typography variant="button">Or</Typography>
