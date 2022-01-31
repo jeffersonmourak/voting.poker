@@ -5,7 +5,7 @@ import ArrowIcon from '@root/shared/components/ArrowIcon';
 import BasePage from '@root/shared/components/BasePage';
 import useAddRoom from '@root/shared/hooks/useAddRoom';
 import {NextPage} from 'next';
-import { useRouter } from 'next/router'
+import {useRouter} from 'next/router';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {

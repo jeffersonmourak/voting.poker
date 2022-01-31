@@ -10,8 +10,7 @@
 
 html,
 body {
-  background: #000;
-  color: #fff;
+
   font-family: Monument Grotesk Mono,Monaco,Courier,monospace;
   font-size: 14px;
   letter-spacing: .8px;
@@ -24,7 +23,6 @@ a {
   letter-spacing: .8px;
   line-height: 1.71;
   position: relative;
-  color: #fff;
   padding: 10px 20px;
   position: relative;
   text-decoration: none;

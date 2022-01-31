@@ -5,11 +5,14 @@ export const theme = createTheme({
         fontFamily: ['Monument Grotesk Mono', 'Monaco', 'Courier', 'monospace'].join(', '),
     },
     palette: {
-        primary: {
-            main: '#fff',
-        },
-        secondary: {
-            main: '#fff',
-        },
+        // primary: {
+        //     main: '#fff',
+        // },
+        // secondary: {
+        //     main: '#000',
+        // },
+        // background: {
+        //     default: '#000',
+        // },
     },
 });

@@ -6,6 +6,7 @@ import '../styles/globals.css';
 import {theme} from '@root/shared/theme';
 import createEmotionCache from '@root/shared/createEmotionCache';
 import {CacheProvider} from '@emotion/react';
+import {UserProvider} from '@root/shared/components/UserProvider';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -17,8 +18,10 @@ function MyApp({
     return (
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Component {...pageProps} />
+                <UserProvider>
+                    <CssBaseline />
+                    <Component {...pageProps} />
+                </UserProvider>
             </ThemeProvider>
         </CacheProvider>
     );
