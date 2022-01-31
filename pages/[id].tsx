@@ -1,6 +1,7 @@
 import {Box, Grid} from '@mui/material';
 import BasePage from '@root/shared/components/BasePage';
 import Cards from '@root/shared/components/Cards';
+import Identify from '@root/shared/components/Identify';
 import Results from '@root/shared/components/Results';
 import RoomDetails from '@root/shared/components/RoomDetails';
 import SessionVotesSummary from '@root/shared/components/SessionVotesSummary';
@@ -26,12 +27,12 @@ const Room: NextPage = () => {
     };
 
     useEffect(() => {
-        if (!user) {
-            router.push(`/identify?roomId=${id}`);
-        }
-
         window.onbeforeunload = handleRemoveUser;
     }, [id, user]);
+
+    if (!user) {
+        return <Identify roomId={id} />;
+    }
 
     return (
         <BasePage>

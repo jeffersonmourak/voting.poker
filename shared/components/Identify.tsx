@@ -4,8 +4,7 @@ import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import useAddUserToRoom from '@root/shared/hooks/useAddUserToRoom';
 import {NextPage} from 'next';
-import {useRouter} from 'next/router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {
@@ -35,13 +34,15 @@ const useStyle = makeStyles((theme: Theme) => ({
     },
 }));
 
-const Identify: NextPage = () => {
-    const router = useRouter();
-    const {roomId} = router.query;
+interface IdentifyProps {
+    roomId: string;
+}
+
+const Identify = ({roomId}: IdentifyProps) => {
     const [username, setUsername] = useState('');
 
     const classes = useStyle();
-    const {user, addUser} = useAddUserToRoom(roomId as string);
+    const {addUser} = useAddUserToRoom(roomId as string);
 
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(event.target.value);
@@ -51,10 +52,6 @@ const Identify: NextPage = () => {
         event.preventDefault();
         addUser({name: username});
     };
-
-    if (user) {
-        router.push(`/${roomId}`);
-    }
 
     return (
         <Box className={classes.content}>
