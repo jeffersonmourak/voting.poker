@@ -2,7 +2,7 @@
 
 is an Agile Planning Tool for cool teams
 
-- we're looking to create a fully customizable
+- We're looking to create a fully customizable
 - Zero config
 - Pretty design
 
