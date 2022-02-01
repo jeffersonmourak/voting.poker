@@ -33,6 +33,10 @@ export default class MyDocument extends Document {
                         href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@900&display=swap"
                         rel="stylesheet"
                     />
+                    <meta
+                        name="description"
+                        content="Agile Planning tool for cool team, free, no setup, just come and play."
+                    />
                 </Head>
                 <body>
                     <Main />
