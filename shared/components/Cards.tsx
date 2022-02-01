@@ -34,7 +34,7 @@ const Cards = ({roomId}: CardsProps) => {
     return (
         <Grid container spacing={2} className={classes.root}>
             {CARD_VALUES.map((value) => (
-                <Grid key={value} className={classes.card} item md={2} xs={12}>
+                <Grid key={value} className={classes.card} item md={2} xs={6}>
                     <Card
                         value={value}
                         onClick={() => setSelected(value)}

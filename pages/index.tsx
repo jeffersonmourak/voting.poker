@@ -17,6 +17,10 @@ const useStyle = makeStyles((theme: Theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: 'calc(100vh - 32px)',
+
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+        },
     },
     hero: {
         display: 'flex',
@@ -26,6 +30,9 @@ const useStyle = makeStyles((theme: Theme) => ({
         padding: theme.spacing(8),
         gap: theme.spacing(4),
         flex: 1,
+        [theme.breakpoints.down('sm')]: {
+            padding: theme.spacing(1),
+        },
     },
     action: {
         flex: 1,
@@ -91,6 +98,12 @@ const Home: NextPage = () => {
                         Vote
                     </Typography>
                     <Typography variant="subtitle1">Agile Planning Tool for cool teams</Typography>
+                    <Box>
+                        <Typography variant="subtitle1">I am open source btw,</Typography>
+                        <a href="https://github.com/jeffersonmourak/voting.poker" target="_blank">
+                            check it out and give a ⭐️
+                        </a>
+                    </Box>
                 </Box>
                 <Box className={classes.action}>
                     <Button variant="contained" color="secondary" onClick={() => addRoom()}>

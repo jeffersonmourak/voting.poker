@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     container: {
         display: 'flex',
         alignItems: 'center',
+
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column',
+        },
     },
 }));
 

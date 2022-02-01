@@ -27,6 +27,7 @@ a {
   position: relative;
   text-decoration: none;
   text-transform: uppercase;
+  color: #fff;
 }
 
 a::before {
@@ -49,6 +50,10 @@ a:hover:before {
 }
 a:hover:after {
   opacity: .5;
+}
+
+a:visited {
+  color: #fff;
 }
 
 * {

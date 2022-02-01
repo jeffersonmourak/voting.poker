@@ -47,10 +47,10 @@ const Room: NextPage = () => {
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>
-                    <Grid item md={3}>
+                    <Grid item md={3} xs={12}>
                         <RoomDetails ended={ended} roomId={id} />
                     </Grid>
-                    <Grid item md={8}>
+                    <Grid item md={8} xs={12}>
                         {!ended && <Cards roomId={id} />}
                         {ended && <Results roomId={id} users={users} />}
                     </Grid>

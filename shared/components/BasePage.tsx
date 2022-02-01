@@ -30,7 +30,11 @@ const BasePage = ({children}: BasePageProps) => {
                 {children}
             </Grid>
             <Grid item className={classes.footer}>
-                Made with ❤️ by Instrument team
+                Made with ❤️ by{' '}
+                <a href="https://www.instrument.com/" target="_blank">
+                    Instrument
+                </a>{' '}
+                team
             </Grid>
         </Grid>
     );
