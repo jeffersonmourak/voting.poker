@@ -136,6 +136,7 @@
     "import/extensions": 0,
     "import/prefer-default-export": 0,
     "react/destructuring-assignment": 0,
+    "react/jsx-no-target-blank": 0,
     "react/forbid-prop-types": 0,
     "react/jsx-boolean-value": 0,
     "react/display-name": 0,
