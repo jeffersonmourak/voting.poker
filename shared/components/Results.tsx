@@ -51,6 +51,8 @@ interface ResultsProps {
 const Results = ({users, roomId}: ResultsProps) => {
     const classes = useStyle();
 
+    const votedUsers = users.filter(({vote}) => !!vote);
+
     const results = Object.entries(
         groupBy(
             users.filter(({vote}) => !!vote),
@@ -59,7 +61,8 @@ const Results = ({users, roomId}: ResultsProps) => {
     ).map(([value, users]) => ({
         title: value,
         value: users.length,
-        color: stringToColor(value, true),
+        percentage: (users.length / votedUsers.length) * 100,
+        color: stringToColor(users[0].name),
     }));
 
     return (
@@ -77,9 +80,21 @@ const Results = ({users, roomId}: ResultsProps) => {
                     data={results}
                 />
                 <Typography className={classes.resultValue} variant="h2">
-                    {maxBy(results, 'value')?.title}
+                    {votedUsers.length} 🗳
                 </Typography>
             </Box>
+            {results.map(({title, percentage, color}) => (
+                <Box
+                    key={title}
+                    gap={2}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    color={color}>
+                    <Typography variant="h6">{title}</Typography>
+                    <Typography variant="h6">{percentage.toFixed(2)}%</Typography>
+                </Box>
+            ))}
         </Box>
     );
 };

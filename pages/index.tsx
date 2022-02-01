@@ -1,3 +1,4 @@
+import {cx} from '@emotion/css';
 import {Button, TextField, Typography} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
@@ -12,18 +13,22 @@ const useStyle = makeStyles((theme: Theme) => ({
     content: {
         width: '100%',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: 'calc(100vh - 32px)',
     },
     hero: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: theme.spacing(8, 0, 6),
+        padding: theme.spacing(8),
         gap: theme.spacing(4),
+        flex: 1,
     },
     action: {
-        width: '100%',
+        flex: 1,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -35,6 +40,26 @@ const useStyle = makeStyles((theme: Theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         gap: theme.spacing(2),
+    },
+    heroText: {
+        fontFamily: ['"Source Code Pro"', 'monospace'].join(', '),
+        fontWeight: 900,
+        WebkitBackgroundClip: 'text',
+        MozBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        MozTextFillColor: 'transparent',
+    },
+    text1: {
+        backgroundColor: '#FBAB7E',
+        backgroundImage: 'linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%)',
+    },
+    text2: {
+        backgroundColor: '#85FFBD',
+        backgroundImage: 'linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%)',
+    },
+    text3: {
+        backgroundColor: '#8BC6EC',
+        backgroundImage: 'linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%)',
     },
 }));
 
@@ -56,7 +81,15 @@ const Home: NextPage = () => {
         <BasePage>
             <Box className={classes.content}>
                 <Box className={classes.hero}>
-                    <Typography variant="h1">Voting Poker</Typography>
+                    <Typography variant="h1" className={cx(classes.heroText, classes.text1)}>
+                        Read
+                    </Typography>
+                    <Typography variant="h1" className={cx(classes.heroText, classes.text2)}>
+                        Discuss
+                    </Typography>
+                    <Typography variant="h1" className={cx(classes.heroText, classes.text3)}>
+                        Vote
+                    </Typography>
                     <Typography variant="subtitle1">Agile Planning Tool for cool teams</Typography>
                 </Box>
                 <Box className={classes.action}>

@@ -3,8 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import useAddUserToRoom from '@root/shared/hooks/useAddUserToRoom';
-import {NextPage} from 'next';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {

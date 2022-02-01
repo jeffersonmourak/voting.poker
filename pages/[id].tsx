@@ -1,13 +1,14 @@
-import {Box, Grid} from '@mui/material';
+import {Box, Grid, Modal} from '@mui/material';
 import BasePage from '@root/shared/components/BasePage';
 import Cards from '@root/shared/components/Cards';
 import Identify from '@root/shared/components/Identify';
+import ModeratorModal from '@root/shared/components/ModeratorModal';
 import Results from '@root/shared/components/Results';
 import RoomDetails from '@root/shared/components/RoomDetails';
 import SessionVotesSummary from '@root/shared/components/SessionVotesSummary';
 import {UserContext} from '@root/shared/components/UserProvider';
 import useRemoveRoomUser from '@root/shared/hooks/useRemoveRoomUser';
-import useVotesSummary from '@root/shared/hooks/useVotesSummary';
+import useSessionSummary from '@root/shared/hooks/useVotesSummary';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import React, {useContext, useEffect} from 'react';
@@ -17,7 +18,7 @@ const Room: NextPage = () => {
     const {user} = useContext(UserContext);
 
     const {id} = router.query as {id: string};
-    const {users, reveal: ended} = useVotesSummary(id);
+    const {users, reveal: ended, hasModerator} = useSessionSummary(id);
     const {removeUser} = useRemoveRoomUser();
 
     const handleRemoveUser = () => {
@@ -36,6 +37,9 @@ const Room: NextPage = () => {
 
     return (
         <BasePage>
+            <Modal open={!hasModerator}>
+                <ModeratorModal roomId={id} />
+            </Modal>
             <Box px={4}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
