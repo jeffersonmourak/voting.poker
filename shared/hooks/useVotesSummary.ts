@@ -41,6 +41,7 @@ const useSessionSummary = (roomId: string) => {
         reveal: session?.ended || false,
         hasModerator,
         startedAt: DateTime.fromJSDate(session?.startedAt.toDate()!),
+        roomExists: value?.exists(),
     };
 };
 

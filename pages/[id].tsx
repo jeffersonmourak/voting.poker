@@ -11,6 +11,7 @@ import useRemoveRoomUser from '@root/shared/hooks/useRemoveRoomUser';
 import useSessionSummary from '@root/shared/hooks/useVotesSummary';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
+import Error from './_error';
 import React, {useContext, useEffect} from 'react';
 
 const Room: NextPage = () => {
@@ -18,7 +19,7 @@ const Room: NextPage = () => {
     const {user} = useContext(UserContext);
 
     const {id} = router.query as {id: string};
-    const {users, reveal: ended, hasModerator} = useSessionSummary(id);
+    const {users, reveal: ended, hasModerator, roomExists} = useSessionSummary(id);
     const {removeUser} = useRemoveRoomUser();
 
     const handleRemoveUser = () => {
@@ -30,6 +31,10 @@ const Room: NextPage = () => {
     useEffect(() => {
         window.onbeforeunload = handleRemoveUser;
     }, [id, user]);
+
+    if (!roomExists) {
+        return <Error statusCode={404} />;
+    }
 
     if (!user) {
         return <Identify roomId={id} />;
