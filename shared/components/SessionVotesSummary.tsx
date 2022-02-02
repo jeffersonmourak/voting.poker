@@ -2,7 +2,7 @@ import {Box, Theme, Typography} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {DateTime, Interval} from 'luxon';
 import makeStyles from '@mui/styles/makeStyles';
-import useSessionSummary from '../hooks/useVotesSummary';
+import useRoomSummary from '../hooks/useRoomSummary';
 import UserVote from './UserVote';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,7 +41,7 @@ const niceDigits = (n?: number) => {
 
 const SessionVotesSummary = ({roomId}: SessionVotesSummaryProps) => {
     const [since, setSince] = useState(Interval.fromDateTimes(DateTime.now(), DateTime.now()));
-    const {users, reveal, startedAt} = useSessionSummary(roomId);
+    const {users, reveal, startedAt} = useRoomSummary(roomId);
     const classes = useStyles();
 
     useEffect(() => {

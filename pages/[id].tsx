@@ -8,36 +8,27 @@ import RoomDetails from '@root/shared/components/RoomDetails';
 import SessionVotesSummary from '@root/shared/components/SessionVotesSummary';
 import {UserContext} from '@root/shared/components/UserProvider';
 import useRemoveRoomUser from '@root/shared/hooks/useRemoveRoomUser';
-import useSessionSummary from '@root/shared/hooks/useVotesSummary';
+import useRoomSummary from '@root/shared/hooks/useRoomSummary';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import Error from './_error';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
+import usePresence from '@root/shared/hooks/usePresence';
 
 const Room: NextPage = () => {
     const router = useRouter();
     const {user} = useContext(UserContext);
 
     const {id} = router.query as {id: string};
-    const {users, reveal: ended, hasModerator, roomExists} = useSessionSummary(id);
-    const {removeUser} = useRemoveRoomUser();
+    const {users, reveal: ended, hasModerator, roomExists, loading} = useRoomSummary(id);
+    usePresence(id, user?.id);
 
-    const handleRemoveUser = () => {
-        if (user) {
-            removeUser(user.id, id);
-        }
-    };
-
-    useEffect(() => {
-        window.onbeforeunload = handleRemoveUser;
-    }, [id, user]);
-
-    if (!roomExists) {
+    if (!loading && !roomExists) {
         return <Error statusCode={404} />;
     }
 
     if (!user) {
-        return <Identify roomId={id} />;
+        return <Identify loading={loading} roomId={id} />;
     }
 
     return (

@@ -35,9 +35,10 @@ const useStyle = makeStyles((theme: Theme) => ({
 
 interface IdentifyProps {
     roomId: string;
+    loading: boolean;
 }
 
-const Identify = ({roomId}: IdentifyProps) => {
+const Identify = ({roomId, loading}: IdentifyProps) => {
     const [username, setUsername] = useState('');
 
     const classes = useStyle();
@@ -54,21 +55,33 @@ const Identify = ({roomId}: IdentifyProps) => {
 
     return (
         <Box className={classes.content}>
-            <Box className={classes.hero}>
-                {username && <Typography variant="h4">Nice to meet you</Typography>}
-                {!username && <Typography variant="h4">Identify yourself!</Typography>}
-            </Box>
-            <Box className={classes.action}>
-                <form onSubmit={handleSubmit}>
-                    <TextField color="primary" label="Your name" onChange={handleTextChange} />
-                    <Button variant="contained" type="submit" onClick={() => null}>
-                        <Box className={classes.button}>
-                            Join
-                            <ArrowIcon />
-                        </Box>
-                    </Button>
-                </form>
-            </Box>
+            {loading ? (
+                <Box className={classes.hero}>
+                    <Typography variant="h4">Loading...</Typography>
+                </Box>
+            ) : (
+                <>
+                    <Box className={classes.hero}>
+                        {username && <Typography variant="h4">Nice to meet you</Typography>}
+                        {!username && <Typography variant="h4">Identify yourself!</Typography>}
+                    </Box>
+                    <Box className={classes.action}>
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                color="primary"
+                                label="Your name"
+                                onChange={handleTextChange}
+                            />
+                            <Button variant="contained" type="submit" onClick={() => null}>
+                                <Box className={classes.button}>
+                                    Join
+                                    <ArrowIcon />
+                                </Box>
+                            </Button>
+                        </form>
+                    </Box>
+                </>
+            )}
         </Box>
     );
 };

@@ -2,7 +2,7 @@ import {firebaseApp} from '@root/firebase/clientApp';
 import {Room} from '@root/types/Room';
 import {Session} from '@root/types/Session';
 import {getFirestore, doc} from 'firebase/firestore';
-import {last} from 'lodash';
+import {isUndefined, last} from 'lodash';
 import {useDocument} from 'react-firebase-hooks/firestore';
 import {DateTime} from 'luxon';
 
@@ -18,10 +18,12 @@ const getSessionVotes = (sessions: Session[]) => {
     return Object.values(currentSession.votes);
 };
 
-const useSessionSummary = (roomId: string) => {
+const useRoomSummary = (roomId: string) => {
     const documentRef = roomId ? doc(getFirestore(firebaseApp), 'rooms', roomId) : null;
 
-    const [value] = useDocument(documentRef);
+    const [value, loading] = useDocument(documentRef);
+
+    const isLoading = isUndefined(value) || loading;
 
     const room = value?.data() as Room;
     const sessionVotes = room ? getSessionVotes(room.sessions) : [];
@@ -42,7 +44,8 @@ const useSessionSummary = (roomId: string) => {
         hasModerator,
         startedAt: DateTime.fromJSDate(session?.startedAt.toDate()!),
         roomExists: value?.exists(),
+        loading: isLoading,
     };
 };
 
-export default useSessionSummary;
+export default useRoomSummary;
