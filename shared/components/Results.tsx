@@ -4,7 +4,7 @@ import {Box, Theme} from '@mui/system';
 import stringToColor from '@root/helpers/stringToColor';
 import {User} from '@root/types/User';
 import {Vote} from '@root/types/Vote';
-import {groupBy, maxBy} from 'lodash';
+import {groupBy} from 'lodash';
 import {PieChart} from 'react-minimal-pie-chart';
 
 const useStyle = makeStyles((theme: Theme) => ({
@@ -41,6 +41,13 @@ const useStyle = makeStyles((theme: Theme) => ({
         position: 'absolute',
         top: theme.spacing(12),
     },
+    resultTitle: {
+        color: theme.palette.text.primary,
+        minWidth: theme.spacing(6),
+        textAlign: 'center',
+        padding: theme.spacing(1, 1.5),
+        borderRadius: theme.shape.borderRadius,
+    },
 }));
 
 interface ResultsProps {
@@ -48,7 +55,7 @@ interface ResultsProps {
     roomId: string;
 }
 
-const Results = ({users, roomId}: ResultsProps) => {
+const Results = ({users}: ResultsProps) => {
     const classes = useStyle();
 
     const votedUsers = users.filter(({vote}) => !!vote);
@@ -91,7 +98,12 @@ const Results = ({users, roomId}: ResultsProps) => {
                     alignItems="center"
                     justifyContent="center"
                     color={color}>
-                    <Typography variant="h6">{title}</Typography>
+                    <Typography
+                        sx={{backgroundColor: color}}
+                        variant="h6"
+                        className={classes.resultTitle}>
+                        {title}
+                    </Typography>
                     <Typography variant="h6">{percentage.toFixed(2)}%</Typography>
                 </Box>
             ))}
