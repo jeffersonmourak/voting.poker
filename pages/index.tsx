@@ -5,6 +5,7 @@ import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import BasePage from '@root/shared/components/BasePage';
 import useAddRoom from '@root/shared/hooks/useAddRoom';
+import useCleanupRooms from '@root/shared/hooks/useCleanupRooms';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import {useState} from 'react';
@@ -71,6 +72,8 @@ const useStyle = makeStyles((theme: Theme) => ({
 }));
 
 const Home: NextPage = () => {
+    const {clean} = useCleanupRooms();
+
     const classes = useStyle();
     const router = useRouter();
     const [roomId, setRoomId] = useState('');
@@ -78,6 +81,8 @@ const Home: NextPage = () => {
 
     if (room) {
         router.push(`/${room.id}`);
+    } else {
+        clean();
     }
 
     const handleJoinRoom = () => {
