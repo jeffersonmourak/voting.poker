@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
             const usersToBeRemoved = difference(usersInTheRoom, activeRoomUsers);
 
-            for (let user of usersToBeRemoved) {
+            for (const user of usersToBeRemoved) {
                 await room.users?.remove(user);
             }
 
