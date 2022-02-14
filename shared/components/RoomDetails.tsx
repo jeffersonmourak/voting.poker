@@ -5,6 +5,7 @@ import useEndSession from '../hooks/useUpdateRoom';
 import useNewSession from '../hooks/useNewSession';
 import {UserContext} from './UserProvider';
 import useUpdateUser from '../hooks/useUpdateUser';
+import UserDetails from './UserDetails';
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -66,6 +67,11 @@ const RoomDetails = ({roomId, ended}: RoomDetailsProps) => {
                     fullWidth
                     value={`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/${roomId}`}
                 />
+            </Paper>
+
+            <Paper className={classes.section} variant="outlined">
+                <Typography variant="h5">Profile</Typography>
+                <UserDetails roomId={roomId} />
             </Paper>
         </Box>
     );

@@ -3,4 +3,5 @@ export interface User {
     name: string;
     avatar: string;
     moderator: boolean;
+    emoji: string;
 }

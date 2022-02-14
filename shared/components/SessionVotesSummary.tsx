@@ -70,6 +70,8 @@ const SessionVotesSummary = ({roomId}: SessionVotesSummaryProps) => {
                 {users?.map((user) => (
                     <UserVote
                         name={user.name}
+                        avatar={user.avatar}
+                        emoji={user.emoji}
                         moderator={user.moderator}
                         vote={user.vote?.value}
                         reveal={reveal}

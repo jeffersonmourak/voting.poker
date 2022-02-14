@@ -36,33 +36,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-function stringAvatar(name: string) {
+function stringAvatar(name: string, avatar?: string) {
     return {
         sx: {
             bgcolor: stringToColor(name),
         },
         children: `${name.charAt(0)}`,
+        src: avatar,
+        alt: name,
     };
 }
 
 interface UserVoteProps {
     name: string;
     vote?: string;
+    avatar?: string;
+    emoji?: string;
     moderator: boolean;
     reveal: boolean;
 }
 
-const UserVote = ({name, vote, reveal, moderator}: UserVoteProps) => {
+const UserVote = ({name, vote, reveal, avatar, moderator, emoji}: UserVoteProps) => {
     const classes = useStyles();
     return (
         <Box className={classes.root}>
             <Tooltip title={name}>
-                <Avatar {...stringAvatar(name)} />
+                <Avatar {...stringAvatar(name, avatar)} />
             </Tooltip>
             {vote && (
                 <Box className={classes.vote}>
                     <Typography sx={{textAlign: 'center'}} variant="body1">
-                        {reveal ? vote : '🙈'}
+                        {reveal ? vote : emoji || '🙈'}
                     </Typography>
                 </Box>
             )}
