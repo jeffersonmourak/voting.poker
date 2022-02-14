@@ -17,7 +17,7 @@ const UserDetails = ({roomId}: UserDetailsProps) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
-    const handleClick = (event) => {
+    const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
     };
 
