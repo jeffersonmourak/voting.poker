@@ -48,6 +48,7 @@
     "react-hooks"
   ],
   "root": true,
+  "ignorePatterns": ["functions/lib/**/*.js"],
   "rules": {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-object-literal-type-assertion": "off",
@@ -62,21 +63,9 @@
     "@typescript-eslint/no-empty-function": 0,
     "@typescript-eslint/no-empty-interface": 0,
     "@typescript-eslint/no-unused-vars": 1,
+    "@typescript-eslint/no-inferrable-types": 0,
     "no-fallthrough": 0,
-    "import/no-extraneous-dependencies": [
-      2,
-      {
-        "devDependencies": [
-          "**/*.{,*.}{mock,test,spec,stories,images}.{t,j}s{,x}",
-          "**/__mock{,s}__/**",
-          "**/__msw-mocks__/**",
-          "**/__storybook{,s}__/**",
-          "**/__test{,s}__/**",
-          "**/{config,build}/**",
-          "dangerfile.ts"
-        ]
-      }
-    ],
+    "import/no-extraneous-dependencies": 0,
     "no-param-reassign": [
       2,
       {
