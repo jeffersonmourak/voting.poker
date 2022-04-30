@@ -102,7 +102,7 @@
         "allowTernary": true
       }
     ],
-    "no-useless-return": 1,
+    "no-useless-return": 0,
     "no-undef": 1,
     "eol-last": [
       2,
