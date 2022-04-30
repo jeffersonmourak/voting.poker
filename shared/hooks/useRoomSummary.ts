@@ -42,7 +42,7 @@ const useRoomSummary = (roomId: string) => {
         users,
         reveal: session?.ended || false,
         hasModerator,
-        startedAt: DateTime.fromJSDate(session?.startedAt.toDate()!),
+        startedAt: session ? DateTime.fromJSDate(session?.startedAt.toDate()) : null,
         roomExists: value?.exists(),
         loading: isLoading,
     };

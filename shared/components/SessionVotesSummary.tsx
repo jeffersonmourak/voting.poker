@@ -45,8 +45,8 @@ const SessionVotesSummary = ({roomId}: SessionVotesSummaryProps) => {
     const classes = useStyles();
 
     useEffect(() => {
-        let timer = setInterval(() => {
-            if (!reveal) {
+        const timer = setInterval(() => {
+            if (!reveal && startedAt) {
                 setSince(Interval.fromDateTimes(startedAt, DateTime.now()));
             }
         }, 100);
@@ -69,6 +69,7 @@ const SessionVotesSummary = ({roomId}: SessionVotesSummaryProps) => {
             <Box className={classes.users}>
                 {users?.map((user) => (
                     <UserVote
+                        key={user.id}
                         name={user.name}
                         avatar={user.avatar}
                         emoji={user.emoji}

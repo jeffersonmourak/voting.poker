@@ -1,5 +1,5 @@
 import {createTheme, darken} from '@mui/material/styles';
-import {alpha, getLuminance, lighten} from '@mui/system';
+import {getLuminance, lighten} from '@mui/system';
 
 export const colors = {
     primary: {

@@ -6,16 +6,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const {id, userId} = req.query as {id: string; userId: string};
     const {body} = req as {body: User};
 
-    const room = new RoomModel(id);
-
-    await room.fetch();
-
-    if (!room.users?.exists(userId) || req.method === 'POST') {
-        res.status(404).end();
-        return;
-    }
-
     try {
+        const room = new RoomModel(id);
+
+        await room.fetch();
+
+        if (!room.users?.exists(userId) || req.method === 'POST') {
+            res.status(404).end();
+            return;
+        }
+
         switch (req.method) {
             case 'GET':
                 return res.status(200).json(room.users?.find(userId));

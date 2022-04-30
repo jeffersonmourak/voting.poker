@@ -7,6 +7,9 @@ import {theme} from '@root/shared/theme';
 import createEmotionCache from '@root/shared/createEmotionCache';
 import {CacheProvider} from '@emotion/react';
 import {UserProvider} from '@root/shared/components/UserProvider';
+import {ToastContainer} from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -22,8 +25,10 @@ function MyApp({
                     <CssBaseline />
                     <Head>
                         <title> Voting Poker </title>
+                        <meta name="viewport" content="initial-scale=1, width=device-width" />
                     </Head>
                     <Component {...pageProps} />
+                    <ToastContainer icon={false} closeButton={<></>} />
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>

@@ -30,14 +30,14 @@ a {
   color: #fff;
 }
 
-a::before {
+a:not(.MuiButton-root):before {
   position: absolute;
   content: "[";
   left: 0;
   opacity: 0;
   transition: opacity .3s ease-in-out;
 }
-a::after {
+a:not(.MuiButton-root):after {
   position: absolute;
   content: "]";
   right: 0;

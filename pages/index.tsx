@@ -1,13 +1,14 @@
 import {cx} from '@emotion/css';
-import {Button, TextField, Typography} from '@mui/material';
+import {Button, CircularProgress, TextField, Typography} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import BasePage from '@root/shared/components/BasePage';
 import useAddRoom from '@root/shared/hooks/useAddRoom';
+import useRoomSummary from '@root/shared/hooks/useRoomSummary';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {
@@ -74,14 +75,30 @@ const Home: NextPage = () => {
     const classes = useStyle();
     const router = useRouter();
     const [roomId, setRoomId] = useState('');
-    const {room, addRoom} = useAddRoom();
+    const [loading, setLoading] = useState(false);
+    const {room, addRoom, error} = useAddRoom();
 
-    if (room) {
-        router.push(`/${room.id}`);
-    }
+    const {loading: loadingRoomData, roomExists} = useRoomSummary(room?.id || '');
+
+    useEffect(() => {
+        if (room?.id && !loadingRoomData && roomExists) {
+            router.push(`/${room.id}`);
+        }
+    }, [roomExists, loadingRoomData, room]);
+
+    useEffect(() => {
+        if (error) {
+            setLoading(false);
+        }
+    }, [error]);
 
     const handleJoinRoom = () => {
         router.push(`/${roomId}`);
+    };
+
+    const handleCrateRoom = () => {
+        setLoading(true);
+        addRoom();
     };
 
     return (
@@ -106,10 +123,23 @@ const Home: NextPage = () => {
                     </Box>
                 </Box>
                 <Box className={classes.action}>
-                    <Button variant="contained" color="secondary" onClick={() => addRoom()}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        disabled={loading}
+                        onClick={handleCrateRoom}>
                         <Box className={classes.button}>
-                            Create a room
-                            <ArrowIcon color="#000" />
+                            {loading ? (
+                                <>
+                                    Creating...
+                                    <CircularProgress size={20} variant="indeterminate" />
+                                </>
+                            ) : (
+                                <>
+                                    Create a room
+                                    <ArrowIcon color="#000" />
+                                </>
+                            )}
                         </Box>
                     </Button>
                     <Typography variant="button">Or</Typography>

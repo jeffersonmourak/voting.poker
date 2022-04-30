@@ -1,4 +1,6 @@
 import {isArray, isNumber, isString} from 'lodash';
+import newGithubIssueUrl from 'new-github-issue-url';
+import {errorToast, generateErrorWithLink, warningToast} from './toast';
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 const request = <T>(url: string, method: Method, data?: T) => {
@@ -17,7 +19,40 @@ const request = <T>(url: string, method: Method, data?: T) => {
         config.body = JSON.stringify(data);
     }
 
-    return fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}${url}`, config);
+    return fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL || ''}${url}`, config);
+};
+
+const displayErrorToast = (error: string, response: Response) => {
+    const {status, url, headers} = response;
+
+    console.log(headers.values());
+
+    if (status >= 400 && status < 500) {
+        warningToast(error);
+    }
+
+    if (status >= 500) {
+        const issueUrl = newGithubIssueUrl({
+            user: 'jeffersonmourak',
+            repo: 'voting.poker',
+            title: `Error 500 in production - ${error}`,
+            labels: ['bug'],
+            body: `
+## SUMMARY
+<!-- PLEASE DESCRIBE WHAT HAPPEND -->
+
+## REQUEST DATA
+- Url: ${url}
+- User-Agent: ${window.navigator.userAgent}
+## Error Message
+\`\`\`
+${error}
+\`\`\``,
+        });
+        errorToast(
+            generateErrorWithLink('Something went wrong. Please try again later.', issueUrl)
+        );
+    }
 };
 
 // @ts-ignore
@@ -59,6 +94,7 @@ export const post = async <T>(url: string, data: T) => {
     if (response.status === 200) {
         return responseData;
     } else {
+        displayErrorToast(responseData.error, response);
         throw new Error(responseData.error);
     }
 };
@@ -71,6 +107,7 @@ export const put = async <T>(url: string, data: T) => {
     if (response.status === 200) {
         return responseData;
     } else {
+        displayErrorToast(responseData.error, response);
         throw new Error(responseData.error);
     }
 };
@@ -83,6 +120,7 @@ export const get = async (url: string) => {
     if (response.status === 200) {
         return parseResponseData(responseData);
     } else {
+        displayErrorToast(responseData.error, response);
         throw new Error(responseData.error);
     }
 };
@@ -95,6 +133,7 @@ export const remove = async (url: string) => {
     if (response.status === 200) {
         return parseResponseData(responseData);
     } else {
+        displayErrorToast(responseData.error, response);
         throw new Error(responseData.error);
     }
 };

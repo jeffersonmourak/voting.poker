@@ -6,16 +6,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const {id} = req.query as {id: string};
     const {userId, value} = req.body as Vote;
 
-    const room = new RoomModel(id);
-
-    await room.fetch();
-
-    if (!room.exists || req.method !== 'POST') {
-        res.status(404).end();
-        return;
-    }
-
     try {
+        const room = new RoomModel(id);
+
+        await room.fetch();
+
+        if (!room.exists || req.method !== 'POST') {
+            res.status(404).end();
+            return;
+        }
+
         const vote = await room.sessions?.vote(userId, value);
         await room.save();
         res.status(200).json(vote);

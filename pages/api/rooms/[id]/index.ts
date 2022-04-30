@@ -5,17 +5,17 @@ import {Session} from '@root/types/Session';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     const {id} = req.query as {id: string};
     const {body} = req as {body: Session};
-
-    const room = new RoomModel(id);
-
-    await room.fetch();
-
-    if (!room.exists || req.method === 'POST') {
-        res.status(404).end();
-        return;
-    }
-
+    
     try {
+        const room = new RoomModel(id);
+
+        await room.fetch();
+
+        if (!room.exists || req.method === 'POST') {
+            res.status(404).end();
+            return;
+        }
+
         switch (req.method) {
             case 'GET':
                 return res.status(200).json(room.data);

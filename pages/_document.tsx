@@ -8,7 +8,6 @@ export default class MyDocument extends Document {
             <Html lang="en">
                 <Head>
                     <meta name="theme-color" content="#000" />
-                    <meta name="viewport" content="initial-scale=1, width=device-width" />
                     <link
                         rel="preload"
                         href="/fonts/MonumentGrotesk-Mono/MonumentGrotesk-Mono.woff2"

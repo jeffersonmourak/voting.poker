@@ -3,11 +3,11 @@ import RoomModel from '@root/firebase/models/Room';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     if (req.method === 'POST') {
-        const room = new RoomModel();
-
-        await room.fetch();
-
         try {
+            const room = new RoomModel();
+
+            await room.fetch();
+
             room.sessions!.add();
             room.save();
             res.status(200).json(room.data);
