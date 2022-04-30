@@ -1,4 +1,4 @@
-import {doc, DocumentData, DocumentReference, getDoc, setDoc} from '@firebase/firestore';
+import {doc, DocumentData, DocumentReference, getDoc, setDoc} from 'firebase/firestore';
 import {deleteDoc} from 'firebase/firestore';
 import {firestore} from '../clientApp';
 
