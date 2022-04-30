@@ -10,9 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./functions
-
     strategy:
       matrix:
         node-version: [16.x]
@@ -24,10 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: install root libraries
-      run: npm install
-    - name: install function libraries
-      run: npm install
-      working-directory: ${{env.working-directory}}
+      run: yarn install
     - name: install firebase
       run: npm i firebase-tools -g
     - name: deploy
