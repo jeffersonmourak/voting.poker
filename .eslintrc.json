@@ -131,6 +131,7 @@
     "react/display-name": 0,
     "react/jsx-filename-extension": 0,
     "react/no-danger": 1,
+    "react-hooks/exhaustive-deps": 0,
     "guard-for-in": 2,
     "no-eval": 2,
     "no-with": 2,

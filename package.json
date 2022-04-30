@@ -12,7 +12,10 @@
     "eslint:config": "eslint --print-config .eslintrc.json ",
     "eslintall": "eslint -c .eslintrc.json ./",
     "eslintfix": "eslint -c .eslintrc.json ./ --fix",
-    "install:functions": "yarn --cwd functions"
+    "install:functions": "yarn --cwd functions",
+    "typecheck:client": "tsc --project ./tsconfig.json",
+    "typecheck:functions": "yarn --cwd functions typecheck",
+    "typecheck": "yarn typecheck:client && yarn typecheck:functions"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
@@ -39,6 +42,7 @@
     "firebase": "^9.6.5",
     "lodash": "^4.17.21",
     "luxon": "^2.3.0",
+    "new-github-issue-url": "^1.0.0",
     "next": "12.0.9",
     "next-transpile-modules": "^9.0.0",
     "react": "17.0.2",
@@ -46,6 +50,7 @@
     "react-firebase-hooks": "^5.0.0",
     "react-minimal-pie-chart": "^8.2.0",
     "react-textfit": "^1.1.1",
+    "react-toastify": "^8.2.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
