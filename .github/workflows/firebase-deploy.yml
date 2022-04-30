@@ -22,6 +22,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: install root libraries
       run: yarn install
+    - name: install functions libraries
+      run: yarn install:functions
     - name: install firebase
       run: npm i firebase-tools -g
     - name: deploy

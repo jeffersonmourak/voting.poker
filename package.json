@@ -12,7 +12,7 @@
     "eslint:config": "eslint --print-config .eslintrc.json ",
     "eslintall": "eslint -c .eslintrc.json ./",
     "eslintfix": "eslint -c .eslintrc.json ./ --fix",
-    "postinstall": "yarn --cwd functions"
+    "install:functions": "yarn --cwd functions"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
