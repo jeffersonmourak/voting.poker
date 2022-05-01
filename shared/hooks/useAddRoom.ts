@@ -21,11 +21,17 @@ const useAddRoom = () => {
         }
     };
 
+    const handleReset = () => {
+        setData(null);
+        setError(null);
+    };
+
     return {
         loading,
         room: data,
         error,
         addRoom,
+        reset: handleReset,
     };
 };
 

@@ -3,7 +3,9 @@ import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import useAddUserToRoom from '@root/shared/hooks/useAddUserToRoom';
-import {useState} from 'react';
+import useUpdateUser from '@root/shared/hooks/useUpdateUser';
+import React, {useEffect, useState, useContext} from 'react';
+import {UserContext} from './UserProvider';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {
@@ -39,10 +41,12 @@ interface IdentifyProps {
 }
 
 const Identify = ({roomId, loading}: IdentifyProps) => {
+    const {user} = useContext(UserContext);
     const [username, setUsername] = useState('');
 
     const classes = useStyle();
     const {addUser} = useAddUserToRoom(roomId as string);
+    const {updateUser} = useUpdateUser(roomId as string);
 
     const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(event.target.value);
@@ -50,8 +54,12 @@ const Identify = ({roomId, loading}: IdentifyProps) => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        addUser({name: username});
+        updateUser({...user, name: username});
     };
+
+    useEffect(() => {
+        roomId && addUser({name: ''});
+    }, [roomId]);
 
     return (
         <Box className={classes.content}>

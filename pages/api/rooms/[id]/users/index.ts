@@ -3,7 +3,7 @@ import RoomModel from '@root/firebase/models/Room';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     const {id} = req.query as {id: string};
-    const body = req.body as {name: string};
+    const body = req.body as {id: string, name: string};
     
     try {
         const room = new RoomModel(id);
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             return;
         }
 
-        const user = await room.users?.add({name: body.name});
+        const user = await room.users?.add({name: body.name, id: body.id});
         await room.save();
         res.status(200).json(user);
     } catch (e) {

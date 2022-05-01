@@ -58,6 +58,11 @@ interface UserVoteProps {
 
 const UserVote = ({name, vote, reveal, avatar, moderator, emoji}: UserVoteProps) => {
     const classes = useStyles();
+
+    if (!name) {
+        return null;
+    }
+
     return (
         <Box className={classes.root}>
             <Tooltip title={name}>

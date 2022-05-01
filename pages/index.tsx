@@ -76,13 +76,14 @@ const Home: NextPage = () => {
     const router = useRouter();
     const [roomId, setRoomId] = useState('');
     const [loading, setLoading] = useState(false);
-    const {room, addRoom, error} = useAddRoom();
+    const {room, addRoom, error, reset} = useAddRoom();
 
     const {loading: loadingRoomData, roomExists} = useRoomSummary(room?.id || '');
 
     useEffect(() => {
         if (room?.id && !loadingRoomData && roomExists) {
             router.push(`/${room.id}`);
+            reset();
         }
     }, [roomExists, loadingRoomData, room]);
 

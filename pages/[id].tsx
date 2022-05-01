@@ -12,16 +12,21 @@ import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import React, {useContext} from 'react';
 import usePresence from '@root/shared/hooks/usePresence';
+import Error from './_error';
 
 const Room: NextPage = () => {
     const router = useRouter();
-    const {user} = useContext(UserContext);
-
     const {id} = router.query as {id: string};
-    const {users, reveal: ended, hasModerator, loading} = useRoomSummary(id);
-    usePresence(id, user?.id);
+    usePresence(id);
 
-    if (!user) {
+    const {user} = useContext(UserContext);
+    const {users, reveal: ended, hasModerator, loading, roomExists} = useRoomSummary(id);
+
+    if (!loading && !roomExists) {
+        return <Error statusCode={404} />;
+    }
+
+    if (!user?.name) {
         return <Identify loading={loading} roomId={id} />;
     }
 

@@ -6,7 +6,7 @@ import {post} from '../../helpers/request';
 import {UserContext} from '../components/UserProvider';
 
 const useAddUserToRoom = (roomId: string) => {
-    const {setUser} = useContext(UserContext);
+    const {nextUserId, setUser} = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<Room | null>(null);
     const [error, setError] = useState<any>(null);
@@ -15,7 +15,7 @@ const useAddUserToRoom = (roomId: string) => {
         setLoading(true);
 
         try {
-            const userData = await post(`/api/rooms/${roomId}/users`, user);
+            const userData = await post(`/api/rooms/${roomId}/users`, {...user, id: nextUserId});
             setUser(userData, roomId);
             setData(userData);
         } catch (error) {
