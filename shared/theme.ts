@@ -100,6 +100,10 @@ export const theme = createTheme({
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                         borderColor: 'transparent',
                     },
+
+                    '& .MuiOutlinedInput-notchedOutline legend': {
+                        width: 0,
+                    },
                 },
                 notchedOutline: {
                     borderColor: 'transparent',

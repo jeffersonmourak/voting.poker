@@ -1,14 +1,11 @@
 import {cx} from '@emotion/css';
-import {Button, CircularProgress, TextField, Typography} from '@mui/material';
+import {Typography} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
-import ArrowIcon from '@root/shared/components/ArrowIcon';
 import BasePage from '@root/shared/components/BasePage';
-import useAddRoom from '@root/shared/hooks/useAddRoom';
-import useRoomSummary from '@root/shared/hooks/useRoomSummary';
+import CreateRoomButton from '@root/shared/components/CreateRoomButton';
+import JoinRoomInput from '@root/shared/components/JoinRoonInput';
 import {NextPage} from 'next';
-import {useRouter} from 'next/router';
-import {useEffect, useState} from 'react';
 
 const useStyle = makeStyles((theme: Theme) => ({
     content: {
@@ -43,12 +40,6 @@ const useStyle = makeStyles((theme: Theme) => ({
         flexDirection: 'column',
         gap: theme.spacing(2),
     },
-    button: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: theme.spacing(2),
-    },
     heroText: {
         fontFamily: ['"Source Code Pro"', 'monospace'].join(', '),
         fontWeight: 900,
@@ -73,34 +64,6 @@ const useStyle = makeStyles((theme: Theme) => ({
 
 const Home: NextPage = () => {
     const classes = useStyle();
-    const router = useRouter();
-    const [roomId, setRoomId] = useState('');
-    const [loading, setLoading] = useState(false);
-    const {room, addRoom, error, reset} = useAddRoom();
-
-    const {loading: loadingRoomData, roomExists} = useRoomSummary(room?.id || '');
-
-    useEffect(() => {
-        if (room?.id && !loadingRoomData && roomExists) {
-            router.push(`/${room.id}`);
-            reset();
-        }
-    }, [roomExists, loadingRoomData, room]);
-
-    useEffect(() => {
-        if (error) {
-            setLoading(false);
-        }
-    }, [error]);
-
-    const handleJoinRoom = () => {
-        router.push(`/${roomId}`);
-    };
-
-    const handleCrateRoom = () => {
-        setLoading(true);
-        addRoom();
-    };
 
     return (
         <BasePage>
@@ -124,39 +87,9 @@ const Home: NextPage = () => {
                     </Box>
                 </Box>
                 <Box className={classes.action}>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        disabled={loading}
-                        onClick={handleCrateRoom}>
-                        <Box className={classes.button}>
-                            {loading ? (
-                                <>
-                                    Creating...
-                                    <CircularProgress size={20} variant="indeterminate" />
-                                </>
-                            ) : (
-                                <>
-                                    Create a room
-                                    <ArrowIcon color="#000" />
-                                </>
-                            )}
-                        </Box>
-                    </Button>
+                    <CreateRoomButton />
                     <Typography variant="button">Or</Typography>
-                    <Box>
-                        <TextField
-                            color="primary"
-                            label="Room code"
-                            onChange={(e) => setRoomId(e.target.value)}
-                        />
-                        <Button variant="contained" type="submit" onClick={handleJoinRoom}>
-                            <Box className={classes.button}>
-                                Join
-                                <ArrowIcon />
-                            </Box>
-                        </Button>
-                    </Box>
+                    <JoinRoomInput />
                 </Box>
             </Box>
         </BasePage>
