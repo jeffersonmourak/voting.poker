@@ -58,8 +58,8 @@ const Error = ({statusCode}: ErrorProps) => {
             </Box>
             <Box className={classes.action}>
                 <Typography variant="h4">{errorMessage(statusCode)}</Typography>
-                <Button variant="contained" color="secondary">
-                    <Typography variant="button" onClick={() => router.push('/')}>
+                <Button variant="contained" color="secondary" onClick={() => router.push('/')}>
+                    <Typography variant="button">
                         Go back
                     </Typography>
                 </Button>

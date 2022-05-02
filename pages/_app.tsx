@@ -8,8 +8,10 @@ import createEmotionCache from '@root/shared/createEmotionCache';
 import {CacheProvider} from '@emotion/react';
 import {UserProvider} from '@root/shared/components/UserProvider';
 import {ToastContainer} from 'react-toastify';
+import FullStory from 'react-fullstory';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { DataCollectionNotification } from '@root/shared/components/DataCollectionNotification';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -22,6 +24,7 @@ function MyApp({
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
                 <UserProvider>
+                    <FullStory org={process.env.NEXT_PUBLIC_FULL_STORY_ORG_ID || ''} />
                     <CssBaseline />
                     <Head>
                         <title> Voting Poker </title>
@@ -29,6 +32,7 @@ function MyApp({
                     </Head>
                     <Component {...pageProps} />
                     <ToastContainer icon={false} closeButton={<></>} />
+                    <DataCollectionNotification />
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>

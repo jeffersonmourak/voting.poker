@@ -841,6 +841,11 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.6.1.tgz#0c74724ba6e9ea6ad25a391eab60a79eaba4c556"
   integrity sha512-9FqhNjKQWpQ3fGnSOCovHOm+yhhiorKEqYLAfd525jWavunDJcx8rOW6i6ozAh+FbwcYMkL7b+3j4UR/30MpoQ==
 
+"@fullstory/browser@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@fullstory/browser/-/browser-1.5.1.tgz#4b6ce95df3a91408a8b56bac06038f4d128f9ec8"
+  integrity sha512-eOTR0lc2BwwyGYn7ke7aJrJpl8Ae4+KdWyiibixVn+RUG3NaQgrP7hj/KmlMnndRSO9I4YqoqZCKYwtqDFo3rw==
+
 "@grpc/grpc-js@^1.3.2":
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.5.3.tgz#fe78a40eab4e21a6044ff6f23798f712ea352a8f"
@@ -1403,6 +1408,11 @@
   integrity sha512-c3mAZEuK0lvBp8tmuL74XRKn1+y2dcwOUpH7x4WrF6gk1GIgiluDRgMYQtw2OFcBvAJWlt6ASU3tSqxp0Uu0Aw==
   dependencies:
     "@types/istanbul-lib-report" "*"
+
+"@types/js-cookie@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-3.0.2.tgz#451eaeece64c6bdac8b2dde0caab23b085899e0d"
+  integrity sha512-6+0ekgfusHftJNYpihfkMu8BWdeHs9EOJuGcSofErjstGPfPGEu9yTu4t460lTzzAMl2cM5zngQJqPMHbbnvYA==
 
 "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.9":
   version "7.0.9"
@@ -3969,6 +3979,11 @@ jjv@1.0.2:
   resolved "https://registry.yarnpkg.com/jjv/-/jjv-1.0.2.tgz#0719f2cbcfd7df34f8d57c1b03b332a0f8f66e7f"
   integrity sha1-Bxnyy8/X3zT41XwbA7MyoPj2bn8=
 
+js-cookie@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-3.0.1.tgz#9e39b4c6c2f56563708d7d31f6f5f21873a92414"
+  integrity sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -4989,6 +5004,11 @@ react-firebase-hooks@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-firebase-hooks/-/react-firebase-hooks-5.0.0.tgz#039acec4647a105f3d31940cc7078836246fd7b4"
   integrity sha512-kfsUCAQTE4vHVaSKFA4WDTo0bC3keLTVccLha3m0CW7MnW2L4U7RCiHc5F8YY5H0X9eRsS86zzzkW1SvGBgwMg==
+
+react-fullstory@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-fullstory/-/react-fullstory-1.4.0.tgz#eec34cb9790e2e1f78e97e23306a3ca460276da9"
+  integrity sha512-lMYTFfgcG1w0XXGHDM9beP/Is56Mct9OjBMRAqY5bmeKVxWnQjHDgmJff1jmakq6w3Wr5fX2UvBSP1RcNwTV1A==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
