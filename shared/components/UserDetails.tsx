@@ -5,6 +5,7 @@ import {BaseEmoji, Picker} from 'emoji-mart';
 import useUpdateUser from '../hooks/useUpdateUser';
 import {UserContext} from './UserProvider';
 import {User} from '@root/types/User';
+import {event} from '../analytics';
 
 export interface UserDetailsProps {
     roomId: string;
@@ -39,6 +40,9 @@ const UserDetails = ({roomId}: UserDetailsProps) => {
     const updateUserData = () => {
         console.log(userData);
         updateUser(userData);
+        event({
+            action: 'update_user',
+        });
     };
 
     useEffect(() => {

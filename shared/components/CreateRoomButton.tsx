@@ -6,6 +6,7 @@ import useAddRoom from '@root/shared/hooks/useAddRoom';
 import useRoomSummary from '@root/shared/hooks/useRoomSummary';
 import {useRouter} from 'next/router';
 import {useEffect, useState} from 'react';
+import {useAnalytics} from '../hooks/useAnalytics';
 
 const useStyle = makeStyles((theme: Theme) => ({
     button: {
@@ -19,6 +20,7 @@ const useStyle = makeStyles((theme: Theme) => ({
 const CreateRoomButton = () => {
     const classes = useStyle();
     const router = useRouter();
+    const {event} = useAnalytics();
     const [loading, setLoading] = useState(false);
     const {room, addRoom, error, reset} = useAddRoom();
     const {loading: loadingRoomData, roomExists} = useRoomSummary(room?.id || '');
@@ -41,6 +43,9 @@ const CreateRoomButton = () => {
     const handleCreateRoom = () => {
         setLoading(true);
         addRoom();
+        event({
+            action: 'create_room',
+        });
     };
 
     return (

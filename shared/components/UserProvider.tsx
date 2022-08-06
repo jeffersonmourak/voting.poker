@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import {User} from '@root/types/User';
 import {v4 as uuidv4} from 'uuid';
 import React, {createContext, useState} from 'react';
-import {identify, shutdown, restart} from 'react-fullstory';
+import {useAnalytics} from '../hooks/useAnalytics';
 
 interface UserContextInterface {
     user: User | null;
@@ -23,22 +23,17 @@ export const UserContext = createContext<UserContextInterface>({
 export const UserProvider = ({children}: {children: JSX.Element | JSX.Element[]}) => {
     const [user, setUser] = useState<null | User>(null);
     const [room, setRoom] = useState<null | string>(null);
+    const {consent, identify} = useAnalytics();
     const [nextUserId, setNextUserId] = useState<string>(uuidv4());
 
-    const hasAnswerd = Cookies.get('dataCollectionAccepted') !== undefined;
-    const hasDenied = Cookies.get('dataCollectionAccepted') === 'true';
+    const hasDenied = Cookies.get('dataCollectionAccepted') === 'false';
 
-    if (!hasAnswerd || hasDenied) {
-        shutdown();
-    }
+    consent(!hasDenied);
 
     const handleSetUser = (userData: User, roomId: string) => {
         setUser(userData);
         setRoom(roomId);
-        identify(userData.name, {
-            ...user,
-            roomId,
-        });
+        identify({...userData, roomId});
     };
 
     const removeUser = () => {
@@ -49,12 +44,12 @@ export const UserProvider = ({children}: {children: JSX.Element | JSX.Element[]}
 
     const enableDataCollection = () => {
         if (user && room) {
-            identify(user?.name, {
+            identify({
                 ...user,
                 roomId: room,
             });
         }
-        restart();
+        consent(true);
     };
 
     return (
