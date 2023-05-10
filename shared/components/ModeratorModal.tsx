@@ -1,8 +1,6 @@
 import {Button, Container, Paper, Typography} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
-import {useContext} from 'react';
-import useUpdateUser from '../hooks/useUpdateUser';
 import {User} from '@root/types/User';
 
 const useStyle = makeStyles((theme: Theme) => ({
