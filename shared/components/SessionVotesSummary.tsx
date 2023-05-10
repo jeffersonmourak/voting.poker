@@ -2,85 +2,88 @@ import {Box, Theme, Typography} from '@mui/material';
 import React, {useState, useEffect} from 'react';
 import {DateTime, Interval} from 'luxon';
 import makeStyles from '@mui/styles/makeStyles';
-import useRoomSummary from '../hooks/useRoomSummary';
 import UserVote from './UserVote';
+import {User} from '@root/types/User';
+import {useSession} from '../hooks/useSession';
 
 const useStyles = makeStyles((theme: Theme) => ({
-    users: {
-        flex: 1,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        margin: theme.spacing(2, 0, 2),
-        gap: theme.spacing(2),
-    },
-    container: {
-        display: 'flex',
-        alignItems: 'center',
+  users: {
+    flex: 1,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    margin: theme.spacing(2, 0, 2),
+    gap: theme.spacing(2),
+  },
+  container: {
+    display: 'flex',
+    alignItems: 'center',
 
-        [theme.breakpoints.down('sm')]: {
-            flexDirection: 'column',
-        },
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
     },
+  },
 }));
 
 interface SessionVotesSummaryProps {
-    roomId: string;
+  roomId: string;
+  users: User[];
 }
 
 const niceDigits = (n?: number) => {
-    if (!n) {
-        return '00';
-    }
+  if (!n) {
+    return '00';
+  }
 
-    if (n < 10) {
-        return `0${n}`;
-    }
-    return `${n}`;
+  if (n < 10) {
+    return `0${n}`;
+  }
+  return `${n}`;
 };
 
-const SessionVotesSummary = ({roomId}: SessionVotesSummaryProps) => {
-    const [since, setSince] = useState(Interval.fromDateTimes(DateTime.now(), DateTime.now()));
-    const {users, reveal, startedAt} = useRoomSummary(roomId);
-    const classes = useStyles();
+const SessionVotesSummary = ({roomId, users}: SessionVotesSummaryProps) => {
+  const [since, setSince] = useState(Interval.fromDateTimes(DateTime.now(), DateTime.now()));
+  const {session, votes} = useSession(roomId);
+  const classes = useStyles();
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            if (!reveal && startedAt) {
-                setSince(Interval.fromDateTimes(startedAt, DateTime.now()));
-            }
-        }, 100);
+  const {revealed, timestamp} = session ?? {revealed: false, timestamp: new Date()};
 
-        return () => {
-            clearInterval(timer);
-        };
-    }, [startedAt]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!revealed) {
+        setSince(Interval.fromDateTimes(timestamp, DateTime.now()));
+      }
+    }, 100);
 
-    const duration = since.toDuration(['hour', 'minute', 'second', 'millisecond']).toObject();
+    return () => {
+      clearInterval(timer);
+    };
+  }, [timestamp]);
 
-    return (
-        <Box className={classes.container}>
-            <Box>
-                <Typography variant="h5">
-                    {niceDigits(duration.hours)}:{niceDigits(duration.minutes)}:
-                    {niceDigits(duration.seconds)}
-                </Typography>
-            </Box>
-            <Box className={classes.users}>
-                {users?.map((user) => (
-                    <UserVote
-                        key={user.id}
-                        name={user.name}
-                        avatar={user.avatar}
-                        emoji={user.emoji}
-                        moderator={user.moderator}
-                        vote={user.vote?.value}
-                        reveal={reveal}
-                    />
-                ))}
-            </Box>
-        </Box>
-    );
+  const duration = since.toDuration(['hour', 'minute', 'second', 'millisecond']).toObject();
+
+  return (
+    <Box className={classes.container}>
+      <Box>
+        <Typography variant="h5">
+          {niceDigits(duration.hours)}:{niceDigits(duration.minutes)}:{niceDigits(duration.seconds)}
+        </Typography>
+      </Box>
+      <Box className={classes.users}>
+        {users?.map((user) => (
+          <UserVote
+            key={user.id}
+            name={user.name}
+            avatar={user.avatar}
+            emoji={user.emoji}
+            moderator={user.moderator}
+            vote={votes[user.id]}
+            reveal={revealed}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
 };
 
 export default SessionVotesSummary;

@@ -1,10 +1,10 @@
 import {realtimeDB} from '@root/firebase/clientApp';
 import {ref, onDisconnect, set, remove} from 'firebase/database';
 import {useContext, useEffect} from 'react';
-import {UserContext} from '../components/UserProvider';
+import {AblyProviderContext} from '../components/AblyProvider';
 
 const usePresence = (roomId: string) => {
-    const {user, removeUser} = useContext(UserContext);
+    const {user, removeUser} = useContext(AblyProviderContext);
 
     const userId = user?.id;
 

@@ -5,6 +5,6 @@ module.exports = {
     parser: 'typescript',
     printWidth: 100,
     singleQuote: true,
-    tabWidth: 4,
+    tabWidth: 2,
     trailingComma: 'es5',
 };

@@ -1,34 +1,13 @@
-import {useContext, useState} from 'react';
+import { useChannel } from '@ably-labs/react-hooks';
 
-import {post} from '../../helpers/request';
-import {UserContext} from '../components/UserProvider';
-
-const useVote = (roomId: string) => {
-    const {user} = useContext(UserContext);
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<string | null>(null);
-    const [error, setError] = useState<any>(null);
+const useVote = (roomId: string, userId: string) => {
+    const [channel] = useChannel(roomId, () => {});
 
     const vote = async (value: string) => {
-        setLoading(true);
-
-        try {
-            await post(`/api/rooms/${roomId}/vote`, {
-                userId: user?.id,
-                value,
-            });
-            setData(value);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setLoading(false);
-        }
+        channel.publish('VOTE', { userId, value, timestamp: Date.now() });
     };
 
     return {
-        loading,
-        user: data,
-        error,
         vote,
     };
 };

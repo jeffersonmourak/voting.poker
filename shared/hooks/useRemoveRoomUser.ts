@@ -1,10 +1,10 @@
 import {useContext} from 'react';
 
 import {remove} from '@root/helpers/request';
-import {UserContext} from '../components/UserProvider';
+import {AblyProviderContext} from '../components/AblyProvider';
 
 const useRemoveRoomUser = () => {
-    const {removeUser: deleteUser} = useContext(UserContext);
+    const {removeUser: deleteUser} = useContext(AblyProviderContext);
 
     const removeUser = async (userId: string, roomId: string) => {
         try {

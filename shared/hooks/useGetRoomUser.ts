@@ -2,10 +2,10 @@ import {Room} from '@root/types/Room';
 import {useContext, useState} from 'react';
 
 import {get} from '../../helpers/request';
-import {UserContext} from '../components/UserProvider';
+import {AblyProviderContext} from '../components/AblyProvider';
 
 const useGetRoomUser = (roomId: string) => {
-    const {setUser} = useContext(UserContext);
+    const {setUser} = useContext(AblyProviderContext);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<Room | null>(null);
     const [error, setError] = useState<any>(null);
