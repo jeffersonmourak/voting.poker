@@ -3,7 +3,6 @@ import {Button, Popover, TextField} from '@mui/material';
 import React, {useState} from 'react';
 import {BaseEmoji, Picker} from 'emoji-mart';
 import {User} from '@root/types/User';
-import {event} from '../analytics';
 import {AvatarPicker} from './AvatarPicker';
 
 export interface UserDetailsProps {
@@ -36,9 +35,6 @@ const UserDetails = ({updateUser, user}: UserDetailsProps) => {
 
   const updateUserData = () => {
     updateUser({...user, ...userData, moderator: user.moderator});
-    event({
-      action: 'update_user',
-    });
   };
 
   return (

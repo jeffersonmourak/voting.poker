@@ -1182,6 +1182,11 @@
     protobufjs "^6.10.0"
     yargs "^16.2.0"
 
+"@highlight-run/react@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@highlight-run/react/-/react-3.2.0.tgz#bc098a9a60f2677c02512251e80d437d537a134d"
+  integrity sha512-9W7kcGJIFz0AHglMW2nFkHmINuLwjlA4TQJ9yqkJ96tcmBWWFK0uJgqmyuGl6u+9p32tL/8WkxKNreHfVO7JIQ==
+
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.9.3.tgz#f2564c744b387775b436418491f15fce6601f63e"
@@ -3827,6 +3832,11 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+highlight.run@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/highlight.run/-/highlight.run-6.2.0.tgz#4584d79a2bfb02f49682e3b88ba78b7b5409bbbb"
+  integrity sha512-wiqWiN4kt5e4EEiCh17BMknSAOiAoULutKZcV2NupGTe0p/Ll+rRGStABvsYMLsR3n5Rln4AulVLF72AkQC+MA==
+
 hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
@@ -5246,11 +5256,6 @@ next@12.0.9:
     "@next/swc-win32-ia32-msvc" "12.0.9"
     "@next/swc-win32-x64-msvc" "12.0.9"
 
-nextjs-google-analytics@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/nextjs-google-analytics/-/nextjs-google-analytics-2.0.0.tgz#390b5f215f5234475af62d55796b9c142803932d"
-  integrity sha512-ugOcdGTa1gM4ZLT1RACniAgOG7syOUIX4Iw8nkC14JhfBEVfwDdZHVG5WiQGJOQKt7TkXeExJ0vIFGR9jf+vwQ==
-
 node-fetch@2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
@@ -5769,11 +5774,6 @@ react-firebase-hooks@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/react-firebase-hooks/-/react-firebase-hooks-5.0.0.tgz#039acec4647a105f3d31940cc7078836246fd7b4"
   integrity sha512-kfsUCAQTE4vHVaSKFA4WDTo0bC3keLTVccLha3m0CW7MnW2L4U7RCiHc5F8YY5H0X9eRsS86zzzkW1SvGBgwMg==
-
-react-fullstory@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/react-fullstory/-/react-fullstory-1.4.0.tgz#eec34cb9790e2e1f78e97e23306a3ca460276da9"
-  integrity sha512-lMYTFfgcG1w0XXGHDM9beP/Is56Mct9OjBMRAqY5bmeKVxWnQjHDgmJff1jmakq6w3Wr5fX2UvBSP1RcNwTV1A==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

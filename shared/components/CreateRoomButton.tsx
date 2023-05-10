@@ -4,7 +4,6 @@ import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import useAddRoom from '@root/shared/hooks/useAddRoom';
 import {useRouter} from 'next/router';
-import {useAnalytics} from '../hooks/useAnalytics';
 
 const useStyle = makeStyles((theme: Theme) => ({
   button: {
@@ -18,20 +17,10 @@ const useStyle = makeStyles((theme: Theme) => ({
 const CreateRoomButton = () => {
   const classes = useStyle();
   const router = useRouter();
-  const {event} = useAnalytics();
-  const {room, addRoom, error, loading} = useAddRoom();
-
-  console.log({
-    room,
-    loading,
-    error,
-  });
+  const {room, addRoom, loading} = useAddRoom();
 
   const handleCreateRoom = () => {
     addRoom();
-    event({
-      action: 'create_room',
-    });
   };
 
   if (loading) {

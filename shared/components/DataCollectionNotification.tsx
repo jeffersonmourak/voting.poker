@@ -2,6 +2,7 @@ import {Box, Typography, Button, lighten, Theme} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Cookies from 'js-cookie';
 import {useContext, useState} from 'react';
+import {AnalyticsContext} from './AnalyticsProvider';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const DataCollectionNotification = () => {
   const [hide, setHide] = useState(false);
+  const {consent} = useContext(AnalyticsContext);
   const classes = useStyles();
   const hasAnswerd = Cookies.get('dataCollectionAccepted');
   const hasAccepted = Cookies.get('dataCollectionAccepted') === 'true';
@@ -36,13 +38,14 @@ export const DataCollectionNotification = () => {
   }
 
   const handleEnableUserDataCollection = () => {
-    // enableDataCollection();
     Cookies.set('dataCollectionAccepted', 'true');
+    consent(true);
     setHide(true);
   };
 
   const handleDisableUserDataCollection = () => {
     Cookies.set('dataCollectionAccepted', 'false');
+    consent(false);
     setHide(true);
   };
 
