@@ -1,34 +1,37 @@
 import {Room} from '@root/types/Room';
-import {useState} from 'react';
+import { v4 as uuidV4 } from 'uuid';
+import { useRef, useState} from 'react';
 
-import {post} from '../../helpers/request';
+const generateNewRoomData = (): Room => {
+    const roomId = uuidV4();
+
+    return {
+        id: roomId,
+        name: '',
+        users: [],
+        sessions: [],
+        createdAt: new Date(),
+    };
+}
 
 const useAddRoom = () => {
+    const roomData = useRef<Room>(generateNewRoomData()).current;
+    const [room, setRoom] = useState<Room | null>(null)
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<Room | null>(null);
     const [error, setError] = useState<any>(null);
 
     const addRoom = async () => {
         setLoading(true);
-
-        try {
-            const roomData = await post('/api/rooms', {});
-            setData(roomData);
-        } catch (error) {
-            setError(error);
-        } finally {
-            setLoading(false);
-        }
+        setRoom(roomData)
     };
 
     const handleReset = () => {
-        setData(null);
         setError(null);
     };
 
     return {
         loading,
-        room: data,
+        room,
         error,
         addRoom,
         reset: handleReset,

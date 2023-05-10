@@ -6,7 +6,6 @@ import '../styles/globals.css';
 import {theme} from '@root/shared/theme';
 import createEmotionCache from '@root/shared/createEmotionCache';
 import {CacheProvider} from '@emotion/react';
-import {UserProvider} from '@root/shared/components/UserProvider';
 import {ToastContainer} from 'react-toastify';
 import type { NextWebVitalsMetric } from "next/app";
 
@@ -37,7 +36,6 @@ function MyApp({
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
                 <AnalyticsProvider>
-                    <UserProvider>
                         <CssBaseline />
                         <Head>
                             <title> Voting Poker </title>
@@ -46,7 +44,6 @@ function MyApp({
                         <Component {...pageProps} />
                         <ToastContainer icon={false} closeButton={<></>} />
                         <DataCollectionNotification />
-                    </UserProvider>
                 </AnalyticsProvider>
             </ThemeProvider>
         </CacheProvider>

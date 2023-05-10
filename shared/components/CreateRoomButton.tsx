@@ -3,68 +3,59 @@ import makeStyles from '@mui/styles/makeStyles';
 import {Box, Theme} from '@mui/system';
 import ArrowIcon from '@root/shared/components/ArrowIcon';
 import useAddRoom from '@root/shared/hooks/useAddRoom';
-import useRoomSummary from '@root/shared/hooks/useRoomSummary';
 import {useRouter} from 'next/router';
-import {useEffect, useState} from 'react';
 import {useAnalytics} from '../hooks/useAnalytics';
 
 const useStyle = makeStyles((theme: Theme) => ({
-    button: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: theme.spacing(2),
-    },
+  button: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+  },
 }));
 
 const CreateRoomButton = () => {
-    const classes = useStyle();
-    const router = useRouter();
-    const {event} = useAnalytics();
-    const [loading, setLoading] = useState(false);
-    const {room, addRoom, error, reset} = useAddRoom();
-    const {loading: loadingRoomData, roomExists} = useRoomSummary(room?.id || '');
+  const classes = useStyle();
+  const router = useRouter();
+  const {event} = useAnalytics();
+  const {room, addRoom, error, loading} = useAddRoom();
 
-    const isRoomLoaded = room?.id && !loadingRoomData && roomExists;
+  console.log({
+    room,
+    loading,
+    error,
+  });
 
-    useEffect(() => {
-        if (isRoomLoaded) {
-            router.push(`/${room.id}`);
-            reset();
-        }
-    }, [isRoomLoaded, room]);
+  const handleCreateRoom = () => {
+    addRoom();
+    event({
+      action: 'create_room',
+    });
+  };
 
-    useEffect(() => {
-        if (error) {
-            setLoading(false);
-        }
-    }, [error]);
+  if (loading) {
+    <Button variant="contained" color="secondary" disabled={loading} onClick={handleCreateRoom}>
+      <Box className={classes.button}>
+        Creating...
+        <CircularProgress size={20} variant="indeterminate" />
+      </Box>
+    </Button>;
+  }
 
-    const handleCreateRoom = () => {
-        setLoading(true);
-        addRoom();
-        event({
-            action: 'create_room',
-        });
-    };
-
+  if (!room) {
     return (
-        <Button variant="contained" color="secondary" disabled={loading} onClick={handleCreateRoom}>
-            <Box className={classes.button}>
-                {loading ? (
-                    <>
-                        Creating...
-                        <CircularProgress size={20} variant="indeterminate" />
-                    </>
-                ) : (
-                    <>
-                        Create a room
-                        <ArrowIcon color="#000" />
-                    </>
-                )}
-            </Box>
-        </Button>
+      <Button variant="contained" color="secondary" disabled={loading} onClick={handleCreateRoom}>
+        <Box className={classes.button}>
+          Create a room
+          <ArrowIcon color="#000" />
+        </Box>
+      </Button>
     );
+  }
+
+  router.push(`/${room.id}`);
+  return null;
 };
 
 export default CreateRoomButton;
