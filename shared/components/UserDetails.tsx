@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {BaseEmoji, Picker} from 'emoji-mart';
 import {User} from '@root/types/User';
 import {event} from '../analytics';
+import {AvatarPicker} from './AvatarPicker';
 
 export interface UserDetailsProps {
   user: User;
@@ -34,7 +35,7 @@ const UserDetails = ({updateUser, user}: UserDetailsProps) => {
   };
 
   const updateUserData = () => {
-    updateUser({...user, ...userData});
+    updateUser({...user, ...userData, moderator: user.moderator});
     event({
       action: 'update_user',
     });
@@ -42,14 +43,8 @@ const UserDetails = ({updateUser, user}: UserDetailsProps) => {
 
   return (
     <>
+      <AvatarPicker user={user} value={userData?.avatar} onSelect={updateFieldString('avatar')} />
       <TextField label="Name" onChange={updateField('name')} fullWidth value={userData?.name} />
-      <TextField
-        label="Avatar"
-        onChange={updateField('avatar')}
-        fullWidth
-        value={userData?.avatar}
-      />
-
       <Button aria-describedby={id} variant="contained" onClick={handleClick}>
         Your Emoji: {userData?.emoji}
       </Button>
