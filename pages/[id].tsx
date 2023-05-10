@@ -16,6 +16,7 @@ import {usePresence} from '@ably-labs/react-hooks';
 
 import Lobby from '@root/shared/components/Lobby';
 import {useSession} from '@root/shared/hooks/useSession';
+import {identify} from '@root/shared/analytics';
 
 interface RoomLayoutProps {
   roomId: string;
@@ -45,7 +46,7 @@ const useRoom = (roomId: string) => {
       ...(user ?? defaultUser),
       ...value,
     };
-
+    identify({...newUser, id: clientId, roomId});
     updatePresence(newUser);
   };
 
