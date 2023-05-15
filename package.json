@@ -12,10 +12,8 @@
     "eslint:config": "eslint --print-config .eslintrc.json ",
     "eslintall": "eslint -c .eslintrc.json ./",
     "eslintfix": "eslint -c .eslintrc.json ./ --fix",
-    "install:functions": "yarn --cwd functions",
     "typecheck:client": "tsc --project ./tsconfig.json",
-    "typecheck:functions": "yarn --cwd functions typecheck",
-    "typecheck": "yarn typecheck:client && yarn typecheck:functions"
+    "typecheck": "yarn typecheck:client"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
