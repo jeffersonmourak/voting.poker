@@ -12,6 +12,8 @@ import {User} from '@root/types/User';
 import {useState} from 'react';
 import {FileUploader} from './FileUploader';
 import {GiphySearch} from './GiphySearch';
+import Image from 'next/image';
+import {AvatarCTA} from './AvatarCTA';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -63,6 +65,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   fileDragging: {
     backgroundColor: theme.palette.action.hover,
   },
+  footer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  poweredByGiphy: {
+    backgroundColor: theme.palette.common.black,
+    borderRadius: theme.spacing(5),
+    padding: `${theme.spacing(2, 4)} !important`,
+  },
   footerActions: {
     display: 'flex',
     justifyContent: 'flex-end',
@@ -94,9 +105,11 @@ export const AvatarPicker = ({onSelect, value, user}: AvatarPickerProps) => {
     <>
       <Box className={classes.root}>
         <Avatar {...avatarProps(user.name, value, {width: 128, height: 128, fontSize: '4rem'})} />
-        <IconButton onClick={handleOpen} className={classes.editButton}>
-          <EditRoundedIcon className={classes.icon} />
-        </IconButton>
+        <AvatarCTA disabled={open}>
+          <IconButton onClick={handleOpen} className={classes.editButton}>
+            <EditRoundedIcon className={classes.icon} />
+          </IconButton>
+        </AvatarCTA>
       </Box>
       <Modal
         open={open}
@@ -116,13 +129,23 @@ export const AvatarPicker = ({onSelect, value, user}: AvatarPickerProps) => {
               avatarUrl={avatarUrl}
               onSelect={(url: string | null) => setAvatarUrl(url || '')}
             />
-            <Box className={classes.footerActions}>
-              <Button onClick={() => setOpen(false)} variant="contained">
-                Cancel
-              </Button>
-              <Button onClick={handleSelect} variant="contained" color="secondary">
-                Save
-              </Button>
+            <Box className={classes.footer}>
+              <Image
+                className={classes.poweredByGiphy}
+                objectFit="contain"
+                src={'/PoweredBy_Giphy.gif'}
+                alt="Powered By Giphy"
+                width={200}
+                height={30}
+              />
+              <Box className={classes.footerActions}>
+                <Button onClick={() => setOpen(false)} variant="contained">
+                  Cancel
+                </Button>
+                <Button onClick={handleSelect} variant="contained" color="secondary">
+                  Save
+                </Button>
+              </Box>
             </Box>
           </Paper>
         </Box>
