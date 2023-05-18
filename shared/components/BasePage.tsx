@@ -1,5 +1,5 @@
 import {ReactNode} from 'react';
-import {Grid, Theme} from '@mui/material';
+import {Grid, Theme, useMediaQuery, useTheme} from '@mui/material';
 import {makeStyles} from '@mui/styles';
 interface BasePageProps {
   children: ReactNode;
@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   content: {
     flex: 1,
+    backgroundColor: theme.palette.background.paper,
   },
   footer: {
     height: theme.spacing(4),
@@ -24,17 +25,21 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const BasePage = ({children}: BasePageProps) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const isMoble = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Grid className={classes.root} container direction="column">
       <Grid className={classes.content} item>
         {children}
       </Grid>
-      <Grid item className={classes.footer}>
-        Made with ❤️ by&nbsp;
-        <a href="https://github.com/jeffersonmourak" target="_blank">
+      {isMoble && (
+        <Grid item className={classes.footer}>
+          Made with ❤️ by&nbsp;
+          <a href="https://github.com/jeffersonmourak" target="_blank">
             jeffersonmourak
-        </a>
-      </Grid>
+          </a>
+        </Grid>
+      )}
     </Grid>
   );
 };

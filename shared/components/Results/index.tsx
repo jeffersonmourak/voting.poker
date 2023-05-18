@@ -12,6 +12,10 @@ const useStyle = makeStyles((theme: Theme) => ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: theme.palette.background.default,
+    borderRadius: theme.spacing(2),
+    padding: theme.spacing(4, 6),
+    flex: 1,
   },
   hero: {
     display: 'flex',

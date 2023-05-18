@@ -1,9 +1,10 @@
+import React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import {avatarProps} from '@root/helpers/avatarProps';
-import {Button, Theme, Typography} from '@mui/material';
+import {Button, Theme, Tooltip, Typography} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
@@ -79,15 +80,32 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'flex-end',
     gap: theme.spacing(2),
   },
+  emojiButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: theme.palette.success.main,
+    padding: theme.spacing(1),
+    minWidth: 0,
+    fontSize: theme.typography.h5.fontSize,
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+
+    '&:hover': {
+      backgroundColor: theme.palette.success.dark,
+    },
+  },
 }));
 
 interface AvatarPickerProps {
   onSelect: (avatar: string) => void;
   value: string;
   user: User;
+  emoji: string;
+  onClickEmoji: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export const AvatarPicker = ({onSelect, value, user}: AvatarPickerProps) => {
+export const AvatarPicker = ({onSelect, value, user, emoji, onClickEmoji}: AvatarPickerProps) => {
   const [open, setOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(value || null);
 
@@ -110,6 +128,16 @@ export const AvatarPicker = ({onSelect, value, user}: AvatarPickerProps) => {
             <EditRoundedIcon className={classes.icon} />
           </IconButton>
         </AvatarCTA>
+        <Tooltip title="Pick your emoji">
+          <Button
+            className={classes.emojiButton}
+            onClick={(event) => {
+              onClickEmoji(event);
+            }}
+            variant="text">
+            {emoji}
+          </Button>
+        </Tooltip>
       </Box>
       <Modal
         open={open}

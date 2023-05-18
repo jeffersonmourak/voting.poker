@@ -3,6 +3,7 @@ import {Box, Theme, Typography, alpha, darken} from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import {FloatValue} from './FloatValue';
 import {toBackgroundColor} from './helpers/toBackgroundColor';
+import Image from 'next/image';
 
 const useStyles = makeStyles<Theme, {height: number; background: string; isImage?: boolean}>(
   (theme) => ({
@@ -15,15 +16,13 @@ const useStyles = makeStyles<Theme, {height: number; background: string; isImage
       overflow: 'hidden',
       transition: theme.transitions.create('height'),
     }),
-    background: ({background}) => ({
+    background: ({background, isImage}) => ({
       position: 'absolute',
       bottom: 0,
       left: 0,
       width: 180,
       height: 250,
-      background,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      background: isImage ? 'rgba(0, 0, 0, 0)' : background,
       transition: theme.transitions.create('height'),
       display: 'flex',
       flexDirection: 'column',
@@ -83,8 +82,12 @@ interface CardBaseProps {
 
 export const CardBackground = ({height, background, isImage, value}: CardBaseProps) => {
   const classes = useStyles({height, background, isImage});
+
   return (
     <Box className={classes.root}>
+      {isImage && background !== 'transparent' && (
+        <Image layout="fixed" objectFit="cover" src={background} width={180} height={250} alt={value} />
+      )}
       <Box className={classes.background}>
         <FloatValue value={value} background={background} isImage={isImage} top left />
         <FloatValue value={value} background={background} isImage={isImage} top right />

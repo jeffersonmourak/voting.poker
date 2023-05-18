@@ -4,7 +4,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import UserVote from './UserVote';
 import {User} from '@root/types/User';
 import {useSession} from '../hooks/useSession';
-import {Timer} from './Timer';
 import {partition} from 'lodash';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -12,25 +11,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     flex: 1,
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    margin: theme.spacing(2, 0, 2),
-    gap: theme.spacing(1),
-  },
-  moderators: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    width: '100%',
     margin: theme.spacing(2, 0, 2),
     gap: theme.spacing(1),
   },
   container: {
     display: 'flex',
     alignItems: 'center',
+    flexDirection: 'column',
     gap: theme.spacing(3),
-
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
   },
   emptySeat: {
     width: 40,
@@ -59,10 +48,7 @@ const SessionVotesSummary = ({roomId, users}: SessionVotesSummaryProps) => {
 
   return (
     <Box className={classes.container}>
-      <Box>
-        <Timer roomId={roomId} />
-      </Box>
-      <Box className={classes.moderators}>
+      <Box className={classes.users}>
         {moderators.length === 0 && <Box className={classes.emptySeat}>?</Box>}
         {moderators.map((user) => (
           <UserVote
@@ -75,8 +61,6 @@ const SessionVotesSummary = ({roomId, users}: SessionVotesSummaryProps) => {
             reveal={revealed}
           />
         ))}
-      </Box>
-      <Box className={classes.users}>
         {userList.map((user) => (
           <UserVote
             key={user.id}
