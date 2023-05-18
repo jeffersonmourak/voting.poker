@@ -16,6 +16,10 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
     justifyContent: 'flex-start',
     gap: theme.spacing(2),
     width: theme.spacing(50),
+
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   totals: {
     display: 'flex',

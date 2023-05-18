@@ -6,7 +6,6 @@ import {
   switchScan,
   ObservableInput,
   Observable,
-  tap,
   distinctUntilKeyChanged,
   delay,
 } from 'rxjs';
@@ -90,6 +89,5 @@ export const avatarMessagesObservable = interval(1000).pipe(
     }
   ),
   distinctUntilKeyChanged('action'),
-  takeWhile((k) => !k.end),
-  tap((k) => console.log(k))
+  takeWhile((k) => !k.end)
 );

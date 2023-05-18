@@ -7,10 +7,21 @@ import {Theme} from '@mui/system';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    backgroundColor: theme.palette.background.default,
+    borderRadius: theme.spacing(2),
+    padding: theme.spacing(4, 6),
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  cards: {
     display: 'flex',
     flexWrap: 'wrap',
     gap: theme.spacing(2),
     justifyContent: 'center',
+    maxWidth: theme.spacing(125),
+    flex: 1,
   },
 }));
 
@@ -29,14 +40,16 @@ const Cards = ({roomId, userId}: CardsProps) => {
 
   return (
     <Box className={classes.root}>
-      {CARD_VALUES.map((value) => (
-        <Card
-          key={value}
-          value={value}
-          onClick={() => vote(userId, value)}
-          selected={value === selected}
-        />
-      ))}
+      <Box className={classes.cards}>
+        {CARD_VALUES.map((value) => (
+          <Card
+            key={value}
+            value={value}
+            onClick={() => vote(userId, value)}
+            selected={value === selected}
+          />
+        ))}
+      </Box>
     </Box>
   );
 };
