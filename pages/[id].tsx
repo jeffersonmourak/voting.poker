@@ -93,7 +93,7 @@ const RoomLayout: React.FC<RoomLayoutProps> = ({roomId}) => {
             />
           </Grid>
           <Grid item md={8} xs={12}>
-            {!sessionId && <Lobby roomId={roomId} userId={userId} />}
+            {!sessionId && <Lobby moderator={user.moderator} />}
             {sessionId && !ended && <Cards userId={userId} roomId={roomId} />}
             {ended && <Results votes={votes} />}
           </Grid>

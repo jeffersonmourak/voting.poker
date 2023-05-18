@@ -1,15 +1,17 @@
-import {Grid} from '@mui/material';
+import {Box} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import React from 'react';
-import Card from './Card';
+import Card from './Card/Card';
 import {useSession} from '../hooks/useSession';
+import {Theme} from '@mui/system';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     minHeight: '82vh',
-  },
-  card: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(2),
+    justifyContent: 'center',
   },
 }));
 
@@ -27,17 +29,16 @@ const Cards = ({roomId, userId}: CardsProps) => {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={2} className={classes.root}>
+    <Box className={classes.root}>
       {CARD_VALUES.map((value) => (
-        <Grid key={value} className={classes.card} item md={2} xs={6}>
-          <Card
-            value={value}
-            onClick={() => vote(userId, value)}
-            selected={value === selected}
-          />
-        </Grid>
+        <Card
+          key={value}
+          value={value}
+          onClick={() => vote(userId, value)}
+          selected={value === selected}
+        />
       ))}
-    </Grid>
+    </Box>
   );
 };
 
