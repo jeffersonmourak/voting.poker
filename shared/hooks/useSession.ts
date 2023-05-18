@@ -1,5 +1,6 @@
-import { useChannel } from '@ably-labs/react-hooks';
-import { useState } from 'react';
+import {useChannel} from '@ably-labs/react-hooks';
+import {User} from '@root/types/User';
+import {useState} from 'react';
 import {v4 as uuidV4} from 'uuid';
 
 type Session = {
@@ -10,7 +11,7 @@ type Session = {
 
 export const useSession = (roomId: string) => {
   const [sessionData, setSession] = useState<Session | null>(null);
-  const [votes, setVotes] = useState<Record<string, string>>({});
+  const [votes, setVotes] = useState<Record<string, User & {vote: string}>>({});
 
   const [channel] = useChannel(roomId, ({name, data, timestamp}) => {
     switch (name) {
@@ -32,7 +33,7 @@ export const useSession = (roomId: string) => {
       case 'VOTE': {
         setVotes((prevVotes) => ({
           ...prevVotes,
-          [data.userId]: data.vote,
+          [data.userId]: data,
         }));
         return;
       }
@@ -64,7 +65,7 @@ export const useSession = (roomId: string) => {
       userId,
       vote,
     });
-  }
+  };
 
   return {
     sessionId: sessionData?.id ?? null,
@@ -74,4 +75,4 @@ export const useSession = (roomId: string) => {
     vote,
     votes,
   };
-}
+};

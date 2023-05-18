@@ -2,6 +2,7 @@ import {of, switchMap, ObservableInput, from} from 'rxjs';
 
 import {isNaN} from 'lodash';
 import {GiphyFetch} from '@giphy/js-fetch-api';
+import {valueToColor} from '@root/helpers/valueColorScale';
 
 export type CardBackgroundData = {
   value: string;
@@ -10,18 +11,12 @@ export type CardBackgroundData = {
   isImage?: boolean;
 };
 
-const percentageToColor = (percentage: number, maxHue = 120, minHue = 0) => {
-  const hue = maxHue - (percentage * (maxHue - minHue) + minHue);
-
-  return `hsl(${hue}, 100%, 70%)`;
-};
-
 const displayPercentage = (value: number): ObservableInput<CardBackgroundData> => {
-  const height = Math.max(0.1, Math.min(1, Math.log10(value) / 2));
+  const {percentage: height, color} = valueToColor(value);
 
   return of({
     value: value.toString(),
-    background: percentageToColor(height),
+    background: color,
     height: height * 250,
   });
 };
