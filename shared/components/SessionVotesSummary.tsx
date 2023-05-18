@@ -71,7 +71,7 @@ const SessionVotesSummary = ({roomId, users}: SessionVotesSummaryProps) => {
             avatar={user.avatar}
             emoji={user.emoji}
             moderator={user.moderator}
-            vote={votes[user.id]}
+            vote={votes[user.id]?.vote}
             reveal={revealed}
           />
         ))}
@@ -84,7 +84,7 @@ const SessionVotesSummary = ({roomId, users}: SessionVotesSummaryProps) => {
             avatar={user.avatar}
             emoji={user.emoji}
             moderator={user.moderator}
-            vote={votes[user.id]}
+            vote={votes[user.id]?.vote}
             reveal={revealed}
           />
         ))}

@@ -1,13 +1,14 @@
 function stringToColor(string: string, randomize?: boolean): string {
+    let saltedString = string;
     let hash = 0;
     let i;
 
     if (randomize) {
-        string = string + Math.random();
+        saltedString = string + Math.random();
     }
 
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    for (i = 0; i < saltedString.length; i += 1) {
+        hash = saltedString.charCodeAt(i) + ((hash << 5) - hash);
     }
 
     let color = '#';
