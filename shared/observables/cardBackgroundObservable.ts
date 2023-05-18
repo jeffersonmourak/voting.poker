@@ -39,7 +39,7 @@ const displayGif = async (value: string): Promise<CardBackgroundData> => {
 
   return {
     value,
-    background: `url(${data[0].images.original.url})`,
+    background: data[0].images.original.url,
     height: 250,
     isImage: true,
   };

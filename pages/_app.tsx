@@ -6,8 +6,6 @@ import '../styles/globals.css';
 import {theme} from '@root/shared/theme';
 import createEmotionCache from '@root/shared/createEmotionCache';
 import {CacheProvider} from '@emotion/react';
-import {ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import {DataCollectionNotification} from '@root/shared/components/DataCollectionNotification';
 import {AnalyticsProvider} from '@root/shared/components/AnalyticsProvider';
 import {ErrorBoundary} from '@highlight-run/react';
@@ -30,7 +28,6 @@ function MyApp({
               <meta name="viewport" content="initial-scale=1, width=device-width" />
             </Head>
             <Component {...pageProps} />
-            <ToastContainer icon={false} closeButton={<></>} />
             <DataCollectionNotification />
           </AnalyticsProvider>
         </ThemeProvider>
