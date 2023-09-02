@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   content: {
     flex: 1,
-    backgroundColor: theme.palette.background.paper,
   },
   footer: {
     height: theme.spacing(4),
