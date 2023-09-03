@@ -3093,10 +3093,10 @@
     "@typescript-eslint/types" "5.10.1"
     eslint-visitor-keys "^3.0.0"
 
-"@uidotdev/usehooks@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@uidotdev/usehooks/-/usehooks-2.1.0.tgz#1f8d42ba4af7fc82bea45af118d691645f945353"
-  integrity sha512-D7SJiNQC1BOHgtE2dy2KvOtnRNaLWTFFHvcBLg7lZ8Jz7YcimxdUY3spqpvf/mVkGCuUHee8i/79p5vVkBgsYQ==
+"@uidotdev/usehooks@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@uidotdev/usehooks/-/usehooks-2.2.0.tgz#62e811350b95145d780145c1bf715005ec02282a"
+  integrity sha512-K4tirEf3lvEgi/Z6Pv2aNR8r6YCobfg0N5AOkn3hhuWtGS8n7mMSL7RGFpE2Bj56oeLGGZXrVKteEwg4vGitGA==
 
 "@xobotyi/scrollbar-width@^1.9.5":
   version "1.9.5"
@@ -7495,6 +7495,11 @@ signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.6.tgz#24e630c4b0f03fea446a2bd299e62b4a6ca8d0af"
   integrity sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==
+
+sillyname@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/sillyname/-/sillyname-0.1.0.tgz#cfd98858e2498671347775efe3bb5141f46c87d6"
+  integrity sha512-GWA0Zont13ov+cMNw4T7nU4SCyW8jdhD3vjA5+qs8jr+09sCPxOf+FPS5zE0c9pYlCwD+NU/CiMimY462lgG9g==
 
 sisteransi@^1.0.5:
   version "1.0.5"

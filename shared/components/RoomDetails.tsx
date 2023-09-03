@@ -59,7 +59,7 @@ interface RoomDetailsProps {
   sessionId: string | null;
   roomId: string;
   ended: boolean;
-  user: User;
+  user: User | null;
   users: User[];
   updateUser: (value: Partial<User>) => void;
 }

@@ -40,7 +40,7 @@
     "@mui/styles": "^5.3.0",
     "@mui/system": "^5.3.0",
     "@types/emoji-mart": "^3.0.9",
-    "@uidotdev/usehooks": "^2.1.0",
+    "@uidotdev/usehooks": "^2.2.0",
     "ably": "^1.2.39",
     "cookie-cutter": "^0.2.0",
     "emoji-mart": "^3.0.1",
@@ -60,6 +60,7 @@
     "react-textfit": "^1.1.1",
     "react-toastify": "^8.2.0",
     "rxjs": "^7.8.1",
+    "sillyname": "^0.1.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

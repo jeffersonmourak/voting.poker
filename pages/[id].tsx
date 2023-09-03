@@ -2,7 +2,6 @@ import {Box, Modal, Theme} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import BasePage from '@root/shared/components/BasePage';
 import Cards from '@root/shared/components/Cards';
-import Identify from '@root/shared/components/Identify';
 import ModeratorModal from '@root/shared/components/ModeratorModal';
 import Results from '@root/shared/components/Results';
 import RoomDetails from '@root/shared/components/RoomDetails';
@@ -38,10 +37,6 @@ const RoomLayout: React.FC<RoomLayoutProps> = ({roomId}) => {
     roomId
   );
 
-  if (user === null) {
-    return <Identify updateUser={updateUser} />;
-  }
-
   return (
     <BasePage>
       <Modal open={moderatorSeatOpen}>
@@ -57,7 +52,7 @@ const RoomLayout: React.FC<RoomLayoutProps> = ({roomId}) => {
           roomId={roomId}
         />
 
-        {!sessionId && <Lobby moderator={user.moderator} />}
+        {!sessionId && <Lobby moderator={user?.moderator} />}
         {sessionId && !ended && <Cards userId={userId} roomId={roomId} />}
         {ended && <Results users={users} votes={votes} />}
       </Box>

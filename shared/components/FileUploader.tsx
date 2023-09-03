@@ -1,17 +1,19 @@
-import {useEffect, useState} from 'react';
-import AddAPhotoRoundedIcon from '@mui/icons-material/AddAPhotoRounded';
+import React, {useEffect, useState} from 'react';
 import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
 import {FileUploader as DragAndDropFiles} from 'react-drag-drop-files';
 import makeStyles from '@mui/styles/makeStyles';
 import {cx} from '@emotion/css';
-import {Theme, Typography} from '@mui/material';
+import {Theme, Typography, Tooltip, Button} from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
 import {toBase64} from '@root/helpers/toBase64';
+import {User} from '@root/types/User';
+import {avatarProps} from '@root/helpers/avatarProps';
+import {AvatarCTA} from './AvatarCTA';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -21,42 +23,71 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
     cursor: 'pointer',
-    height: 120,
-    ['&:hover']: {
-      backgroundColor: theme.palette.action.hover,
-    },
+    gap: theme.spacing(2),
   },
   dragging: {
     backgroundColor: theme.palette.action.hover,
   },
   previewBox: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 2,
   },
+  editButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 128,
+    height: 128,
+    color: theme.palette.common.white,
+    opacity: 0,
+    transition: 'opacity 0.2s ease-in-out',
+    ['&:hover']: {
+      opacity: 1,
+    },
+  },
+  icon: {
+    fontSize: '3rem',
+  },
+  emojiButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: theme.palette.success.main,
+    padding: theme.spacing(1),
+    minWidth: 0,
+    fontSize: theme.typography.h5.fontSize,
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+
+    '&:hover': {
+      backgroundColor: theme.palette.success.dark,
+    },
+  },
 }));
 
-const IdleMessage = () => {
+const DraggingMessage = ({user}: {user: User}) => {
+  const classes = useStyles();
   return (
     <>
-      <AddAPhotoRoundedIcon />
-      <Typography variant="body1" component="span">
-        Upload a new avatar
-      </Typography>
-      <Typography variant="caption" component="span">
-        Click or drop here
-      </Typography>
-    </>
-  );
-};
-
-const DraggingMessage = () => {
-  return (
-    <>
-      <FileUploadRoundedIcon />
+      <Box>
+        <Box display={'block'} position={'relative'}>
+          <Avatar
+            {...avatarProps(user.name, user.avatar, {width: 128, height: 128, fontSize: '4rem'})}
+          />
+          <AvatarCTA disabled>
+            <IconButton
+              disabled
+              className={classes.editButton}
+              style={{opacity: 1, backgroundColor: 'white'}}>
+              <FileUploadRoundedIcon className={classes.icon} />
+            </IconButton>
+          </AvatarCTA>
+        </Box>
+      </Box>
       <Typography variant="body1" component="span">
         Drop to upload
       </Typography>
@@ -65,34 +96,63 @@ const DraggingMessage = () => {
 };
 
 const Preview = ({
-  src,
   onClick,
-  className,
+  user,
+  onClickEmoji,
+  onHoverChange,
 }: {
-  className: string;
-  src: string;
   onClick: () => void;
+  user: User;
+  onHoverChange: React.Dispatch<React.SetStateAction<boolean>>;
+  onClickEmoji: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }) => {
+  const classes = useStyles();
+
   return (
-    <Box className={className}>
-      <Avatar variant="rounded" src={src} sx={{width: 128, height: 128}} />
-      <Tooltip title="Clear avatar">
-        <IconButton onClick={onClick}>
-          <DeleteRoundedIcon color="error" />
-        </IconButton>
-      </Tooltip>
-    </Box>
+    <>
+      <Box display={'block'} position={'relative'}>
+        <Avatar
+          {...avatarProps(user.name, user.avatar, {width: 128, height: 128, fontSize: '4rem'})}
+        />
+        <AvatarCTA disabled>
+          <IconButton onClick={onClick} className={classes.editButton}>
+            {!!user.avatar && <DeleteRoundedIcon className={classes.icon} />}
+            {!user.avatar && <EditRoundedIcon className={classes.icon} />}
+          </IconButton>
+        </AvatarCTA>
+        <Tooltip title="Pick your emoji">
+          <Button
+            className={classes.emojiButton}
+            onMouseEnter={() => onHoverChange(true)}
+            onMouseLeave={() => onHoverChange(false)}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onClickEmoji(event);
+            }}
+            variant="text">
+            {user.emoji}
+          </Button>
+        </Tooltip>
+      </Box>
+      <Typography variant="body1" component="span" sx={{textAlign: 'center'}}>
+        Click or drop a picture here to upload
+      </Typography>
+    </>
   );
 };
 
 interface FileUploaderProps {
   value: string | null;
+  user: User;
   onChange: (file: string) => void;
+  onClickEmoji: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
-export const FileUploader = ({value, onChange}: FileUploaderProps) => {
+export const FileUploader = ({value, user, onChange, onClickEmoji}: FileUploaderProps) => {
   const classes = useStyles();
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [draggingFile, setDraggingFile] = useState(false);
+  const [uploadDisabled, setUploadDisabled] = useState(false);
 
   const handleChange = (fileUrl: string | null) => {
     onChange(fileUrl ?? '');
@@ -115,9 +175,10 @@ export const FileUploader = ({value, onChange}: FileUploaderProps) => {
     return (
       <Paper className={cx(classes.root, {[classes.dragging]: draggingFile})} variant="outlined">
         <Preview
-          className={classes.previewBox}
+          onHoverChange={setUploadDisabled}
+          onClickEmoji={onClickEmoji}
           onClick={() => handleChange(null)}
-          src={uploadedFile}
+          user={{...user, avatar: uploadedFile}}
         />
       </Paper>
     );
@@ -130,10 +191,21 @@ export const FileUploader = ({value, onChange}: FileUploaderProps) => {
       dropMessageStyle={{display: 'none'}}
       onDraggingStateChange={setDraggingFile}
       name="avatar"
-      types={['JPEG', 'PNG', 'GIF']}>
-      <Paper className={cx(classes.root, {[classes.dragging]: draggingFile})} variant="outlined">
-        {draggingFile ? <DraggingMessage /> : <IdleMessage />}
-      </Paper>
+      types={['JPEG', 'PNG', 'GIF']}
+      disabled={uploadDisabled}
+      onClick={() => handleChange(null)}>
+      <Box className={cx(classes.root, {[classes.dragging]: draggingFile})}>
+        {draggingFile ? (
+          <DraggingMessage user={user} />
+        ) : (
+          <Preview
+            onHoverChange={setUploadDisabled}
+            onClickEmoji={onClickEmoji}
+            onClick={() => handleChange(null)}
+            user={user}
+          />
+        )}
+      </Box>
     </DragAndDropFiles>
   );
 };

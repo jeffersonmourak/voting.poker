@@ -73,6 +73,14 @@ export const theme = createTheme({
     borderRadius: getSize(2),
   },
   components: {
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          background: 'rgba(0, 0, 0, 0.3)',
+          backdropFilter: 'blur(8px)',
+        },
+      },
+    },
     MuiFormLabel: {
       styleOverrides: {
         filled: labelShrinked,
