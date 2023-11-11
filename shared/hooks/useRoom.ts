@@ -1,9 +1,9 @@
-import {usePresence} from '@ably-labs/react-hooks';
-import {useAbly} from './useAbly';
-import {useSession} from './useSession';
-import {User} from '@root/types/User';
-import {identify} from '../analytics';
+import { usePresence } from '@ably-labs/react-hooks';
+import { User } from '@root/types/User';
 import sillyName from 'sillyname';
+import { identify } from '../analytics';
+import { useAbly } from './useAbly';
+import { useSession } from './useSession';
 
 const defaultUser: User = {
   id: '',
@@ -38,7 +38,7 @@ export const useRoom = (roomId: string) => {
 
   return {
     user,
-    userId: clientId,
+    userId: user.id,
     users,
     updateUser,
     moderatorSeatOpen,

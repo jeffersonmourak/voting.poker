@@ -1,3 +1,4 @@
+import { cx } from '@emotion/css';
 import { Avatar, AvatarGroup, Box, Theme, Tooltip, Typography, darken } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { avatarProps } from '@root/helpers/avatarProps';
@@ -9,9 +10,13 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing(2),
+    backgroundColor: darken(theme.palette.background.paper, 0.4),
+    borderRadius: theme.spacing(2),
+    padding: `${theme.spacing(3)} ${theme.spacing(4)}`,
   },
   result: {
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
     gap: theme.spacing(2),
@@ -23,11 +28,13 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
   },
   totals: {
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: theme.spacing(2),
+    gap: theme.spacing(3),
   },
   people: {
+    marginTop: theme.spacing(2),
     flex: 1,
     display: 'flex',
     alignItems: 'center',
@@ -41,8 +48,8 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
     color: 'transparent',
     transform: `rotate(45deg)`,
     backgroundColor: ({color}) => color,
-    width: theme.spacing(6),
-    height: theme.spacing(6),
+    width: theme.spacing(10),
+    height: theme.spacing(10),
 
     '&::before': {
       position: 'absolute',
@@ -50,45 +57,43 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
       alignItems: 'center',
       justifyContent: 'center',
       content: 'attr(data-value)',
-      ...theme.typography.h6,
+      ...theme.typography.h3,
       color: ({color}) => darken(color, 0.9),
       transform: `rotate(-45deg)`,
-      width: theme.spacing(6),
-      height: theme.spacing(6),
+      width: theme.spacing(10),
+      height: theme.spacing(10),
       top: 0,
       left: 0,
     },
   },
-  separator: {
-    width: 10,
-    height: 10,
-    backgroundColor: theme.palette.success.main,
-    borderRadius: '50%',
+  resultTitleSmall: {
+    '&::before': {
+      ...theme.typography.h4,
+    },
   },
 }));
 
-interface ResultValueProps {
+interface ResultValueBigProps {
   value: string;
   percentage: number;
   color: string;
   from: User[];
 }
 
-export const ResultValue = ({value, percentage, color, from}: ResultValueProps) => {
+export const ResultValueBig = ({value, percentage, color, from}: ResultValueBigProps) => {
   const classes = useStyle({color});
 
   return (
     <Box className={classes.root}>
       <Box className={classes.result}>
         <Box className={classes.totals}>
-          <Typography data-value={value} className={classes.resultTitle}>
+          <Typography
+            data-value={value}
+            className={cx(classes.resultTitle, {[classes.resultTitleSmall]: value.length > 2})}>
             {value}
           </Typography>
-          <Typography variant="h6" sx={{fontWeight: 900}}>
-            {Math.floor(percentage)}%
-          </Typography>
+          <Typography variant="h4" sx={{ fontWeight: 900 }}>{Math.ceil(percentage)}%</Typography>
         </Box>
-        <Box className={classes.separator} />
         <Box className={classes.people}>
           <AvatarGroup>
             <>
