@@ -1,25 +1,19 @@
-import {Box, Button, Theme, Typography, darken, useMediaQuery, useTheme} from '@mui/material';
-import React, {useState} from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import UserDetails from './UserDetails';
-import {User} from '@root/types/User';
-import {useSession} from '../hooks/useSession';
-import SessionVotesSummary from './SessionVotesSummary';
-import ModeratorControls from './ModeratorControls';
-import {Timer} from './Timer';
-import {InviteUrl} from './InviteUrl';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import { Box, Button, Theme, Typography, useMediaQuery, useTheme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { User } from '@root/types/User';
+import { useState } from 'react';
+import { useSession } from '../hooks/useSession';
+import { InviteUrl } from './InviteUrl';
+import ModeratorControls from './ModeratorControls';
+import SessionVotesSummary from './SessionVotesSummary';
+import { Timer } from './Timer';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
     display: 'flex',
-    flex: `0 1 400px`,
-    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(4, 6),
-    borderRadius: theme.spacing(2),
-    height: `calc(100vh - ${theme.spacing(8)})`,
+    justifyContent: 'space-between',
     overflowY: 'auto',
 
     [theme.breakpoints.down('sm')]: {
@@ -29,29 +23,18 @@ const useStyles = makeStyles<Theme>((theme) => ({
     },
   },
   section: {
-    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
 
     '& .MuiTypography-subtitle1': {
       textAlign: 'left',
       width: '100%',
     },
-
-    '&:not(:last-child):after': {
-      content: '""',
-      width: '100%',
-      height: 2,
-      borderRadius: 1,
-      backgroundColor: darken(theme.palette.background.paper, 0.5),
-      display: 'block',
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(1),
-    },
   },
-  footer: {
-    marginTop: 'auto',
+  group: {
+    display: 'flex',
+    gap: theme.spacing(2),
   },
 }));
 
@@ -75,36 +58,36 @@ const RoomDetails = ({sessionId, roomId, ended, user, users, updateUser}: RoomDe
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.section}>
-        <Typography variant="subtitle1">Session duration</Typography>
-        <Timer roomId={roomId} />
-      </Box>
-      <Box className={classes.section}>
-        <Typography variant="subtitle1">Participants</Typography>
-        <SessionVotesSummary users={users} roomId={roomId} />
-      </Box>
-      {user?.moderator && (
+      <Box className={classes.group}>
         <Box className={classes.section}>
-          <Typography variant="subtitle1">Moderator Controls</Typography>
-          <ModeratorControls
-            sessionId={sessionId}
-            ended={ended}
-            onReleaseModerator={() => updateUser({...user, moderator: false})}
-            onSessionEnd={endSession}
-            onSessionStart={startSession}
-          />
+          <Typography sx={{lineHeight: 1}} variant="subtitle1">
+            Session duration
+          </Typography>
+          <Timer roomId={roomId} />
         </Box>
-      )}
+        {user?.moderator && (
+          <Box className={classes.section}>
+            <ModeratorControls
+              sessionId={sessionId}
+              ended={ended}
+              onReleaseModerator={() => updateUser({...user, moderator: false})}
+              onSessionEnd={endSession}
+              onSessionStart={startSession}
+            />
+          </Box>
+        )}
+      </Box>
+      <Box flex={1}>
+        <Box className={classes.section}>
+          <SessionVotesSummary userId={user?.id} users={users} roomId={roomId} />
+        </Box>
+      </Box>
 
       {isMobileOpen && (
         <>
-          <Box className={classes.section}>
+          <Box flex={0} width={300} className={classes.section}>
             <Typography variant="subtitle1">Invite participants</Typography>
             <InviteUrl value={`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/${roomId}`} />
-          </Box>
-          <Box className={classes.section}>
-            <Typography variant="subtitle1">Express yourself!</Typography>
-            <UserDetails user={user} updateUser={updateUser} />
           </Box>
         </>
       )}
@@ -117,14 +100,6 @@ const RoomDetails = ({sessionId, roomId, ended, user, users, updateUser}: RoomDe
             }}
           />
         </Button>
-      )}
-      {!isMoble && (
-        <Box className={classes.footer}>
-          Made with ❤️ by&nbsp;
-          <a href="https://github.com/jeffersonmourak" target="_blank">
-            jeffersonmourak
-          </a>
-        </Box>
       )}
     </Box>
   );

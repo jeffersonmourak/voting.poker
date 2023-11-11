@@ -1,15 +1,15 @@
-import {cx} from '@emotion/css';
-import {Button, Typography} from '@mui/material';
+import { cx } from '@emotion/css';
+import { Button, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import {Box, Theme, darken} from '@mui/system';
-import BasePage from '@root/shared/components/BasePage';
-import {LandingGrahic} from '@root/shared/components/LandingGraphic';
-import {NavBar} from '@root/shared/components/NavBar';
-import {generateRoomId} from '@root/shared/helpers/room';
-import {NextPage} from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
+import { Box, Theme, darken } from '@mui/system';
 import BrazucaGraphic from '@root/public/graphics/brazuca.jpg';
+import BasePage from '@root/shared/components/BasePage';
+import { LandingGrahic } from '@root/shared/components/LandingGraphic';
+import { NavBar } from '@root/shared/components/NavBar';
+import { generateRoomId } from '@root/shared/helpers/room';
+import { NextPage } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const ROOM_ID = generateRoomId();
 
@@ -86,6 +86,8 @@ const useStyle = makeStyles((theme: Theme) => ({
   },
   manifest: {
     backgroundColor: '#F8C3A9',
+    maxHeight: 1200,
+    minHeight: 1200,
 
     [theme.breakpoints.up('sm')]: {
       paddingLeft: 112,
@@ -103,10 +105,11 @@ const useStyle = makeStyles((theme: Theme) => ({
     padding: theme.spacing(5),
     flex: 1,
 
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       gap: 112,
+      maxHeight: 900,
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexDirection: 'column-reverse',
       padding: theme.spacing(2),
       borderRadius: 0,
@@ -123,7 +126,7 @@ const useStyle = makeStyles((theme: Theme) => ({
     flex: 1,
     gap: theme.spacing(4),
 
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       paddingLeft: 112,
     },
 
@@ -156,7 +159,6 @@ const useStyle = makeStyles((theme: Theme) => ({
       fontWeight: 500,
       lineHeight: '22px /* 160% */',
       textAlign: 'left',
-      
     },
   },
   manifestButton: {
@@ -192,7 +194,6 @@ const useStyle = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     borderRadius: theme.spacing(3),
     overflow: 'hidden',
-    background: '#f00',
   },
   manifestGraphicCredits: {
     display: 'flex',
@@ -246,7 +247,7 @@ const Home: NextPage = () => {
           </Box>
         </LandingGrahic>
       </Box>
-      <Box className={cx(classes.section, classes.manifest)}>
+      <Box id="pricing" className={cx(classes.section, classes.manifest)}>
         <Box className={classes.manifestCard}>
           <Box className={classes.manifestContent}>
             <Box gap={3} display={'flex'} flexDirection={'column'}>

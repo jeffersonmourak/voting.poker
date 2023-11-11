@@ -12,17 +12,18 @@ import Error from './_error';
 
 import Lobby from '@root/shared/components/Lobby';
 import {useRoom} from '@root/shared/hooks/useRoom';
+import {AvatarProvider} from '@root/shared/components/AvatarProvider';
 
 const useStyle = makeStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(5),
     display: 'flex',
     gap: theme.spacing(4),
+    flexDirection: 'column',
 
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(1),
       gap: theme.spacing(1),
-      flexDirection: 'column',
     },
   },
 }));
@@ -68,7 +69,11 @@ const Room: NextPage = () => {
     return <Error statusCode={404} />;
   }
 
-  return <RoomLayout roomId={id} />;
+  return (
+    <AvatarProvider roomId={id}>
+      <RoomLayout roomId={id} />
+    </AvatarProvider>
+  );
 };
 
 export default Room;

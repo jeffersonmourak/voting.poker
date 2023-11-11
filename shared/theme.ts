@@ -1,6 +1,6 @@
-import {createTheme, darken} from '@mui/material/styles';
-import {getLuminance, lighten} from '@mui/system';
-import {Property} from 'csstype';
+import { createTheme, darken } from '@mui/material/styles';
+import { getLuminance, lighten } from '@mui/system';
+import { Property } from 'csstype';
 
 export const colors = {
   primary: {
@@ -34,7 +34,7 @@ const buttonVariationOverrides = (color: string) => ({
   borderRadius: getSize(2),
   leadingTrim: 'both',
   textEdge: 'cap',
-  fontFamily: 'Mont',
+  fontFamily: ['Mont', 'sans-serif'].join(', '),
   fontSize: 12.25,
   fontStyle: 'normal',
   fontWeight: 700,

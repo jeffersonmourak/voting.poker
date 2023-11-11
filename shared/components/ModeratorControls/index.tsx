@@ -1,13 +1,10 @@
-import {Box, Button, Theme, Tooltip} from '@mui/material';
+import { Box, Button, Theme, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import PlayCircleFilledWhiteRoundedIcon from '@mui/icons-material/PlayCircleFilledWhiteRounded';
-import StopCircleRoundedIcon from '@mui/icons-material/StopCircleRounded';
 
 const useStyles = makeStyles<Theme, {inSession: boolean}>((theme) => ({
   root: {
     display: 'flex',
     gap: ({inSession}) => theme.spacing(inSession ? 0 : 2),
-    marginTop: theme.spacing(2),
     transition: theme.transitions.create(['gap']),
   },
   release: {
@@ -18,6 +15,13 @@ const useStyles = makeStyles<Theme, {inSession: boolean}>((theme) => ({
     minWidth: ({inSession}) => (inSession ? 0 : theme.spacing(8)),
     flex: ({inSession}) => (inSession ? 0 : 1),
     transition: theme.transitions.create(['min-width', 'padding', 'flex']),
+    backgroundColor: theme.palette.error.main,
+    color: theme.palette.common.white,
+
+    '&:hover, &:focus, &:active': {
+      backgroundColor: theme.palette.error.dark,
+      color: theme.palette.common.white,
+    },
   },
 }));
 
@@ -43,24 +47,14 @@ const ModeratorControls = ({
     <Box className={classes.root}>
       {inSession && (
         <Tooltip title="Stop and reveal the votes">
-          <Button
-            sx={{flex: 1}}
-            endIcon={<StopCircleRoundedIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={onSessionEnd}>
+          <Button sx={{flex: 1}} variant="contained" color="secondary" onClick={onSessionEnd}>
             Stop
           </Button>
         </Tooltip>
       )}
       {!inSession && (
         <Tooltip title="Start a new voting session">
-          <Button
-            sx={{flex: 1}}
-            endIcon={<PlayCircleFilledWhiteRoundedIcon />}
-            variant="contained"
-            color="secondary"
-            onClick={onSessionStart}>
+          <Button sx={{flex: 1}} variant="contained" color="secondary" onClick={onSessionStart}>
             start
           </Button>
         </Tooltip>
@@ -70,7 +64,7 @@ const ModeratorControls = ({
         <Button
           className={classes.release}
           variant="contained"
-          color="error"
+          color="secondary"
           onClick={onReleaseModerator}>
           Release
         </Button>

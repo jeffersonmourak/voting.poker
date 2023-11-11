@@ -1,21 +1,16 @@
-import React from 'react';
+import { Button, Popover, TextField, Theme, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import {avatarProps} from '@root/helpers/avatarProps';
-import {Button, Theme, Tooltip, Typography, TextField, Popover} from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Modal from '@mui/material/Modal';
 import Paper from '@mui/material/Paper';
-import {BaseEmoji, Picker} from 'emoji-mart';
+import makeStyles from '@mui/styles/makeStyles';
+import EmojiPicker, { Theme as EmojiTheme } from 'emoji-picker-react';
+import { useState } from 'react';
 
-import {User} from '@root/types/User';
-import {FileUploader} from './FileUploader';
-import {GiphySearch} from './GiphySearch';
+import { User } from '@root/types/User';
 import Image from 'next/image';
-import {AvatarCTA} from './AvatarCTA';
-import {useFormControls} from '../hooks/useFormControls';
+import { useFormControls } from '../hooks/useFormControls';
+import { FileUploader } from './FileUploader';
+import { GiphySearch } from './GiphySearch';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -110,20 +105,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface AvatarPickerProps {
-  value: string;
   user: User;
-  emoji: string;
   hideDisable?: boolean;
   title?: string;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (value: boolean) => void;
   onChange: (value: Partial<User>) => void;
 }
 
 export const AvatarEditorModal = ({
-  value,
   user,
-  emoji,
   hideDisable = false,
   title = 'Choose your new avatar',
   open,
@@ -131,11 +122,10 @@ export const AvatarEditorModal = ({
   onChange,
 }: AvatarPickerProps) => {
   const [data, {updateField, updateFieldString}] = useFormControls(user);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const classes = useStyles();
 
-  const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
     setAnchorEl(null);
@@ -159,19 +149,6 @@ export const AvatarEditorModal = ({
 
   return (
     <>
-      <Box className={classes.root}>
-        <Avatar {...avatarProps(user.name, value, {width: 128, height: 128, fontSize: '4rem'})} />
-        <AvatarCTA disabled={open}>
-          <IconButton onClick={handleOpen} className={classes.editButton}>
-            <EditRoundedIcon className={classes.icon} />
-          </IconButton>
-        </AvatarCTA>
-        <Tooltip title="Pick your emoji">
-          <Button className={classes.emojiButton} variant="text">
-            {emoji}
-          </Button>
-        </Tooltip>
-      </Box>
       <Modal
         open={open}
         onClose={handleClose}
@@ -204,7 +181,7 @@ export const AvatarEditorModal = ({
                 alignSelf: 'stretch',
                 leadingTrim: 'both',
                 textEdge: 'cap',
-                fontFamily: 'Mont',
+                fontFamily: ['Mont', 'sans-serif'].join(', '),
                 fontSize: '12px !important',
                 fontStyle: 'normal',
                 fontWeight: 600,
@@ -246,12 +223,14 @@ export const AvatarEditorModal = ({
                 vertical: 'bottom',
                 horizontal: 'left',
               }}>
-              <Picker
-                title="Pick your emoji…"
-                emoji="point_up"
-                theme="dark"
-                onClick={(emoji: BaseEmoji) => {
-                  updateFieldString('emoji')(emoji.native);
+              <EmojiPicker
+                previewConfig={{
+                  defaultCaption: 'This is your emoji now.',
+                  defaultEmoji: user.emoji.codePointAt(0)?.toString(16),
+                }}
+                theme={EmojiTheme.DARK}
+                onEmojiClick={(emoji) => {
+                  updateFieldString('emoji')(emoji.emoji);
                   handleEmojiPickerClose();
                 }}
               />

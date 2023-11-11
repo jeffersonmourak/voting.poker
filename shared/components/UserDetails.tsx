@@ -49,17 +49,13 @@ const UserDetails = ({updateUser, user: rawUser}: UserDetailsProps) => {
       <AvatarEditorModal
         open={modalOpen}
         setOpen={setModalOpen}
-        emoji={userData?.emoji}
-        user={user}
-        value={userData?.avatar}
+        user={userData}
         title={!rawUser ? 'Introduce yourself' : 'Express Yourself!'}
         hideDisable={!rawUser}
         onChange={(data) =>
           setUserData((u) => {
             const newData = {...u, ...data, moderator: user.moderator};
-
             updateUser(newData);
-
             return newData;
           })
         }
