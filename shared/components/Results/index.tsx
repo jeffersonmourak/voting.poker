@@ -1,11 +1,10 @@
-import {Typography} from '@mui/material';
+import { Box, Theme, Typography, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import {Box, Theme, useTheme} from '@mui/material';
-import {groupBy, isNaN} from 'lodash';
-import {PieChart} from 'react-minimal-pie-chart';
-import {valueToColor} from '@root/helpers/valueColorScale';
-import {ResultValue} from './ResultValue';
-import {User} from '@root/types/User';
+import { valueToColor } from '@root/helpers/valueColorScale';
+import { User } from '@root/types/User';
+import { groupBy, isNaN } from 'lodash';
+import { ResultValue } from './ResultValue';
+import { ResultValueBig } from './ResultValueBig';
 
 const useStyle = makeStyles((theme: Theme) => ({
   content: {
@@ -34,10 +33,9 @@ const useStyle = makeStyles((theme: Theme) => ({
   },
   resultsList: {
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: theme.spacing(2),
+    gap: theme.spacing(10),
   },
   resultsChart: {
     height: theme.spacing(40),
@@ -98,34 +96,33 @@ const Results = ({votes, users}: ResultsProps) => {
     })
   );
 
+  const [firstPlace, ...rest] = results;
+
   return (
     <Box className={classes.content}>
       <Box className={classes.hero}>
-        <Typography variant="h4">Nicely done!</Typography>
-      </Box>
-      <Box className={classes.resultContainer}>
-        <PieChart
-          startAngle={180}
-          lengthAngle={180}
-          lineWidth={15}
-          rounded
-          className={classes.resultsChart}
-          data={results}
-        />
-        <Typography className={classes.resultValue} variant="h2">
-          {sessionVotesResult.length} 🗳
+        <Typography variant="h1">
+          <strong>Well Done!</strong>
         </Typography>
       </Box>
       <Box className={classes.resultsList}>
-        {results.map(({title, percentage, color, from}) => (
-          <ResultValue
-            key={title}
-            value={title}
-            percentage={percentage}
-            color={color}
-            from={from}
-          />
-        ))}
+        <ResultValueBig
+          value={firstPlace.title}
+          percentage={firstPlace.percentage}
+          color={firstPlace.color}
+          from={firstPlace.from}
+        />
+        <Box>
+          {rest.map(({title, percentage, color, from}) => (
+            <ResultValue
+              key={title}
+              value={title}
+              percentage={percentage}
+              color={color}
+              from={from}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );

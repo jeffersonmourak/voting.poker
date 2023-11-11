@@ -1,7 +1,7 @@
-import {useChannel} from '@ably-labs/react-hooks';
-import {User} from '@root/types/User';
-import {useState} from 'react';
-import {v4 as uuidV4} from 'uuid';
+import { useChannel } from '@ably-labs/react-hooks';
+import { User } from '@root/types/User';
+import { useState } from 'react';
+import { v4 as uuidV4 } from 'uuid';
 
 type Session = {
   id: string;

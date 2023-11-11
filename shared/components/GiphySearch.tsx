@@ -10,7 +10,7 @@ import {createContext, useCallback, useContext, useEffect, useState} from 'react
 import makeStyles from '@mui/styles/makeStyles';
 import {cx} from '@emotion/css';
 import Box from '@mui/material/Box';
-import {Theme, Typography} from '@mui/material';
+import {Theme, Typography, lighten} from '@mui/material';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
@@ -56,30 +56,38 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.error.dark,
   },
   searchBar: {
-    backgroundColor: `${theme.palette.background.default} !important`,
-    borderRadius: `${theme.spacing(3)} !important`,
+    backgroundColor: `transparent !important`,
+    borderRadius: `${theme.spacing(1)} !important`,
     overflow: 'hidden',
-    padding: `${theme.spacing(1)} ${theme.spacing(0)} ${theme.spacing(1)} ${theme.spacing(2)}`,
+    padding: 0,
+    display: 'flex',
+    gap: theme.spacing(2),
 
     ['& input']: {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: '#292929',
       color: theme.palette.text.primary,
+      padding: `${theme.spacing(1)} ${theme.spacing(0)} ${theme.spacing(1)} ${theme.spacing(2)}`,
+      height: 42,
+      borderRadius: `${theme.spacing(1)} !important`,
     },
     ['& div']: {
       padding: `${theme.spacing(0)} ${theme.spacing(2)}`,
       width: '80px',
+      ['& > div']: {
+        background: `${theme.palette.common.black} !important`,
+      },
     },
 
     ['& div:hover']: {
       ['& > div']: {
-        background: `${theme.palette.success.dark} !important`,
+        background: `${lighten(theme.palette.common.black, 0.4)} !important`,
       },
     },
 
     ['& div > div']: {
       background: `${theme.palette.primary.light} !important`,
       color: theme.palette.text.secondary,
-      borderRadius: theme.spacing(3),
+      borderRadius: theme.spacing(1),
       padding: `${theme.spacing(0)} ${theme.spacing(2)}`,
       transition: 'background-color 0.2s ease',
     },

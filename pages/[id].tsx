@@ -2,7 +2,6 @@ import {Box, Modal, Theme} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import BasePage from '@root/shared/components/BasePage';
 import Cards from '@root/shared/components/Cards';
-import Identify from '@root/shared/components/Identify';
 import ModeratorModal from '@root/shared/components/ModeratorModal';
 import Results from '@root/shared/components/Results';
 import RoomDetails from '@root/shared/components/RoomDetails';
@@ -13,17 +12,18 @@ import Error from './_error';
 
 import Lobby from '@root/shared/components/Lobby';
 import {useRoom} from '@root/shared/hooks/useRoom';
+import {AvatarProvider} from '@root/shared/components/AvatarProvider';
 
 const useStyle = makeStyles((theme: Theme) => ({
   root: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(5),
     display: 'flex',
     gap: theme.spacing(4),
+    flexDirection: 'column',
 
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(1),
       gap: theme.spacing(1),
-      flexDirection: 'column',
     },
   },
 }));
@@ -37,10 +37,6 @@ const RoomLayout: React.FC<RoomLayoutProps> = ({roomId}) => {
   const {user, userId, users, updateUser, moderatorSeatOpen, sessionId, ended, votes} = useRoom(
     roomId
   );
-
-  if (user === null) {
-    return <Identify updateUser={updateUser} />;
-  }
 
   return (
     <BasePage>
@@ -57,7 +53,7 @@ const RoomLayout: React.FC<RoomLayoutProps> = ({roomId}) => {
           roomId={roomId}
         />
 
-        {!sessionId && <Lobby moderator={user.moderator} />}
+        {!sessionId && <Lobby moderator={user?.moderator} />}
         {sessionId && !ended && <Cards userId={userId} roomId={roomId} />}
         {ended && <Results users={users} votes={votes} />}
       </Box>
@@ -73,7 +69,11 @@ const Room: NextPage = () => {
     return <Error statusCode={404} />;
   }
 
-  return <RoomLayout roomId={id} />;
+  return (
+    <AvatarProvider roomId={id}>
+      <RoomLayout roomId={id} />
+    </AvatarProvider>
+  );
 };
 
 export default Room;

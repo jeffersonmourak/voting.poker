@@ -1,7 +1,7 @@
-import {Avatar, Box, Theme, Typography, darken, AvatarGroup, Tooltip} from '@mui/material';
+import { Avatar, AvatarGroup, Box, Theme, Tooltip, Typography, darken } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import {User} from '@root/types/User';
-import {avatarProps} from '@root/helpers/avatarProps';
+import { avatarProps } from '@root/helpers/avatarProps';
+import { User } from '@root/types/User';
 
 const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
   root: {
@@ -59,6 +59,12 @@ const useStyle = makeStyles<Theme, {color: string}>((theme) => ({
       left: 0,
     },
   },
+  separator: {
+    width: 10,
+    height: 10,
+    backgroundColor: theme.palette.success.main,
+    borderRadius: '50%',
+  },
 }));
 
 interface ResultValueProps {
@@ -72,14 +78,17 @@ export const ResultValue = ({value, percentage, color, from}: ResultValueProps) 
   const classes = useStyle({color});
 
   return (
-    <Box className={classes.root} color={color}>
+    <Box className={classes.root}>
       <Box className={classes.result}>
         <Box className={classes.totals}>
           <Typography data-value={value} className={classes.resultTitle}>
             {value}
           </Typography>
-          <Typography variant="h6">{percentage.toFixed(2)}%</Typography>
+          <Typography variant="h6" sx={{fontWeight: 900}}>
+            {Math.floor(percentage)}%
+          </Typography>
         </Box>
+        <Box className={classes.separator} />
         <Box className={classes.people}>
           <AvatarGroup>
             <>
