@@ -1,0 +1,6 @@
+**.generated.tsx
+app/scripts/client/generated/graphql.tsx
+**/webpack
+**/storybook-static
+**/.next
+**/functions
