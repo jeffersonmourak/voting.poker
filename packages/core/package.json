@@ -1,0 +1,28 @@
+{
+  "name": "core",
+  "type": "module",
+  "version": "1.0.0",
+  "author": "Jefferson Oliveira <jeffersonmourak@gmail.com>",
+  "license": "CC BY-SA 4.0",
+  "source": "src/core.ts",
+  "exports": {
+    "types": "./dist/core.d.ts",
+    "require": "./dist/core.cjs",
+    "default": "./dist/core.modern.js"
+  },
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.module.js",
+  "unpkg": "./dist/core.umd.js",
+  "types": "dist/core.d.ts",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "xstate": "^5.1.0"
+  }
+}

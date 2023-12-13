@@ -1,5 +1,5 @@
 {
-  "name": "voting.poker",
+  "name": "legacy",
   "private": true,
   "scripts": {
     "dev": "next dev",
