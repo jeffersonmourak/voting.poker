@@ -8,6 +8,12 @@ export const UPDATE_USER_ACTION_KEY = 'action:user:update' as const;
 export const REMOVE_USER_ACTION_KEY = 'action:user:remove' as const;
 export const CLEAR_POOL_ACTION_KEY = 'action:clear:pool' as const;
 
+export type COMPUTE_VOTE_ACTION_KEY_Type = typeof COMPUTE_VOTE_ACTION_KEY;
+export type REGISTER_USER_ACTION_KEY_Type = typeof REGISTER_USER_ACTION_KEY;
+export type UPDATE_USER_ACTION_KEY_Type = typeof UPDATE_USER_ACTION_KEY;
+export type REMOVE_USER_ACTION_KEY_Type = typeof REMOVE_USER_ACTION_KEY;
+export type CLEAR_POOL_ACTION_KEY_Type = typeof CLEAR_POOL_ACTION_KEY;
+
 export const computeVoteAction = assign<VotingContext, Events>({
   votes: ({event, context}) => {
     if (event.type !== VotingEvents.Vote) {
@@ -33,10 +39,10 @@ export const registerUserAction = assign<VotingContext, Events>({
     const {users: oldUsers} = context;
     const {user} = event;
 
-    const userExists = oldUsers.find((u: User) => u.name === user.name);
-    const moderatorName = oldUsers.find((u: User) => u.moderator)?.name;
+    const userExists = oldUsers.find((u: User) => u.id === user.id);
+    const moderatorId = oldUsers.find((u: User) => u.moderator)?.id;
 
-    if (!!moderatorName && user.moderator && moderatorName !== user.name) {
+    if (!!moderatorId && user.moderator && moderatorId !== user.id) {
       user.moderator = false;
     }
 
@@ -55,9 +61,9 @@ export const updateUserAction = assign<VotingContext, Events>({
     }
 
     const {users: oldUsers} = context;
-    const {name, payload} = event;
+    const {id, payload} = event;
 
-    return oldUsers.map((u: User) => (u.name === name ? {...u, ...payload} : u));
+    return oldUsers.map((u: User) => (u.id === id ? {...u, ...payload} : u));
   },
 });
 
@@ -69,7 +75,7 @@ export const removeUserAction = assign<VotingContext, Events>({
     const {users: oldUsers} = context;
     const {user} = event;
 
-    return oldUsers.filter((u: User) => u.name !== user.name);
+    return oldUsers.filter((u: User) => u.id !== user.id);
   },
 });
 

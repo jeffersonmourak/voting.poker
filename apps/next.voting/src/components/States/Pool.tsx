@@ -13,7 +13,7 @@ const PoolStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
 
   return <>
     Pool State Component
-    <button onClick={() => state.vote(`Vote - ${Math.random()}`)} >Vote</button>
+    <button onClick={() => state.vote(`13`)} >Vote 13</button>
     <br />
     {moderatorView}
   </>

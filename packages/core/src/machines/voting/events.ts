@@ -2,7 +2,7 @@ import { User } from './context';
 
 type Id<T> = T extends infer U ? {[K in keyof U]: U[K]} : never;
 
-type BaseEvent<N, T extends Record<string, any> = {}> = Id<{type: N; createdBy: string} & T>;
+export type BaseEvent<N, T extends Record<string, any> = {}> = Id<{type: N; createdBy: string} & T>;
 
 export enum VotingEvents {
   StartPool = 'event:pool:start',
@@ -13,15 +13,23 @@ export enum VotingEvents {
   RemoveUser = 'event:user:remove',
 }
 
-export type VoteEvent = BaseEvent<VotingEvents.Vote, {vote: string}>;
+export type VoteEventPayload = {vote: string};
+export type RegisterUserEventPayload = {user: User};
+export type UpdateUserEventPayload = {id: string; payload: Partial<User>};
+export type RemoveUserEventPayload = {user: User};
+
+export type EventsPayload =
+  | VoteEventPayload
+  | RegisterUserEventPayload
+  | UpdateUserEventPayload
+  | RemoveUserEventPayload;
+
+export type VoteEvent = BaseEvent<VotingEvents.Vote, VoteEventPayload>;
 export type EndVoteEvent = BaseEvent<VotingEvents.EndPool>;
 export type StartVoteEvent = BaseEvent<VotingEvents.StartPool>;
-export type RegisterUserEvent = BaseEvent<VotingEvents.RegisterUser, {user: User}>;
-export type UpdateUserEvent = BaseEvent<
-  VotingEvents.UpdateUser,
-  {name: string; payload: Partial<User>}
->;
-export type RemoveUserEvent = BaseEvent<VotingEvents.RemoveUser, {user: User}>;
+export type RegisterUserEvent = BaseEvent<VotingEvents.RegisterUser, RegisterUserEventPayload>;
+export type UpdateUserEvent = BaseEvent<VotingEvents.UpdateUser, UpdateUserEventPayload>;
+export type RemoveUserEvent = BaseEvent<VotingEvents.RemoveUser, RemoveUserEventPayload>;
 
 export type Events =
   | VoteEvent

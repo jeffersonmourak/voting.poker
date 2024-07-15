@@ -11,5 +11,5 @@ export const userIsModeratorGuard: Guard<
   ParameterizedObject,
   ParameterizedObject
 > = ({context, event}) => {
-  return context.users.find((user: User) => user.name === event.createdBy)?.moderator ?? false;
+  return context.users.find((user: User) => user.id === event.createdBy)?.moderator ?? false;
 };
