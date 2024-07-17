@@ -1,6 +1,7 @@
 'use client';
 
-import CoreClient, {
+import {
+  CoreClient,
   CoreClientState,
   REGISTER_USER_ACTION_KEY,
   REMOVE_USER_ACTION_KEY,
@@ -25,7 +26,8 @@ export function useCoreClientState(roomId: string) {
           break;
       }
     },
-    (event, clientId, vote) => client.backendCallback(event, clientId, vote)
+    (event, clientId, vote, moderatorState) =>
+      client.backendCallback(event, clientId, vote, moderatorState)
   );
 
   const client = useMemo(() => new CoreClient(roomId, user), [roomId]);

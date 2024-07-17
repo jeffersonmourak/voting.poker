@@ -13,7 +13,13 @@ import {
 } from './actions';
 import { VotingContext } from './context';
 import { Events } from './events';
-import { GUARD_USER_IS_MODERATOR_KEY, userIsModeratorGuard } from './guards';
+import {
+  GUARD_MODERATOR_IS_RESULTING_KEY,
+  GUARD_MODERATOR_IS_STARTING_KEY,
+  GUARD_USER_IS_MODERATOR_KEY,
+  MatchModeratorSyncState,
+  userIsModeratorGuard,
+} from './guards';
 import { IdleState, PoolResultState, PoolState, PoolVoteState, VotingStates } from './states';
 
 export type MachineType = ReturnType<typeof initializeMachine>;
@@ -46,6 +52,12 @@ export const initializeMachine = (context: VotingContext) =>
       actors: {},
       guards: {
         [GUARD_USER_IS_MODERATOR_KEY]: userIsModeratorGuard,
+        [GUARD_MODERATOR_IS_STARTING_KEY]: MatchModeratorSyncState(
+          ({state}) => state === VotingStates.Pool || state === VotingStates.PoolVote
+        ),
+        [GUARD_MODERATOR_IS_RESULTING_KEY]: MatchModeratorSyncState(
+          ({state}) => state === VotingStates.PoolResult
+        ),
       },
       delays: {},
     }

@@ -110,7 +110,7 @@ const VoteLayout = ({
               reveal={reveal}
             />
           }>
-          <Avatar {...avatarProps(name, avatar, { width: size, height: size, paddingTop: 0.4, })} />
+          <Avatar {...avatarProps(name, avatar, { width: size, height: size, })} />
         </Badge>
       </Badge>
     </Tooltip>

@@ -4,16 +4,16 @@
   "version": "1.0.0",
   "author": "Jefferson Oliveira <jeffersonmourak@gmail.com>",
   "license": "CC BY-SA 4.0",
-  "source": "src/core.ts",
+  "source": "src/index.ts",
   "exports": {
-    "types": "./dist/core.d.ts",
-    "require": "./dist/core.cjs",
-    "default": "./dist/core.modern.js"
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
   },
-  "main": "./dist/core.cjs",
-  "module": "./dist/core.module.js",
-  "unpkg": "./dist/core.umd.js",
-  "types": "dist/core.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch"

@@ -40,61 +40,64 @@ interface Result {
 const toResultData = (
   sessionVotesResult: [
     string,
-    User & {
+    (User & {
       vote: string;
-    }
+    })[]
   ][],
-  users: User[],
+  totals: number,
   stringColors: Record<string, string>
-) => ([value, votesWithIds]: [
-  string,
-  [
-    string,
-    User & {
-      vote: string;
-    }
-  ][]
-]) => {
+) => ([value, users]: [string, (User & {
+  vote: string;
+})[]]) => {
     const { color } = isNaN(Number(value))
       ? { color: stringColors[value] || '#f0f' }
       : valueToColor(Number(value));
 
-    const fromIds = votesWithIds.filter(([, { vote }]) => vote === value).map(([id]) => id);
-
     return {
       title: value,
-      value: votesWithIds.length,
-      from: users.filter(({ id }) => fromIds.includes(id)),
-      percentage: (votesWithIds.length / sessionVotesResult.length) * 100,
+      value: users.length,
+      from: users,
+      percentage: (users.length / totals) * 100,
       color,
     };
   };
 
 const ResultStateComponent: React.FC<Result> = ({ state }) => {
   const theme = useTheme();
-  const sessionVotesResult = Object.entries(state.votes).map(([id, vote]) => {
-    const user = state.users.find(user => user.id === id);
 
-    const pairVotes = Object.entries(state.votes).filter(([_, userVote]) => userVote === vote);
 
-    console.log({ pairVotes, votes: state.votes })
+  const votesEntries = Object.entries(state.votes);
 
-    if (!user) {
-      return null;
-    }
+  const sessionVotesResult = Object.entries(groupBy(votesEntries, ([_, vote]) => vote)).map(([vote, ids]) => {
+    const users = ids.map(([id]) => {
+      const user = state.users.find((user) => user.id === id);
 
-    return [id, {
-      ...user,
-      vote,
-    }];
-  }).filter((vote): vote is [string, User & { vote: string }] => !!vote);
+      if (!user) {
+        return {
+          id,
+          name: 'Unknown',
+          emoji: '🤷',
+          moderator: false,
+          vote
+        };
+      }
 
-  const results = Object.entries(groupBy(sessionVotesResult, ([_, user]) => user.vote)).map(
-    toResultData(sessionVotesResult, state.users, {
-      '?': theme.palette.info.dark,
-      '☕️': theme.palette.warning.dark,
-    })
-  );
+      return {
+        ...user,
+        vote,
+      };
+
+    });
+
+    return [vote, users] as [string, (User & { vote: string })[]];
+  })
+
+  const results = sessionVotesResult.map(toResultData(sessionVotesResult, votesEntries.length, {
+    '?': theme.palette.info.dark,
+    '☕️': theme.palette.warning.dark,
+  }));
+
+  console.log(results)
 
   const [firstPlace, ...rest] = results;
 

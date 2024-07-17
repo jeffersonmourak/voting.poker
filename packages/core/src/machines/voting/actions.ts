@@ -69,7 +69,7 @@ export const updateUserAction = assign<VotingContext, Events>({
 
 export const removeUserAction = assign<VotingContext, Events>({
   users: ({event, context}) => {
-    if (event.type !== VotingEvents.RegisterUser) {
+    if (event.type !== VotingEvents.RemoveUser) {
       return context.users;
     }
     const {users: oldUsers} = context;

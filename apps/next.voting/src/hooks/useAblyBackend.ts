@@ -1,4 +1,4 @@
-import { BaseRealtime, FetchRequest, RealtimePresence, Rest, WebSocketTransport } from 'ably/modular';
+import { BaseRealtime, FetchRequest, RealtimePresence, WebSocketTransport } from 'ably/modular';
 import {
   Events,
   REGISTER_USER_ACTION_KEY,
@@ -9,6 +9,7 @@ import {
   UPDATE_USER_ACTION_KEY_Type,
   User,
   VotingEvents,
+  VotingStates,
 } from 'core';
 import { useEffect, useMemo } from 'react';
 import sillyname from 'sillyname';
@@ -30,7 +31,6 @@ const ablyClient = new BaseRealtime({
     WebSocketTransport,
     RealtimePresence,
     FetchRequest,
-    Rest,
   },
 });
 
@@ -40,7 +40,12 @@ type PresenceAction =
   | UPDATE_USER_ACTION_KEY_Type;
 
 type PresenceFn = (user: User, action: PresenceAction) => void;
-type PoolEventFn = (event: VotingEvents, userId: string, vote: string | null) => void;
+type PoolEventFn = (
+  event: VotingEvents,
+  userId: string,
+  vote: string | null,
+  moderatorState: VotingStates | null
+) => void;
 
 export function useAblyBackend(
   roomId: string,
@@ -54,10 +59,6 @@ export function useAblyBackend(
       }),
     [roomId]
   );
-
-  channel.history().then((history) => {
-    console.log(history.items);
-  });
 
   channel.presence.subscribe(['enter', 'leave', 'present', 'update'], (presence) => {
     const id = presence.clientId;
@@ -92,13 +93,18 @@ export function useAblyBackend(
 
       switch (name) {
         case 'START_SESSION':
-          poolEventCallback(VotingEvents.StartPool, clientId, null);
+          poolEventCallback(VotingEvents.StartPool, clientId, null, null);
           break;
         case 'END_SESSION':
-          poolEventCallback(VotingEvents.EndPool, clientId, null);
+          poolEventCallback(VotingEvents.EndPool, clientId, null, null);
           break;
         case 'VOTE':
-          poolEventCallback(VotingEvents.Vote, clientId, data.vote);
+          poolEventCallback(VotingEvents.Vote, clientId, data.vote, null);
+          break;
+        case 'MODERATOR_SYNC':
+          if (data.target === DefaultUser.id) {
+            poolEventCallback(VotingEvents.ModeratorSync, clientId, null, data.state);
+          }
           break;
         default:
           break;
@@ -110,6 +116,7 @@ export function useAblyBackend(
     channel.presence.enter(presenceUser);
 
     return () => {
+      channel.presence.leave();
       channel.unsubscribe();
     };
   }, []);
@@ -140,11 +147,12 @@ export function useAblyBackend(
       case VotingEvents.Vote:
         channel.publish('VOTE', {userId: DefaultUser.id, ...state});
         break;
+      case VotingEvents.ModeratorSync:
+        channel.publish('MODERATOR_SYNC', state);
+        break;
       default:
         break;
     }
-
-    channel.publish('UPDATE_STATE', state);
   };
 
   return {

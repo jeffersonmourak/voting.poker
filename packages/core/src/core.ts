@@ -5,10 +5,6 @@ import { User } from './machines/voting/context';
 import { Events, VotingEvents } from './machines/voting/events';
 import { VotingStates } from './machines/voting/states';
 
-export * from './machines/voting/actions';
-export * from './machines/voting/events';
-export * from './machines/voting/states';
-
 type ModeratorUser = Simplify<{moderator: true}>;
 type NonModeratorUser = Simplify<{moderator: false}>;
 
@@ -102,6 +98,22 @@ class CoreClient {
   }
 
   register(user: User) {
+    const {state, votes, users} = this.state;
+
+    const userAlreadyExists = users.some((u) => u.id === user.id);
+
+    if (!userAlreadyExists && user.id !== this.#user.id && this.#user.moderator) {
+      const eventData: Events = {
+        type: VotingEvents.ModeratorSync,
+        state,
+        votes,
+        target: user.id,
+        createdBy: this.#user.id,
+      };
+
+      this.tapUserEvents?.(eventData);
+    }
+
     this.#actor.send({type: VotingEvents.RegisterUser, user, createdBy: 'system'});
   }
 
@@ -118,9 +130,24 @@ class CoreClient {
     });
   }
 
-  backendCallback = (event: VotingEvents, userId: string, vote: string | null) => {
-    const {state, users} = this.state;
+  backendCallback = (
+    event: VotingEvents,
+    userId: string,
+    vote: string | null,
+    moderatorState: VotingStates | null
+  ) => {
+    const {state, users, roomId} = this.state;
     const user = users.find((u) => u.id === userId);
+
+    if (moderatorState && event === VotingEvents.ModeratorSync) {
+      this.#actor.send({
+        type: VotingEvents.ModeratorSync,
+        state: moderatorState,
+        target: userId,
+        votes: this.state.votes,
+        createdBy: userId,
+      });
+    }
 
     if (state === VotingStates.Idle || state === VotingStates.PoolResult) {
       switch (event) {
@@ -232,7 +259,5 @@ class CoreClient {
   }
 }
 
-export default CoreClient;
-
-export { VotingStates };
+export { CoreClient };
 
