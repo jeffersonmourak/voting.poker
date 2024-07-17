@@ -1,7 +1,9 @@
 'use client'
 
+import { AvatarProvider } from '@/components/AvatarProvider';
+import { RoomProvider } from '@/hooks/useRoom';
+import { CssBaseline } from '@mui/material';
 import { useParams } from 'next/navigation';
-import { RoomProvider } from './_hooks/useRoom';
 
 interface RoomLayoutProps {
   children: React.ReactNode;
@@ -12,10 +14,10 @@ export default function RoomLayout({ children }: RoomLayoutProps) {
 
   return (
     <RoomProvider roomId={roomId} >
-      <main>
-        <h1>Room Layout {roomId}</h1>
+      <AvatarProvider roomId={roomId}>
+        <CssBaseline />
         {children}
-      </main>
+      </AvatarProvider>
     </RoomProvider>
   );
 }

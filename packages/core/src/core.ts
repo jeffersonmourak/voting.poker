@@ -29,7 +29,7 @@ type PoolUserEvents = {
 
 type SharedMachineStates = {
   roomId: string;
-  currentUser: User | null;
+  currentUser: User;
   moderatorEmpty: boolean;
   users: User[];
   votes: Record<string, string>;
@@ -67,14 +67,14 @@ export type { User };
 type tapUserEventsFn = (events: Events) => void;
 
 class CoreClient {
-  #user: User | null;
+  #user: User;
   #machine: MachineType;
   #actor: Actor<MachineType>;
 
   tapUserEvents: tapUserEventsFn | null = null;
 
-  constructor(roomId: string) {
-    this.#user = null;
+  constructor(roomId: string, user: User) {
+    this.#user = user;
     this.#machine = initializeMachine({
       roomId,
       users: [],
@@ -106,6 +106,10 @@ class CoreClient {
   }
 
   update(user: User) {
+    if (user.id === this.#user?.id) {
+      this.#user = user;
+    }
+
     this.#actor.send({
       type: VotingEvents.UpdateUser,
       id: user.id,
@@ -160,7 +164,7 @@ class CoreClient {
     const moderatorEmpty = users.length === 0 || users.every((u) => !u.moderator);
 
     const sharedState: SharedMachineStates = {
-      currentUser: user,
+      currentUser: users.find((u) => u.id === user.id) ?? user,
       moderatorEmpty,
       votes,
       users,
@@ -206,6 +210,10 @@ class CoreClient {
   #voteActionByCurrentUser = (vote: string) => this.#voteAction(vote, this.#user);
 
   #voteAction = (vote: string, user: User) => {
+    if (user.id === this.#user.id) {
+      this.#user.vote = vote;
+    }
+
     this.#publishEvent({type: VotingEvents.Vote, vote, createdBy: user.id});
   };
 
@@ -214,6 +222,7 @@ class CoreClient {
   };
 
   #startSessionAction = () => {
+    this.#user.vote = null;
     this.#publishEvent({type: VotingEvents.StartPool, createdBy: this.#user.id});
   };
 

@@ -1,10 +1,25 @@
 'use client'
 
+import BasePage from "@/components/BasePage";
+import ModeratorModal from "@/components/ModeratorModal";
+import RoomDetails from "@/components/RoomDetails";
 import IdleStateComponent from "@/components/States/Idle";
 import PoolStateComponent from "@/components/States/Pool";
 import ResultStateComponent from "@/components/States/Result";
+import { useRoom } from "@/hooks/useRoom";
+import { Box, Modal, styled } from '@mui/material';
 import { CoreClientState, VotingStates } from "core";
-import { useRoom } from "./_hooks/useRoom";
+
+const Root = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(4),
+  flexDirection: 'column',
+
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
+}));
 
 interface SwitchViewsProps {
   state: CoreClientState
@@ -29,11 +44,20 @@ interface RoomPageProps {
 
 export default function RoomPage({ params }: RoomPageProps) {
   const room = useRoom();
-
   return (
-    <main>
-      <h1>Room page {params.roomId}</h1>
-      <SwitchViews state={room.state} />
-    </main>
+    <BasePage>
+      <Modal open={room.state.moderatorEmpty}>
+        <ModeratorModal />
+      </Modal>
+      <Root>
+        <RoomDetails
+          users={room.state.users}
+          user={room.state.currentUser}
+          roomId={params.roomId}
+        />
+
+        <SwitchViews state={room.state} />
+      </Root>
+    </BasePage>
   );
 }

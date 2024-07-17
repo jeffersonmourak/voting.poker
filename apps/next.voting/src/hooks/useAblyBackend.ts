@@ -1,4 +1,4 @@
-import { BaseRealtime, FetchRequest, RealtimePresence, WebSocketTransport } from 'ably/modular';
+import { BaseRealtime, FetchRequest, RealtimePresence, Rest, WebSocketTransport } from 'ably/modular';
 import {
   Events,
   REGISTER_USER_ACTION_KEY,
@@ -30,6 +30,7 @@ const ablyClient = new BaseRealtime({
     WebSocketTransport,
     RealtimePresence,
     FetchRequest,
+    Rest,
   },
 });
 
@@ -53,6 +54,10 @@ export function useAblyBackend(
       }),
     [roomId]
   );
+
+  channel.history().then((history) => {
+    console.log(history.items);
+  });
 
   channel.presence.subscribe(['enter', 'leave', 'present', 'update'], (presence) => {
     const id = presence.clientId;
@@ -115,16 +120,22 @@ export function useAblyBackend(
         channel.presence.update(DefaultUser);
         break;
       case VotingEvents.UpdateUser:
-        channel.presence.update(DefaultUser);
+        channel.presence.update({
+          ...DefaultUser,
+          ...state.payload,
+        });
         break;
       case VotingEvents.RemoveUser:
         channel.presence.leave();
         break;
       case VotingEvents.StartPool:
-        channel.publish('START_SESSION', state);
+        channel.publish('START_SESSION', {
+          ...state,
+          id: roomId,
+        });
         break;
       case VotingEvents.EndPool:
-        channel.publish('END_SESSION', state);
+        channel.publish('END_SESSION', {...state, id: roomId});
         break;
       case VotingEvents.Vote:
         channel.publish('VOTE', {userId: DefaultUser.id, ...state});

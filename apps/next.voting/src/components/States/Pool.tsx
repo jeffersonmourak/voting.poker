@@ -1,22 +1,59 @@
-import { AnyPoolState } from "core";
+import Card from "@/components/Cards/Card";
+import { useRoom } from "@/hooks/useRoom";
+import { Box, styled } from '@mui/material';
+import { AnyPoolState, VotingStates } from "core";
+import React from 'react';
+
+const Root = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(4, 6),
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flex: 1,
+}));
+
+const Cards = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(2),
+  justifyContent: 'center',
+  maxWidth: theme.spacing(125),
+  flex: 1,
+}));
+
 
 interface PoolStateComponentProps {
   state: AnyPoolState;
 }
 
+const CARD_VALUES = ['0', '0.5', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?', '☕️'];
+
 const PoolStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
-  const moderatorView = state.moderator ? <>
-    Moderator Pool State Component
-    <button onClick={() => state.endSession()} >End Pool</button>
-  </> : null
+  const room = useRoom();
 
+  if (room.state.state !== VotingStates.Pool && room.state.state !== VotingStates.PoolVote) {
+    return null;
+  }
 
-  return <>
-    Pool State Component
-    <button onClick={() => state.vote(`13`)} >Vote 13</button>
-    <br />
-    {moderatorView}
-  </>
+  const userVote = room.state.votes[room.state.currentUser.id];
+  const vote = room.state.vote;
+
+  return (
+    <Root>
+      <Cards>
+        {CARD_VALUES.map((value) => (
+          <Card
+            key={value}
+            value={value}
+            onClick={() => vote(value)}
+            selected={value === userVote}
+          />
+        ))}
+      </Cards>
+    </Root>
+  );
 }
 
 export default PoolStateComponent;

@@ -28,22 +28,24 @@ export function useCoreClientState(roomId: string) {
     (event, clientId, vote) => client.backendCallback(event, clientId, vote)
   );
 
-  const client = useMemo(() => new CoreClient(roomId), [roomId]);
+  const client = useMemo(() => new CoreClient(roomId, user), [roomId]);
   const [state, setState] = useState(client.state);
 
-  client.tapUserEvents = (events) => publish(events);
+  client.tapUserEvents = (events) => {
+    publish(events);
+  };
 
   const handleSubscription = (clientState: CoreClientState) => {
     setState(clientState);
   };
 
   useEffect(() => {
-    const subscription = client.subscribeAs(user, handleSubscription);
+    const subscription = client.subscribe(handleSubscription);
 
     return () => {
       subscription.unsubscribe();
     };
   }, [client]);
 
-  return [state, client] as const;
+  return {state, client, publish} as const;
 }
