@@ -1,7 +1,13 @@
-import { Typography } from '@mui/material';
+import { styled, Typography } from '@mui/material';
 import { DateTime, Interval } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
+
+const AnimatedDigits = styled(Typography)<{ inSession: boolean }>(({ theme, inSession }) => ({
+  transition: 'color 0.5s, height 0.3s',
+  color: inSession ? 'inherit' : 'transparent',
+  height: inSession ? '28px' : 0,
+}))
 
 const niceDigits = (n?: number) => {
   if (!n) {
@@ -16,30 +22,33 @@ const niceDigits = (n?: number) => {
 
 interface TimerProps {
   revealed: boolean;
+  inSession: boolean;
 }
 
-export const Timer = ({ revealed }: TimerProps) => {
+export const Timer = ({ revealed, inSession }: TimerProps) => {
   const timestamp = useRef(DateTime.now());
   const [since, setSince] = useState(Interval.fromDateTimes(DateTime.now(), DateTime.now()));
+
+  const timerRunning = !inSession || revealed;
 
   useInterval(
     () => {
       setSince(Interval.fromDateTimes(timestamp.current, DateTime.now()));
     },
-    revealed ? null : 100,
+    timerRunning ? null : 100,
   )
 
   useEffect(() => {
-    if (!revealed) {
+    if (!timerRunning) {
       timestamp.current = DateTime.now();
     }
-  }, [revealed]);
+  }, [timerRunning]);
 
   const duration = since.toDuration(['hour', 'minute', 'second', 'millisecond']).toObject();
 
   return (
-    <Typography variant="h5">
+    <AnimatedDigits data-component='digits' inSession={inSession} variant="h5">
       {niceDigits(duration.hours)}:{niceDigits(duration.minutes)}:{niceDigits(duration.seconds)}
-    </Typography>
+    </AnimatedDigits>
   );
 };

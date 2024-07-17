@@ -1,4 +1,3 @@
-import StyledComponentsRegistry from '@/lib/styledComponentsRegistry';
 import theme from '@/theme';
 import { CssBaseline } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
@@ -62,12 +61,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={MontFont.variable}>
         <AppRouterCacheProvider>
-          <StyledComponentsRegistry>
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {children}
             </ThemeProvider>
-          </StyledComponentsRegistry>
         </AppRouterCacheProvider>
       </body>
     </html>

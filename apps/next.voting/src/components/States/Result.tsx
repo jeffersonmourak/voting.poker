@@ -1,50 +1,37 @@
 import { valueToColor } from "@/helpers/valueColorScale";
-import { Box, Theme, Typography, useTheme } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { Box, styled, Typography, useTheme } from "@mui/material";
 import { AnyIdleResultState, User } from "core";
 import { groupBy } from "lodash";
 import { ResultValue } from "../Results/ResultValue";
 import { ResultValueBig } from "../Results/ResultValueBig";
 
-const useStyle = makeStyles((theme: Theme) => ({
-  content: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: theme.palette.background.default,
-    borderRadius: theme.spacing(2),
-    padding: theme.spacing(4, 6),
-    flex: 1,
-  },
-  hero: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(8, 0, 6),
-    gap: theme.spacing(4),
-  },
-  resultContainer: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  resultsList: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: theme.spacing(10),
-  },
-  resultsChart: {
-    height: theme.spacing(40),
-  },
-  resultValue: {
-    position: 'absolute',
-    top: theme.spacing(12),
-  },
+const Content = styled(Box)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: theme.palette.background.default,
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(4, 6),
+  flex: 1,
 }));
+
+const Hero = styled(Box)<{ empty: boolean }>(({ theme, empty }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing(8, 0, 6),
+  gap: theme.spacing(4),
+  height: empty ? '100%' : 'unset',
+}));
+
+const ResultList = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: theme.spacing(10),
+}));
+
 
 interface Result {
   state: AnyIdleResultState;
@@ -84,7 +71,6 @@ const toResultData = (
   };
 
 const ResultStateComponent: React.FC<Result> = ({ state }) => {
-  const classes = useStyle();
   const theme = useTheme();
   const sessionVotesResult = Object.entries(state.votes).map(([id, vote]) => {
     const user = state.users.find(user => user.id === id);
@@ -113,13 +99,13 @@ const ResultStateComponent: React.FC<Result> = ({ state }) => {
   const [firstPlace, ...rest] = results;
 
   return (
-    <Box className={classes.content}>
-      <Box className={classes.hero}>
+    <Content>
+      <Hero empty={results.length === 0}>
         <Typography variant="h1">
           {results.length > 0 ? <strong>Well Done!</strong> : <strong>Well... No votes casted</strong>}
         </Typography>
-      </Box>
-      <Box className={classes.resultsList}>
+      </Hero>
+      <ResultList>
         {firstPlace && (<ResultValueBig
           value={firstPlace.title}
           percentage={firstPlace.percentage}
@@ -137,8 +123,8 @@ const ResultStateComponent: React.FC<Result> = ({ state }) => {
             />
           ))}
         </Box>
-      </Box>
-    </Box>
+      </ResultList>
+    </Content>
   );
 }
 

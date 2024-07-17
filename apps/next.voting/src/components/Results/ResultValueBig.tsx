@@ -47,8 +47,8 @@ const ResultTitle = styled(Typography)<{ small: boolean }>(({ theme, small, colo
     transform: `rotate(-45deg)`,
     width: theme.spacing(10),
     height: theme.spacing(10),
-    top: 0,
-    left: 0,
+    top: 2,
+    left: 2,
   }
 }));
 
@@ -160,7 +160,7 @@ export const ResultValueBig = ({ value, percentage, color, from }: ResultValueBi
             <>
               {from.map((user) => (
                 <Tooltip key={user.id} title={user.name}>
-                  <Avatar {...avatarProps(user.name, value)} />
+                  <Avatar {...avatarProps(user.name, value, { paddingTop: 0.1 })} />
                 </Tooltip>
               ))}
             </>

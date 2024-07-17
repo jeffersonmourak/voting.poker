@@ -6,13 +6,14 @@ const Root = styled(Box)<{ inSession: boolean }>(({ theme, inSession }) => ({
   display: 'flex',
   gap: theme.spacing(inSession ? 0 : 2),
   transition: theme.transitions.create(['gap']),
+  width: 200,
 }));
 
 const ReleaseButton = styled(Button)<{ inSession: boolean }>(({ theme, inSession }) => ({
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  paddingLeft: inSession ? 0 : theme.spacing(2),
-  paddingRight: inSession ? 0 : theme.spacing(2),
+  paddingLeft: inSession ? 0 : theme.spacing(3),
+  paddingRight: inSession ? 0 : theme.spacing(3),
   minWidth: inSession ? 0 : theme.spacing(8),
   flex: inSession ? 0 : 1,
   transition: theme.transitions.create(['min-width', 'padding', 'flex']),
@@ -52,7 +53,7 @@ const ModeratorControls = ({
       {!inSession && (
         <Tooltip title="Start a new voting session">
           <Button sx={{ flex: 1 }} variant="contained" color="secondary" onClick={onSessionStart}>
-            start
+            Start
           </Button>
         </Tooltip>
       )}

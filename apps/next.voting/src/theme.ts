@@ -33,7 +33,7 @@ export const getSize = (size: number) => size * gridSize;
 const buttonVariationOverrides = (color: string) => ({
   backgroundColor: color,
   color: getLuminance(color) < 0.6 ? lighten(color, 0.9) : darken(color, 0.9),
-  padding: `${getSize(2)}px ${getSize(2)}px`,
+  padding: `${getSize(2)}px ${getSize(3)}px`,
   borderRadius: getSize(2),
   leadingTrim: 'both',
   textEdge: 'cap',

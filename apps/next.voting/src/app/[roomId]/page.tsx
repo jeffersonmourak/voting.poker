@@ -14,6 +14,7 @@ const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
   gap: theme.spacing(4),
   flexDirection: 'column',
+  height: '100%',
 
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(1),

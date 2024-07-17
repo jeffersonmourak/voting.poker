@@ -87,11 +87,28 @@ const RoomDetails = ({ roomId, user, users }: RoomDetailsProps) => {
   return (
     <Root sx={{ boxShadow: 9 }} >
       <Group>
-        <Section>
-          <Typography sx={{ lineHeight: 1 }} variant="subtitle1">
-            Session duration
+        <Section sx={{
+          cursor: 'default',
+          height: '48px',
+          width: '135px',
+          overflow: 'hidden',
+          ['&:hover']: {
+            ['&:hover [data-component="digits"]']: {
+              color: 'inherit',
+              height: '28px'
+            }
+          }
+        }}>
+          <Typography sx={{
+            lineHeight: 1, flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            opacity: inSession ? 1 : 0.5,
+            height: !inSession && !revealed ? '48px' : 'unset',
+          }} variant="subtitle1">
+            {!inSession && !revealed ? 'Waiting...' : 'Session duration'}
           </Typography>
-          <Timer revealed={!inSession || revealed} />
+          <Timer inSession={inSession} revealed={revealed} />
         </Section>
         {user?.moderator && (
           <Section>
