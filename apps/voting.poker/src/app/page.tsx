@@ -3,14 +3,12 @@
 import { Button, styled, Typography } from '@mui/material';
 import { Box, darken } from '@mui/system';
 import BasePage from '@voting.poker/next/components/BasePage';
-import { DataCollectionNotification } from '@voting.poker/next/components/DataCollectionNotification';
 import { LandingGrahic } from '@voting.poker/next/components/LandingGraphic';
 import { NavBar } from '@voting.poker/next/components/NavBar';
-import { generateRoomId, toNewRoom } from '@voting.poker/next/helpers/room';
+import { toNewRoom } from '@voting.poker/next/helpers/room';
 import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef } from 'react';
 
 const LandingGraphicSection = styled(Box)(({ }) => ({
   width: '100%',
@@ -220,11 +218,9 @@ const ManifestGraphicCredits = styled(Typography)(({ theme }) => ({
 }))
 
 const Home: NextPage = () => {
-  const roomId = useRef(generateRoomId()).current
-
   return (
     <BasePage>
-      <NavBar roomId={roomId} />
+      <NavBar />
       <LandingGraphicSection>
         <LandingGrahic>
           <CallToActionsContainer>
@@ -285,7 +281,6 @@ const Home: NextPage = () => {
           </ManifestGraphicWrapper>
         </ManifestCard>
       </ManifestSection>
-      <DataCollectionNotification />
     </BasePage>
   );
 };

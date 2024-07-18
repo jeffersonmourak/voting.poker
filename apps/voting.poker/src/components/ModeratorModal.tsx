@@ -1,6 +1,7 @@
 import { Button, Container, Paper, styled, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRoom } from '@voting.poker/next/hooks/useRoom';
+import { identify } from '../helpers/highlight';
 
 const Root = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -38,7 +39,7 @@ const ModeratorModal = () => {
               if (!user) {
                 return;
               }
-
+              identify({ ...user, moderator: true });
               room.updateUser({ ...user, moderator: true });
             }}>
             Be the moderator

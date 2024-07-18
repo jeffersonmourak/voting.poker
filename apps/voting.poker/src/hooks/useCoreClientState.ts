@@ -5,13 +5,13 @@ import {
   CoreClientState,
   REGISTER_USER_ACTION_KEY,
   REMOVE_USER_ACTION_KEY,
-  UPDATE_USER_ACTION_KEY,
+  UPDATE_USER_ACTION_KEY
 } from '@voting.poker/core';
 import { useEffect, useMemo, useState } from 'react';
 import { useAblyBackend } from './useAblyBackend';
 
 export function useCoreClientState(roomId: string) {
-  const {publish, user} = useAblyBackend(
+  const { publish, user } = useAblyBackend(
     roomId,
     (user, action) => {
       switch (action) {
@@ -33,8 +33,8 @@ export function useCoreClientState(roomId: string) {
   const client = useMemo(() => new CoreClient(roomId, user), [roomId]);
   const [state, setState] = useState(client.state);
 
-  client.tapUserEvents = (events) => {
-    publish(events);
+  client.tapUserEvents = (event) => {
+    publish(event);
   };
 
   const handleSubscription = (clientState: CoreClientState) => {
@@ -49,5 +49,5 @@ export function useCoreClientState(roomId: string) {
     };
   }, [client]);
 
-  return {state, client, publish} as const;
+  return { state, client, publish } as const;
 }

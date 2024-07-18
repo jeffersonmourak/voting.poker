@@ -3,6 +3,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '@voting.poker/next/theme';
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import localFont from 'next/font/local';
 import './globals.css';
 
@@ -48,22 +49,26 @@ const MontFont = localFont({
   variable: '--mont',
 })
 
+const DataConsentDynamicProvider = dynamic(() => import('@voting.poker/next/components/AnalyticsProvider'), { ssr: false })
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" >
       <body className={MontFont.variable}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {children}
+            <DataConsentDynamicProvider>
+              <CssBaseline />
+              {children}
+            </DataConsentDynamicProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
-    </html>
+    </html >
 
   )
 }

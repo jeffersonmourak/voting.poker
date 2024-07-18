@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { identify } from '../helpers/highlight';
 import { useRoom } from '../hooks/useRoom';
 import { AvatarEditorModal } from './AvatarEditorModal';
 
@@ -47,7 +48,7 @@ export const AvatarProvider = ({ children }: AvatarProviderProps) => {
             ...value,
             moderator: state.currentUser?.moderator ?? false,
           }
-
+          identify(newUser);
           updateUser(newUser);
         }}
       />}

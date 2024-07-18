@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import { MouseEventHandler } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -8,5 +7,5 @@ export const generateRoomId = () => {
 
 export const toNewRoom: MouseEventHandler<HTMLAnchorElement> = (e) => {
   e.preventDefault();
-  redirect(`/${uuidV4()}`);
+  window.location.href = `/${uuidV4()}`;
 };

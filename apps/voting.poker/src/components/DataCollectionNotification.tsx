@@ -1,35 +1,41 @@
-import { Box, Button, lighten, Theme, Typography } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+'use client';
+
+import { Box, Button, lighten, Link, Paper, styled, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import { useContext, useState } from 'react';
 import { AnalyticsContext } from './AnalyticsProvider';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    width: '100%',
-    backgroundColor: lighten(theme.palette.primary.main, 0.1),
-    display: 'flex',
+const Root = styled(Paper)(({ theme }) => ({
+  // width: `calc(100% - ${theme.spacing(4)})`,
+  backgroundColor: lighten(theme.palette.primary.main, 0.1),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing(4),
+  gap: theme.spacing(4),
+  position: 'fixed',
+  left: theme.spacing(2),
+  bottom: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius,
+  zIndex: theme.zIndex.fab,
+
+  [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(8, 0, 6),
-    gap: theme.spacing(4),
-    position: 'absolute',
-    bottom: theme.spacing(6),
-    borderRadius: theme.shape.borderRadius,
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: theme.spacing(4),
-  },
+    left: theme.spacing(2),
+    bottom: theme.spacing(2),
+  }
 }));
+
+const Actions = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: theme.spacing(4),
+}))
 
 export const DataCollectionNotification = () => {
   const [hide, setHide] = useState(false);
   const { consent } = useContext(AnalyticsContext);
-  const classes = useStyles();
   const hasAnswerd = Cookies.get('dataCollectionAccepted');
   const hasAccepted = Cookies.get('dataCollectionAccepted') === 'true';
 
@@ -50,25 +56,23 @@ export const DataCollectionNotification = () => {
   };
 
   return (
-    <Box className={classes.root}>
+    <Root elevation={12}>
       <Box>
         <Typography>
           This site uses cookies to improve your experience. you can read more about it{' '}
-          <a href="https://github.com/jeffersonmourak/voting.poker#DATA-COLLECTION-AND-ANALYSIS-ADVISORY">
+          <Link color={'secondary'} href="https://github.com/jeffersonmourak/voting.poker#DATA-COLLECTION-AND-ANALYSIS-ADVISORY">
             Here
-          </a>
+          </Link>
         </Typography>
-        <br />
-        <Typography>Do you want to accept the use of cookies?</Typography>
       </Box>
-      <Box className={classes.actions}>
+      <Actions>
         <Button variant="contained" color="secondary" onClick={handleEnableUserDataCollection}>
           Accept
         </Button>
         <Button variant="contained" color="secondary" onClick={handleDisableUserDataCollection}>
           Deny
         </Button>
-      </Box>
-    </Box>
+      </Actions>
+    </Root>
   );
 };

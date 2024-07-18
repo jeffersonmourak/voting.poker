@@ -40,11 +40,8 @@ const ActionButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-interface NavBarProps {
-  roomId: string;
-}
 
-export const NavBar = ({ roomId }: NavBarProps) => {
+export const NavBar = () => {
   const { visibleSection } = useVisibleSection(64);
   const theme = useTheme();
 

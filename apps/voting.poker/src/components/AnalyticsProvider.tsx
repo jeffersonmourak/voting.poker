@@ -1,9 +1,13 @@
+'use client';
+
 import * as React from 'react';
 
-// import {H} from 'highlight.run';
 import { isDev } from '@voting.poker/next/constants';
+import { debugAnalytics } from '@voting.poker/next/helpers/debugAnalytics';
+import { H } from 'highlight.run';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
+import { DataCollectionNotification } from './DataCollectionNotification';
 
 
 interface IAnalyticsContext {
@@ -16,25 +20,24 @@ export const AnalyticsContext = React.createContext<IAnalyticsContext>({
   consent: () => { },
 });
 
-interface AnalyticsProviderProps { }
-
 const enableAnalytics = () => {
-  // if (isDev) {
-  //   return debugAnalytics('init', 'HIGHLIGHT');
-  // }
-  // H.init('lgxly4gm', {
-  //   tracingOrigins: true,
-  //   networkRecording: {
-  //     enabled: true,
-  //     recordHeadersAndBody: true,
-  //     urlBlocklist: [
-  //       // insert full or partial urls that you don't want to record here
-  //     ],
-  //   },
-  // });
+  if (isDev) {
+    return debugAnalytics('init', 'HIGHLIGHT');
+  }
+
+  H.init('lgxly4gm', {
+    tracingOrigins: true,
+    networkRecording: {
+      enabled: true,
+      recordHeadersAndBody: true,
+      urlBlocklist: [
+        // insert full or partial urls that you don't want to record here
+      ],
+    },
+  });
 };
 
-export const AnalyticsProvider: React.FC<React.PropsWithChildren<AnalyticsProviderProps>> = ({ children }) => {
+export default function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const [enabled, setEnabled] = React.useState(false);
 
   useEffect(() => {
@@ -60,8 +63,8 @@ export const AnalyticsProvider: React.FC<React.PropsWithChildren<AnalyticsProvid
         enabled,
         consent,
       }}>
-      {!isDev && <></>}
       {children}
+      <DataCollectionNotification />
     </AnalyticsContext.Provider>
   );
 };
