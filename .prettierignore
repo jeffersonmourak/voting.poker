@@ -1,6 +1,5 @@
-**.generated.tsx
-app/scripts/client/generated/graphql.tsx
-**/webpack
-**/storybook-static
-**/.next
-**/functions
+# Add files here to ignore them from prettier formatting
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
