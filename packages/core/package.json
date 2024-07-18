@@ -1,27 +1,6 @@
 {
-  "name": "core",
-  "type": "module",
-  "version": "1.0.0",
-  "author": "Jefferson Oliveira <jeffersonmourak@gmail.com>",
-  "license": "CC BY-SA 4.0",
-  "source": "src/index.ts",
-  "exports": {
-    "types": "./dist/index.d.ts",
-    "require": "./dist/index.cjs",
-    "default": "./dist/index.modern.js"
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "microbundle",
-    "dev": "microbundle watch"
-  },
-  "devDependencies": {
-    "microbundle": "^0.15.1",
-    "typescript": "^5.3.3"
-  },
+  "name": "@voting.poker/core",
+  "version": "0.0.1",
   "dependencies": {
     "xstate": "^5.1.0",
     "type-fest": "^4.15.0",
