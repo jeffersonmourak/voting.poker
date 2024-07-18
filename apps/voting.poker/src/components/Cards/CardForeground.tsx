@@ -1,7 +1,7 @@
-import {cx} from '@emotion/css';
-import {Box, Theme, Typography, alpha, lighten, useTheme} from '@mui/material';
-import {makeStyles} from '@mui/styles';
-import {FloatValue} from './FloatValue';
+import { cx } from '@emotion/css';
+import { Box, Theme, Typography, alpha, lighten, useTheme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { FloatValue } from './FloatValue';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
@@ -28,14 +28,14 @@ const useStyles = makeStyles<Theme>((theme) => ({
     justifyContent: 'center',
   },
   value: {
-    backgroundColor: alpha(theme.palette.common.white, 0.6),
+    backgroundColor: alpha(theme.palette.common.white, 0.3),
     minWidth: theme.spacing(10),
     minHeight: theme.spacing(10),
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: theme.shape.borderRadius,
-    transition: theme.transitions.create(['background-color', 'color']),
+    transition: theme.transitions.create(['background-color', 'color', 'box-shadow']),
     zIndex: 1,
     color: 'transparent',
     transform: `rotate(45deg)`,
@@ -69,17 +69,18 @@ const useStyles = makeStyles<Theme>((theme) => ({
 
 interface CardBaseProps {
   value: string;
+  hover: boolean;
 }
 
-export const CardForeground = ({value}: CardBaseProps) => {
-  const {palette} = useTheme();
-  const classes = useStyles();
+export const CardForeground = ({ value, hover }: CardBaseProps) => {
+  const { palette } = useTheme();
+  const classes = useStyles({ hover });
   return (
     <Box className={classes.root}>
       <Box className={classes.background}>
         <FloatValue value={value} background={lighten(palette.primary.main, 0.1)} top left />
         <FloatValue value={value} background={lighten(palette.primary.main, 0.1)} top right />
-        <Box data-value={value} className={cx(classes.value)}>
+        <Box sx={{ boxShadow: hover ? 12 : 0 }} data-value={value} className={cx(classes.value)}>
           <Typography variant="h4">{value}</Typography>
         </Box>
         <FloatValue value={value} background={lighten(palette.primary.main, 0.1)} bottom left />

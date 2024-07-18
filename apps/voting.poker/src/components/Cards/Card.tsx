@@ -58,8 +58,9 @@ const Card = ({ value, selected, onClick = () => { } }: CardProps) => {
       onMouseOver={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={onClick}>
-      <CardForeground value={value} />
+      <CardForeground hover={selected || hover} value={value} />
       <CardBackground
+        hover={selected || hover}
         height={hover || selected ? (selected ? 250 : height) : 0}
         background={background}
         isImage={isImage}

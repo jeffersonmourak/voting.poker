@@ -73,7 +73,7 @@ const VoteBadge = ({
     <VoteBadgeRoot
       data-is-vote-empty={!vote}
       data-is-big={variant === 'big'}>
-      <Typography sx={{ textAlign: 'center' }} variant="body1">
+      <Typography sx={{ textAlign: 'center', paddingTop: 0.3 }} variant="body1">
         {reveal ? vote : emoji || '🙈'}
       </Typography>
     </VoteBadgeRoot>
@@ -121,6 +121,7 @@ const UserVoteButton = styled(Button)<{ ['data-is-big']?: boolean }>(({ theme, [
   position: 'relative',
   width: theme.spacing(big ? 5 : 8),
   height: theme.spacing(big ? 5 : 8),
+  color: theme.palette.background.paper,
   ...(big ? { margin: theme.spacing(0, 2), } : {})
 }))
 
@@ -128,6 +129,7 @@ const UserVoteBox = styled(Box)<{ ['data-is-big']?: boolean }>(({ theme, ['data-
   position: 'relative',
   width: theme.spacing(big ? 5 : 8),
   height: theme.spacing(big ? 5 : 8),
+  color: theme.palette.background.paper,
   ...(big ? { margin: theme.spacing(0, 2), } : {})
 }))
 

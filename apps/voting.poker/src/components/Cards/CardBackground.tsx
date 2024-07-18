@@ -1,12 +1,12 @@
-import {cx} from '@emotion/css';
-import {Box, Theme, Typography, alpha, darken} from '@mui/material';
-import {makeStyles} from '@mui/styles';
-import {FloatValue} from './FloatValue';
-import {toBackgroundColor} from './helpers/toBackgroundColor';
+import { cx } from '@emotion/css';
+import { Box, Theme, Typography, alpha, darken } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { FloatValue } from './FloatValue';
+import { toBackgroundColor } from './helpers/toBackgroundColor';
 
-const useStyles = makeStyles<Theme, {height: number; background: string; isImage?: boolean}>(
+const useStyles = makeStyles<Theme, { height: number; background: string; isImage?: boolean }>(
   (theme) => ({
-    root: ({height}) => ({
+    root: ({ height }) => ({
       position: 'absolute',
       width: 180,
       height,
@@ -15,7 +15,7 @@ const useStyles = makeStyles<Theme, {height: number; background: string; isImage
       overflow: 'hidden',
       transition: theme.transitions.create('height'),
     }),
-    background: ({background, isImage}) => ({
+    background: ({ background, isImage }) => ({
       position: 'absolute',
       bottom: 0,
       left: 0,
@@ -28,7 +28,7 @@ const useStyles = makeStyles<Theme, {height: number; background: string; isImage
       alignItems: 'center',
       justifyContent: 'center',
     }),
-    backgroundImage: ({background}) => ({
+    backgroundImage: ({ background }) => ({
       backgroundImage: `url(${background})`,
       width: 180,
       height: 250,
@@ -46,7 +46,7 @@ const useStyles = makeStyles<Theme, {height: number; background: string; isImage
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: theme.shape.borderRadius,
-      transition: theme.transitions.create(['background-color', 'color']),
+      transition: theme.transitions.create(['background-color', 'color', 'box-shadow']),
       zIndex: 1,
       color: 'transparent',
       transform: `rotate(45deg)`,
@@ -84,10 +84,21 @@ interface CardBaseProps {
   height: number;
   background: string;
   isImage?: boolean;
+  hover: boolean;
 }
 
-export const CardBackground = ({height, background, isImage, value}: CardBaseProps) => {
-  const classes = useStyles({height, background, isImage});
+const useHoverShadow = (background: string, isImage?: boolean) => {
+  if (isImage) {
+    return `0px 7px 8px -4px rgba(0, 0, 0, 0.2), 0px 12px 17px 2px rgba(0, 0, 0, 0.14), 0px 5px 22px 4px rgba(0, 0, 0, 0.12)`;
+  }
+  const shadowColor = darken(background, 0.3);
+  return `0px 7px 8px -4px ${alpha(shadowColor, 0.2)}, 0px 12px 17px 2px ${alpha(shadowColor, 0.14)}, 0px 5px 22px 4px ${alpha(shadowColor, 0.12)};`
+}
+
+export const CardBackground = ({ hover, height, background, isImage, value }: CardBaseProps) => {
+  const classes = useStyles({ height, background, isImage });
+
+  const shadowColor = useHoverShadow(background, isImage);
 
   return (
     <Box className={classes.root}>
@@ -95,7 +106,7 @@ export const CardBackground = ({height, background, isImage, value}: CardBasePro
       <Box className={classes.background}>
         <FloatValue value={value} background={background} isImage={isImage} top left />
         <FloatValue value={value} background={background} isImage={isImage} top right />
-        <Box data-value={value} className={cx(classes.value)}>
+        <Box sx={{ boxShadow: hover ? shadowColor : 0 }} data-value={value} className={cx(classes.value)}>
           <Typography variant="h4">{value}</Typography>
         </Box>
         <FloatValue value={value} background={background} isImage={isImage} bottom left />
