@@ -1,6 +1,5 @@
 import { Box, darken, styled, Typography } from "@mui/material";
 import { AnyIdleResultState } from "@voting.poker/core";
-import Image from 'next/image';
 
 const Root = styled(Box)(({ theme }) => ({
   minHeight: '75vh',
@@ -26,15 +25,13 @@ const WaitingGraphicBlock = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: 600,
   height: 250,
+  marginBottom: theme.spacing(2),
 }));
 
-const WaitingGraphic = styled(Image)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
+const WaitingGraphic = styled('img')(({ theme }) => ({
   borderRadius: theme.spacing(3),
   overflow: 'hidden',
+  display: 'block'
 }));
 
 const HeroText = styled(Typography)(({ theme }) => ({
@@ -63,14 +60,13 @@ const ModeratorWarningGraphicBlock = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: 80,
   transform: 'scale(0.7)',
-}));
-
-const ModeratorWarningGraphicImage = styled(Image)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
 }));
+
+const ModeratorWarningGraphicImage = styled('img')(({ theme }) => ({}));
 
 const ModeratorNote = styled(Typography)(({ theme }) => ({
   padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
@@ -90,8 +86,6 @@ const IdleStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
       <WaitingBlock>
         <WaitingGraphicBlock>
           <WaitingGraphic
-            layout="fill"
-            objectFit="cover"
             src={'/graphics/brazuca_catching_up.png'}
             alt="Graphic of people chatting in the living room. Brazuca, By Cezar Berje"
           />
@@ -104,9 +98,8 @@ const IdleStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
         <ModeratorWarningBlock>
           <ModeratorWarningGraphicBlock>
             <ModeratorWarningGraphicImage
-              layout="fill"
-              objectFit="contain"
-              src={'/graphics/brazuca_sitting_on_wheelchair.png'}
+
+              src={`/graphics/brazuca_sitting_on_wheelchair.png`}
               alt="Graphic of person waving on a wheelchair. Brazuca, By Cezar Berje"
             />
           </ModeratorWarningGraphicBlock>
