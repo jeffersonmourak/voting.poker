@@ -1,12 +1,13 @@
 import BasePage from "@voting.poker/next/components/BasePage";
-import { lazy, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import Loading from './loading';
 
 interface RoomPageProps {
   params: { roomId: string };
 }
 
-const DynamicPage = lazy(() => import('./_components/RoomPage'))
+const DynamicPage = dynamic(() => import('./_components/RoomPage'), { ssr: false })
 
 export default function RoomPageProviders({ params }: RoomPageProps) {
   return (

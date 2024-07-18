@@ -1,6 +1,6 @@
 import { Box, Button, useTheme } from '@mui/material';
 import { alpha, styled } from '@mui/system';
-import { generateRoomId } from '@voting.poker/next/helpers/room';
+import { toNewRoom } from '@voting.poker/next/helpers/room';
 import Link from 'next/link';
 import AppIdentification from './AppIdentification';
 import { useVisibleSection } from './hooks/useVisibleSection';
@@ -40,14 +40,18 @@ const ActionButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const ROOM_ID = generateRoomId();
+interface NavBarProps {
+  roomId: string;
+}
 
-export const NavBar = () => {
+export const NavBar = ({ roomId }: NavBarProps) => {
   const { visibleSection } = useVisibleSection(64);
   const theme = useTheme();
 
   const manifestBackgroundColor = theme.palette.augmentColor({ color: { main: '#F8C3A9' } });
   const isDark = visibleSection > 0;
+
+
 
   return (
     <Root sx={isDark ? {
@@ -56,7 +60,7 @@ export const NavBar = () => {
       <AppIdentification />
       <LinksContainer>
         <Links />
-        <Link href={`/${ROOM_ID}`} passHref>
+        <Link onClick={toNewRoom} href="#" passHref>
           <ActionButton
             sx={isDark ? {
               background: manifestBackgroundColor.dark,

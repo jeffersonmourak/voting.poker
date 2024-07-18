@@ -3,7 +3,7 @@ import { DateTime, Interval } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 
-const AnimatedDigits = styled(Typography)<{ inSession: boolean }>(({ theme, inSession }) => ({
+const AnimatedDigits = styled(Typography)<{ ['data-in-session']: boolean }>(({ theme, ['data-in-session']: inSession }) => ({
   transition: 'color 0.5s, height 0.3s',
   color: inSession ? 'inherit' : 'transparent',
   height: inSession ? '28px' : 0,
@@ -47,7 +47,7 @@ export const Timer = ({ revealed, inSession }: TimerProps) => {
   const duration = since.toDuration(['hour', 'minute', 'second', 'millisecond']).toObject();
 
   return (
-    <AnimatedDigits data-component='digits' inSession={inSession} variant="h5">
+    <AnimatedDigits data-component='digits' data-in-session={inSession} variant="h5">
       {niceDigits(duration.hours)}:{niceDigits(duration.minutes)}:{niceDigits(duration.seconds)}
     </AnimatedDigits>
   );

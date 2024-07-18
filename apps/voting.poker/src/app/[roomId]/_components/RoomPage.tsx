@@ -2,12 +2,14 @@
 
 import { Box, Modal, styled } from '@mui/material';
 import { CoreClientState, VotingStates } from "@voting.poker/core";
+import { AvatarContext } from '@voting.poker/next/components/AvatarProvider';
 import ModeratorModal from "@voting.poker/next/components/ModeratorModal";
 import RoomDetails from "@voting.poker/next/components/RoomDetails";
 import IdleStateComponent from "@voting.poker/next/components/States/Idle";
 import PoolStateComponent from "@voting.poker/next/components/States/Pool";
 import ResultStateComponent from "@voting.poker/next/components/States/Result";
 import { useRoom } from "@voting.poker/next/hooks/useRoom";
+import { useContext } from 'react';
 import Providers from './Providers';
 
 const Root = styled(Box)(({ theme }) => ({
@@ -44,9 +46,10 @@ interface RoomPageProps {
 
 function RoomPageContent({ params }: RoomPageProps) {
   const room = useRoom();
+  const { open: isAvatarOpen } = useContext(AvatarContext);
 
   return <>
-    <Modal open={room.state.moderatorEmpty}>
+    <Modal open={!isAvatarOpen && room.state.moderatorEmpty}>
       <ModeratorModal />
     </Modal>
     <Root>
@@ -56,7 +59,8 @@ function RoomPageContent({ params }: RoomPageProps) {
         roomId={params.roomId}
       />
       <SwitchViews state={room.state} />
-    </Root></>
+    </Root>
+  </>
 }
 
 export default function RoomPage({ params }: RoomPageProps) {

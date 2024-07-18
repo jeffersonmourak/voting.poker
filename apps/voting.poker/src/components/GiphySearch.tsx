@@ -90,7 +90,7 @@ const toBackgroundColor = (theme: Theme, isSelected: boolean, isHovered: boolean
   return 'unset';
 }
 
-const GifOverlay = styled(Box)<{ isSelected: boolean, isHovered: boolean }>(({ theme, isSelected, isHovered }) => ({
+const GifOverlay = styled(Box)<{ ['data-is-selected']: boolean, ['data-is-hovered']: boolean }>(({ theme, ['data-is-selected']: isSelected, ['data-is-hovered']: isHovered }) => ({
   position: 'absolute',
   left: 0,
   top: 0,
@@ -115,7 +115,7 @@ const Overlay = ({ gif, isHovered }: GifOverlayProps) => {
 
 
   return (
-    <GifOverlay isSelected={isSelected} isHovered={isHovered}>
+    <GifOverlay data-is-selected={isSelected} data-is-hovered={isHovered}>
       {isHovered ? isSelected ? (
         <>
           <CloseRoundedIcon />

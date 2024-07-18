@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { FileUploader as DragAndDropFiles } from 'react-drag-drop-files';
 import { AvatarCTA } from './AvatarCTA';
 
-const RootPaper = styled(Paper)<{ isDragging: boolean }>(({ theme, isDragging }) => ({
+const RootPaper = styled(Paper)<{ ['data-is-dragging']: boolean }>(({ theme, ['data-is-dragging']: isDragging }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -24,7 +24,7 @@ const RootPaper = styled(Paper)<{ isDragging: boolean }>(({ theme, isDragging })
   ...(isDragging && { backgroundColor: theme.palette.action.hover, })
 }))
 
-const RootBox = styled(Box)<{ isDragging: boolean }>(({ theme, isDragging }) => ({
+const RootBox = styled(Box)<{ ['data-is-dragging']: boolean }>(({ theme, ['data-is-dragging']: isDragging }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -175,7 +175,7 @@ export const FileUploader = ({ value, user, onChange, onClickEmoji }: FileUpload
 
   if (uploadedFile) {
     return (
-      <RootPaper isDragging={draggingFile} variant="outlined">
+      <RootPaper data-is-dragging={draggingFile} variant="outlined">
         <Preview
           onHoverChange={setUploadDisabled}
           onClickEmoji={onClickEmoji}
@@ -196,7 +196,7 @@ export const FileUploader = ({ value, user, onChange, onClickEmoji }: FileUpload
       types={['JPEG', 'PNG', 'GIF']}
       disabled={uploadDisabled}
       onClick={() => handleChange(null)}>
-      <RootBox isDragging={draggingFile}>
+      <RootBox data-is-dragging={draggingFile}>
         {draggingFile ? (
           <DraggingMessage user={user} />
         ) : (

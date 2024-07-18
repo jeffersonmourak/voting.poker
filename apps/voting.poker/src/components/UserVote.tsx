@@ -13,7 +13,7 @@ interface UserVoteProps {
   onClick?: () => void;
 }
 
-const ModeratorBadgeRoot = styled(Box)<{ big: boolean }>(({ theme, big }) => ({
+const ModeratorBadgeRoot = styled(Box)<{ ['data-is-big']: boolean }>(({ theme, ['data-is-big']: big }) => ({
   backgroundColor: theme.palette.info.dark,
   minWidth: theme.spacing(3),
   height: theme.spacing(3),
@@ -37,7 +37,7 @@ const ModeratorBadge = ({
   }
 
   return (
-    <ModeratorBadgeRoot big={variant === 'big'}>
+    <ModeratorBadgeRoot data-is-big={variant === 'big'}>
       <Typography sx={{ textAlign: 'center' }} variant="caption">
         👑
       </Typography>
@@ -45,7 +45,7 @@ const ModeratorBadge = ({
   );
 };
 
-const VoteBadgeRoot = styled(Box)<{ emptyVote: boolean, big: boolean }>(({ theme, emptyVote, big }) => ({
+const VoteBadgeRoot = styled(Box)<{ ['data-is-vote-empty']: boolean, ['data-is-big']: boolean }>(({ theme, ['data-is-vote-empty']: emptyVote, ['data-is-big']: big }) => ({
   backgroundColor: theme.palette.success.main,
   minWidth: theme.spacing(3),
   height: theme.spacing(3),
@@ -71,8 +71,8 @@ const VoteBadge = ({
 }) => {
   return (
     <VoteBadgeRoot
-      emptyVote={!vote}
-      big={variant === 'big'}>
+      data-is-vote-empty={!vote}
+      data-is-big={variant === 'big'}>
       <Typography sx={{ textAlign: 'center' }} variant="body1">
         {reveal ? vote : emoji || '🙈'}
       </Typography>
@@ -117,14 +117,14 @@ const VoteLayout = ({
   );
 };
 
-const UserVoteButton = styled(Button)<{ big?: boolean }>(({ theme, big }) => ({
+const UserVoteButton = styled(Button)<{ ['data-is-big']?: boolean }>(({ theme, ['data-is-big']: big }) => ({
   position: 'relative',
   width: theme.spacing(big ? 5 : 8),
   height: theme.spacing(big ? 5 : 8),
   ...(big ? { margin: theme.spacing(0, 2), } : {})
 }))
 
-const UserVoteBox = styled(Box)<{ big?: boolean }>(({ theme, big }) => ({
+const UserVoteBox = styled(Box)<{ ['data-is-big']?: boolean }>(({ theme, ['data-is-big']: big }) => ({
   position: 'relative',
   width: theme.spacing(big ? 5 : 8),
   height: theme.spacing(big ? 5 : 8),
@@ -138,14 +138,14 @@ const UserVote = ({ onClick, name, displayYouTag, ...props }: UserVoteProps) => 
 
   if (onClick) {
     return (
-      <UserVoteButton onClick={onClick} big={displayYouTag} >
+      <UserVoteButton onClick={onClick} data-is-big={displayYouTag} >
         <VoteLayout name={name} displayYouTag={displayYouTag} {...props} />
       </UserVoteButton>
     );
   }
 
   return (
-    <UserVoteBox big={displayYouTag}>
+    <UserVoteBox data-is-big={displayYouTag}>
       <VoteLayout name={name} displayYouTag={displayYouTag} {...props} />
     </UserVoteBox>
   );

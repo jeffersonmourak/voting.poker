@@ -6,14 +6,13 @@ import BasePage from '@voting.poker/next/components/BasePage';
 import { DataCollectionNotification } from '@voting.poker/next/components/DataCollectionNotification';
 import { LandingGrahic } from '@voting.poker/next/components/LandingGraphic';
 import { NavBar } from '@voting.poker/next/components/NavBar';
-import { generateRoomId } from '@voting.poker/next/helpers/room';
+import { generateRoomId, toNewRoom } from '@voting.poker/next/helpers/room';
 import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRef } from 'react';
 
-const ROOM_ID = generateRoomId();
-
-const LandingGraphicSection = styled(Box)(({ theme }) => ({
+const LandingGraphicSection = styled(Box)(({ }) => ({
   width: '100%',
   minHeight: '100vh',
   display: 'flex',
@@ -220,12 +219,12 @@ const ManifestGraphicCredits = styled(Typography)(({ theme }) => ({
   right: 0,
 }))
 
-
-
 const Home: NextPage = () => {
+  const roomId = useRef(generateRoomId()).current
+
   return (
     <BasePage>
-      <NavBar />
+      <NavBar roomId={roomId} />
       <LandingGraphicSection>
         <LandingGrahic>
           <CallToActionsContainer>
@@ -243,7 +242,7 @@ const Home: NextPage = () => {
               display={'flex'}
               justifyContent={'center'}
               flexDirection={'row-reverse'}>
-              <Link href={`/${ROOM_ID}`} passHref>
+              <Link href="#" onClick={toNewRoom} passHref>
                 <ActionButton variant="contained" color="secondary">
                   Get a room
                 </ActionButton>
@@ -267,7 +266,7 @@ const Home: NextPage = () => {
                 bounds.
               </ManifestText>
             </Box>
-            <Link href={`/${ROOM_ID}`} passHref>
+            <Link href="#" onClick={toNewRoom} passHref>
               <ManifestButton variant="contained" color="secondary">
                 Create a room
               </ManifestButton>

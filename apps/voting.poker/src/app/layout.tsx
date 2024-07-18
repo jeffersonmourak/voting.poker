@@ -8,13 +8,10 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Voting Poker',
-  viewport: {
-    initialScale: 1,
-    width: 'device-width',
-  },
 }
 
 export const viewport: Viewport = {
+  themeColor: 'black',
   initialScale: 1,
   width: 'device-width',
 }
