@@ -4,8 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '@voting.poker/next/theme';
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
-
-// const inter = Inter({ subsets: ['latin'] })
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Voting Poker',
@@ -61,10 +60,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={MontFont.variable}>
         <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {children}
-            </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
