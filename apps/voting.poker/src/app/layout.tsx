@@ -9,6 +9,22 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Voting Poker',
+  description: 'Voting Poker is an open-source, real-time, collaborative voting tool for remote teams.',
+  openGraph: {
+    title: 'Voting Poker',
+    type: 'website',
+    url: 'https://voting.poker',
+    siteName: 'Voting Poker',
+    description: 'Voting Poker is an open-source, real-time, collaborative voting tool for remote teams.',
+    images: [
+      {
+        url: 'https://voting.poker/OG/OpenGraphFigure.png',
+        width: 800,
+        height: 400,
+        alt: 'Voting Poker',
+      },
+    ],
+  }
 }
 
 export const viewport: Viewport = {
