@@ -1,20 +1,47 @@
-# Voting Poker
+<img src="https://www.voting.poker/OG/OpenGraphFigure.png" alt="Voting Poker Open Graph Figure"/>
 
-is an Agile Planning Tool for cool teams
+# [Voting Poker](https://voting.poker)
 
-- We're looking to create a fully customizable
-- Zero config
-- Pretty design
+is a tool for teams to vote on tasks, features, or anything else that needs a decision.
 
-tool for teams in demand.
+- **Simple**: Just create a room and share the link with your team.
+- **Fast**: No need to register, just enter your name and start voting.
+- **Free**: Use it for free, no need to pay for anything.
+- **Open Source**: You can check the code and contribute to the project.
 
-This is just the beginning, but we would love to have your help.
+## Features
 
-Please check the [Get Started documentation](docs/getting-started.md) to start using right now on your local environment.
+- Create a room and share the link with your team.
+- Vote on tasks, features, or anything else that needs a decision.
+- See the results in real-time.
+- Use emojis to express your feelings about the task.
 
-If you don't want to setup you can use our free tool online at [https://voting.poker](https://voting.poker)
+## Data Collection and Analysis Advisory
 
-## DATA COLLECTION AND ANALYSIS ADVISORY
+The Next.js client uses [Highlight.io](https://www.highlight.io/) for user interaction analysis, that will record sessions from those who allow the usage of cookies. The data collected is used to improve the user experience and the project itself.
 
-The nextjs client uses [Highlight.io](https://www.highlight.io/) for data collection and analysis.
-This is being used to increase the quality of the tool and to improve the user experience.
+If you don't want to be tracked, you can disable cookies on your browser or if you have already accepted the cookies, you can clear them on your browser settings.
+
+In case you still wanna remove your data from highlight.io, you can contact me at [jeffersonmourak@gmail.com](mailto:jeffersonmourak@gmail.com) and I can find and delete your data from highlight records.
+
+**For transparency here are the data collected.**
+- Session Recording.
+- Network requests that were originated from https://voting.poker domain.
+- User interactions with the website.
+- User identification (email, avatar, name, browser, and device information).
+- IP location (City and Country only)
+
+**Why am I using Highlight.io?**
+- To improve the user experience.
+- To understand how users are interacting with the website.
+- To find and fix bugs the project is solo and I can't test everything (Yes I do look at the recordings).
+- Because it's open source like this project.
+
+**Why am I telling you this?**
+- Because I care about your privacy.
+- Because I want to be transparent about the data collected.
+- Because I want to give you the option to opt-out.
+- Because I want to give your opinion about the collection and how we can improve it together.
+
+## License
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/jeffersonmourak/voting.poker">Voting Poker (voting.poker)</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/jeffersonmourak">Jefferson Oliveira</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""></a></p>
