@@ -165,7 +165,7 @@ export const AvatarEditorModal = ({
                 fontFamily: ['var(--mont)', 'sans-serif'].join(', '),
                 fontSize: '12px !important',
                 fontStyle: 'normal',
-                fontWeight: 600,
+                fontWeight: 500,
                 lineHeight: '104.313% /* 12.518px */',
               }}
               component="h6">

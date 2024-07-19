@@ -26,22 +26,12 @@ const MontFont = localFont({
     },
     {
       path: '../../public/fonts/Mont/MontSemiBold_normal_normal.woff2',
-      weight: '700',
+      weight: '600',
       style: 'normal',
     },
     {
       path: '../../public/fonts/Mont/MontRegular_normal_normal.woff2',
       weight: '500',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Mont/MontBook_normal_normal.woff2',
-      weight: '300',
-      style: 'normal',
-    },
-    {
-      path: '../../public/fonts/Mont/MontThin_normal_normal.woff2',
-      weight: '200',
       style: 'normal',
     }
   ],

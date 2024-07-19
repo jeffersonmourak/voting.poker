@@ -40,7 +40,7 @@ const buttonVariationOverrides = (color: string) => ({
   fontFamily: ['var(--mont)', 'sans-serif'].join(', '),
   fontSize: 12.25,
   fontStyle: 'normal',
-  fontWeight: 700,
+  fontWeight: 600,
   lineHeight: 'normal',
   textTransform: 'none' as Property.TextTransform,
 

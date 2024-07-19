@@ -64,8 +64,8 @@ const FirstLine = styled(Box)(({ theme }) => ({
 
 const Text = styled(Typography)(({ theme }) => ({
   fontSize: '11.42857rem',
-  fontStyle: 'normal;',
-  fontWeight: '700;',
+  fontStyle: 'normal',
+  fontWeight: 600,
   lineHeight: '11.42857rem',
   letterSpacing: '-0.45714rem',
 

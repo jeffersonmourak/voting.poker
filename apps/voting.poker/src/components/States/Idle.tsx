@@ -37,7 +37,7 @@ const WaitingGraphic = styled('img')(({ theme }) => ({
 const HeroText = styled(Typography)(({ theme }) => ({
   fontFamily: ['var(--mont)', 'sans-serif'].join(', '),
   ...theme.typography.h2,
-  fontWeight: 700,
+  fontWeight: 600,
   textAlign: 'center',
   color: theme.palette.text.primary,
   letterSpacing: -2,
@@ -54,6 +54,8 @@ const ModeratorWarningBlock = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(3)} ${theme.spacing(4)}`,
   display: 'flex',
   gap: theme.spacing(3),
+  maxWidth: theme.spacing(110),
+  width: '100%',
 }));
 
 const ModeratorWarningGraphicBlock = styled(Box)(({ theme }) => ({
@@ -67,14 +69,6 @@ const ModeratorWarningGraphicBlock = styled(Box)(({ theme }) => ({
 }));
 
 const ModeratorWarningGraphicImage = styled('img')(({ theme }) => ({}));
-
-const ModeratorNote = styled(Typography)(({ theme }) => ({
-  padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
-  backgroundColor: '#646876',
-  borderRadius: theme.spacing(1),
-}));
-
-
 
 interface PoolStateComponentProps {
   state: AnyIdleResultState;
@@ -91,36 +85,37 @@ const IdleStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
           />
         </WaitingGraphicBlock>
         <HeroText variant="h1">
-          Waiting for next session
+          Let's get started! <br />
         </HeroText>
       </WaitingBlock>
-      {state.moderator && (
-        <ModeratorWarningBlock>
-          <ModeratorWarningGraphicBlock>
-            <ModeratorWarningGraphicImage
+      <ModeratorWarningBlock>
+        <ModeratorWarningGraphicBlock>
+          <ModeratorWarningGraphicImage
+            src={`/graphics/brazuca_sitting_on_wheelchair.png`}
+            alt="Graphic of person waving on a wheelchair. Brazuca, By Cezar Berje"
+          />
+        </ModeratorWarningGraphicBlock>
 
-              src={`/graphics/brazuca_sitting_on_wheelchair.png`}
-              alt="Graphic of person waving on a wheelchair. Brazuca, By Cezar Berje"
-            />
-          </ModeratorWarningGraphicBlock>
-
-          <Box gap={2} display={'flex'} flexDirection={'column'}>
-            <Typography variant="body1">
-              Hello there! <br />
-              You are the moderator of this room, and can start a session whenever you are ready!
+        <Box flex={1} gap={2} display={'flex'} flexDirection={'column'}>
+          {!state.moderator ? (
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              Howdy!<br />
               <br />
-              just by clicking at &quot;<strong>Start</strong>&quot; button.
+              Just a heads up, the voting's about to start when the moderator gives the signal.<br />
+              But hold onto your hats – your team can join the party whenever they're ready.
+              <strong style={{ fontWeight: 600, whiteSpace: 'nowrap' }} >No waiting required!</strong>
             </Typography>
-            <ModeratorNote variant="body1">
-              <strong>Note:</strong>
+          ) : (
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              Howdy, moderator!<br />
               <br />
-              Any users that connect after you&apos;ve started a session will not be able to vote
-              until the next session.
-            </ModeratorNote>
-          </Box>
-        </ModeratorWarningBlock>
-      )
-      }
+              Just wanted to let you know, as soon as you give the signal, the voting floodgates will open!
+              <br />
+              Oh, and by the way, <strong style={{ fontWeight: 600 }} >there's no need to wait for next session.</strong> Your eager participants can jump in and start voting whenever they're ready.  Let the games begin!
+            </Typography>
+          )}
+        </Box>
+      </ModeratorWarningBlock>
     </Root >
   );
 }

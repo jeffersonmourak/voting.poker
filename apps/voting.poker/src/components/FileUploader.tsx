@@ -116,7 +116,7 @@ const Preview = ({
     <>
       <Box display={'block'} position={'relative'}>
         <Avatar
-          {...avatarProps(user.name, user.avatar, { width: 128, height: 128, fontSize: '4rem', fontWeight: '700', paddingTop: 1, fontFamily: 'inherit' })}
+          {...avatarProps(user.name, user.avatar, { width: 128, height: 128, fontSize: '4rem', fontWeight: 600, paddingTop: 1, fontFamily: 'inherit' })}
         />
         <AvatarCTA disabled>
           <EditButton onClick={onClick}>

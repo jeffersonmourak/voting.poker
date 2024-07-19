@@ -134,7 +134,7 @@ const ManifestContent = styled(Box)(({ theme }) => ({
 const Title = styled(Typography)(({ theme }) => ({
   color: '#1D1F26',
   fontSize: '88px',
-  fontWeight: 700,
+  fontWeight: 600,
   paddingTop: theme.spacing(2),
   lineHeight: '88px /* 100% */',
   [theme.breakpoints?.up('sm')]: {
