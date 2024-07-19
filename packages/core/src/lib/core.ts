@@ -151,31 +151,20 @@ class CoreClient {
     });
   }
 
-  backendCallback = (
-    event: VotingEvents,
-    userId: string,
-    vote: string | null,
-    moderatorState: VotingStates | null
-  ) => {
+  backendCallback = (event: Events) => {
     const { state, users } = this.state;
-    const user = users.find((u) => u.id === userId);
+    const user = users.find((u) => u.id === event.createdBy);
 
     if (!user) {
       return;
     }
 
-    if (moderatorState && event === VotingEvents.ModeratorSync) {
-      this.#actor.send({
-        type: VotingEvents.ModeratorSync,
-        state: moderatorState,
-        target: userId,
-        votes: this.state.votes,
-        createdBy: userId,
-      });
+    if (event.type === VotingEvents.ModeratorSync) {
+      this.#actor.send(event);
     }
 
     if (state === VotingStates.Idle || state === VotingStates.PoolResult) {
-      switch (event) {
+      switch (event.type) {
         case VotingEvents.StartPool:
           this.#actor.send({
             type: VotingEvents.StartPool,
@@ -186,19 +175,15 @@ class CoreClient {
     }
 
     if (state === VotingStates.Pool || state === VotingStates.PoolVote) {
-      switch (event) {
+      switch (event.type) {
         case VotingEvents.EndPool:
-          this.#actor.send({ type: VotingEvents.EndPool, createdBy: user.id });
+          this.#actor.send(event);
           break;
         case VotingEvents.Vote:
-          if (!vote) {
+          if (!event.vote) {
             break;
           }
-          this.#actor.send({
-            type: VotingEvents.Vote,
-            vote,
-            createdBy: user.id,
-          });
+          this.#actor.send(event);
           break;
       }
     }

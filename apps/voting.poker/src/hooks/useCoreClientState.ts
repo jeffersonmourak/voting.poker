@@ -5,7 +5,7 @@ import {
   CoreClientState,
   REGISTER_USER_ACTION_KEY,
   REMOVE_USER_ACTION_KEY,
-  UPDATE_USER_ACTION_KEY
+  UPDATE_USER_ACTION_KEY,
 } from '@voting.poker/core';
 import { useEffect, useMemo, useState } from 'react';
 import { useAblyBackend } from './useAblyBackend';
@@ -26,8 +26,7 @@ export function useCoreClientState(roomId: string) {
           break;
       }
     },
-    (event, clientId, vote, moderatorState) =>
-      client.backendCallback(event, clientId, vote, moderatorState)
+    (e) => client.backendCallback(e)
   );
 
   const client = useMemo(() => new CoreClient(roomId, user), [roomId]);

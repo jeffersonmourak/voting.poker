@@ -1,31 +1,15 @@
 import {
-  EventObject,
-  ParameterizedObject,
-  ProvidedActor,
-  StateNodeConfig,
-} from 'xstate';
-import { CLEAR_POOL_ACTION_KEY, COMPUTE_VOTE_ACTION_KEY } from './actions';
-import { VotingContext } from './context';
-import { Events, VotingEvents } from './events';
+  CLEAR_POOL_ACTION_KEY,
+  COMPUTE_VOTE_ACTION_KEY,
+  MODEATOR_SYNC_VOTES_ACTION_KEY,
+} from './actions';
+import { VotingEvents } from './events';
 import {
   GUARD_MODERATOR_IS_RESULTING_KEY,
   GUARD_MODERATOR_IS_STARTING_KEY,
   GUARD_USER_IS_MODERATOR_KEY,
 } from './guards';
 import { makeUserTransitions } from './helpers/transitions';
-
-type State = StateNodeConfig<
-  VotingContext,
-  Events,
-  ProvidedActor,
-  ParameterizedObject,
-  ParameterizedObject,
-  string,
-  string,
-  never,
-  EventObject,
-  {}
->;
 
 export enum VotingStates {
   Idle = 'state:idle',
@@ -47,10 +31,16 @@ export const IdleState = {
       {
         target: VotingStates.Pool,
         guard: { type: GUARD_MODERATOR_IS_STARTING_KEY },
+        actions: {
+          type: MODEATOR_SYNC_VOTES_ACTION_KEY,
+        },
       },
       {
         target: VotingStates.PoolResult,
         guard: { type: GUARD_MODERATOR_IS_RESULTING_KEY },
+        actions: {
+          type: MODEATOR_SYNC_VOTES_ACTION_KEY,
+        },
       },
       {
         target: VotingStates.Idle,

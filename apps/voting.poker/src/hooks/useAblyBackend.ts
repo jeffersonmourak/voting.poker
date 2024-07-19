@@ -8,7 +8,6 @@ import {
   UPDATE_USER_ACTION_KEY_Type,
   User,
   VotingEvents,
-  VotingStates,
 } from '@voting.poker/core';
 import {
   BaseRealtime,
@@ -45,12 +44,8 @@ type PresenceAction =
   | UPDATE_USER_ACTION_KEY_Type;
 
 type PresenceFn = (user: User, action: PresenceAction) => void;
-type PoolEventFn = (
-  event: VotingEvents,
-  userId: string,
-  vote: string | null,
-  moderatorState: VotingStates | null
-) => void;
+
+type PoolEventFn = (event: Events) => void;
 
 export function useAblyBackend(
   roomId: string,
@@ -72,22 +67,18 @@ export function useAblyBackend(
       const userData = presence.data;
       const user: User = { ...userData, id };
 
-      switch (presence.action) {
-        case 'present':
-          presenceCallback(user, REGISTER_USER_ACTION_KEY);
-          break;
-        case 'enter':
-          presenceCallback(user, REGISTER_USER_ACTION_KEY);
-          break;
-        case 'update':
-          presenceCallback(user, UPDATE_USER_ACTION_KEY);
-          break;
-        case 'leave':
-          presenceCallback(user, REMOVE_USER_ACTION_KEY);
-          break;
-        default:
-          break;
+      const actionKeys: Record<string, PresenceAction> = {
+        present: REGISTER_USER_ACTION_KEY,
+        enter: REGISTER_USER_ACTION_KEY,
+        update: UPDATE_USER_ACTION_KEY,
+        leave: REMOVE_USER_ACTION_KEY,
+      };
+
+      if (!actionKeys[presence.action]) {
+        return;
       }
+
+      presenceCallback(user, actionKeys[presence.action]);
     }
   );
 
@@ -101,22 +92,33 @@ export function useAblyBackend(
 
       switch (name) {
         case 'START_SESSION':
-          poolEventCallback(VotingEvents.StartPool, clientId, null, null);
+          poolEventCallback({
+            type: VotingEvents.StartPool,
+            createdBy: clientId,
+          });
           break;
         case 'END_SESSION':
-          poolEventCallback(VotingEvents.EndPool, clientId, null, null);
+          poolEventCallback({
+            type: VotingEvents.EndPool,
+            createdBy: clientId,
+          });
           break;
         case 'VOTE':
-          poolEventCallback(VotingEvents.Vote, clientId, data.vote, null);
+          poolEventCallback({
+            type: VotingEvents.Vote,
+            createdBy: clientId,
+            vote: data.vote,
+          });
           break;
         case 'MODERATOR_SYNC':
           if (data.target === DefaultUser.id) {
-            poolEventCallback(
-              VotingEvents.ModeratorSync,
-              clientId,
-              null,
-              data.state
-            );
+            poolEventCallback({
+              type: VotingEvents.ModeratorSync,
+              createdBy: clientId,
+              state: data.state,
+              votes: data.votes,
+              target: data.target,
+            });
           }
           break;
         default:

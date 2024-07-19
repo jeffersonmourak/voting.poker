@@ -95,9 +95,7 @@ const ResultStateComponent: React.FC<Result> = ({ state }) => {
   const results = sessionVotesResult.map(toResultData(sessionVotesResult, votesEntries.length, {
     '?': theme.palette.info.dark,
     '☕️': theme.palette.warning.dark,
-  }));
-
-  console.log(results)
+  })).sort((a, b) => b.percentage - a.percentage);
 
   const [firstPlace, ...rest] = results;
 

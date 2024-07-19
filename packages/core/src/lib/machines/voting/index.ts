@@ -4,12 +4,14 @@ import {
   clearPoolActionAssign,
   COMPUTE_VOTE_ACTION_KEY,
   computeVoteActionAssign,
+  MODEATOR_SYNC_VOTES_ACTION_KEY,
+  moderatorSyncVotesAction,
   REGISTER_USER_ACTION_KEY,
   registerUserActionAssign,
   REMOVE_USER_ACTION_KEY,
   removeUserActionAssign,
   UPDATE_USER_ACTION_KEY,
-  updateUserActionAssign
+  updateUserActionAssign,
 } from './actions';
 import { VotingContext } from './context';
 import { Events } from './events';
@@ -56,6 +58,7 @@ export const initializeMachine = (context: VotingContext) =>
         [UPDATE_USER_ACTION_KEY]: assign(updateUserActionAssign),
         [REMOVE_USER_ACTION_KEY]: assign(removeUserActionAssign),
         [CLEAR_POOL_ACTION_KEY]: assign(clearPoolActionAssign),
+        [MODEATOR_SYNC_VOTES_ACTION_KEY]: assign(moderatorSyncVotesAction),
       },
       actors: {},
       guards: {
