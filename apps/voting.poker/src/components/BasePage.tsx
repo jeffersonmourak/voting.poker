@@ -8,7 +8,7 @@ const BasePage = ({ children }: BasePageProps) => {
   return (
     <Grid container direction="column" sx={{
       width: '100%',
-      height: '100vh',
+      minHeight: '100vh',
       flexWrap: 'nowrap',
     }}>
       <Grid item sx={{
@@ -22,6 +22,8 @@ const BasePage = ({ children }: BasePageProps) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        height: 64,
+        overflow: 'hidden',
       }}>
         Made with&nbsp;<span style={{
           color: 'red',
