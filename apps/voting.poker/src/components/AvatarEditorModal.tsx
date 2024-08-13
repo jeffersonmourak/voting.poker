@@ -138,7 +138,7 @@ export const AvatarEditorModal = ({
         disableEscapeKeyDown={hideDisable}
         aria-labelledby="avatar-editor-modal-title">
         <ModalRoot>
-          <ModalPaper ref={scrollElementRef} elevation={12}>
+          <ModalPaper ref={scrollElementRef} elevation={12} sx={{ maxHeight: '900px', height: '100%' }} >
             <Typography py={3} id="avatar-editor-modal-title" variant="h5" component="h2">
               <strong>{title}</strong>
             </Typography>
