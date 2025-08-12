@@ -15,7 +15,7 @@ jobs:
       - run: bun run scripts/homepage-codegen.tsx
       - run: bun run build
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v1
         with:
           name: github-pages
           path: dist/
@@ -33,10 +33,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v1
         with:
           name: github-pages
           path: dist/
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v1
