@@ -14,25 +14,8 @@ jobs:
       - run: bun install
       - run: bun run scripts/homepage-codegen.tsx
       - run: bun run build
-      - name: Debug dist folder contents
-        run: |
-          echo "=== Checking for symlinks and hard links ==="
-          find dist/ -type l -ls
-          echo "=== Checking file sizes ==="
-          du -sh dist/
-          echo "=== Checking for problematic files ==="
-          ls -la dist/
-      - name: Clean and rebuild dist folder
-        run: |
-          # Remove the entire dist folder and rebuild cleanly
-          rm -rf dist/
-          bun run build
-          # Ensure no symlinks exist
-          find dist/ -type l -delete
-          # Remove source maps to reduce size
-          find dist/ -name "*.map" -delete
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v4
         with:
           name: github-pages
           path: dist/
