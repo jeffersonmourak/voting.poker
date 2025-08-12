@@ -18,32 +18,40 @@ function createEmotionCache() {
 	return createCache({ key: "css" });
 }
 
-function renderFullPage(html: string, css: string) {
+type RenderFullPageProps = {
+	bootstrapScripts?: string[];
+	title?: string;
+};
+
+function renderFullPage(
+	html: string,
+	css: string,
+	{ bootstrapScripts = [], title = "Voting Poker" }: RenderFullPageProps,
+) {
 	return `
       <!DOCTYPE html>
       <html>
         <head>
+          <!-- This is an auto-generated file. Do not edit. -->
           <meta charset="utf-8" />
-          <title>My page</title>
+          <title>${title}</title>
           ${css}
           <meta name="viewport" content="initial-scale=1, width=device-width" />
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-          />
           <link rel="stylesheet" href="./globals.css" />
         </head>
         <body>
           <div id="root">${html}</div>
-          <script type="module" src="./frontend.tsx"></script>
+          ${bootstrapScripts.map((script) => `<script type="module" src="${script}"></script>`).join("\n")}
         </body>
       </html>
     `;
 }
 
-async function generateHTML() {
+async function generateStaticHTML(
+	page: React.ReactNode,
+	filename: string,
+	props: RenderFullPageProps = {},
+) {
 	const cache = createEmotionCache();
 	const { extractCriticalToChunks, constructStyleTagsFromChunks } =
 		createEmotionServer(cache);
@@ -55,7 +63,7 @@ async function generateHTML() {
 				{/* CssBaseline kickstart an elegant, consistent, and simple baseline
             to build upon. */}
 				<CssBaseline />
-				<App />
+				{page}
 			</ThemeProvider>
 		</CacheProvider>,
 	).replaceAll(path.resolve(__dirname, "../src"), ".");
@@ -64,7 +72,10 @@ async function generateHTML() {
 	const emotionChunks = extractCriticalToChunks(html);
 	const emotionCss = constructStyleTagsFromChunks(emotionChunks);
 
-	await Bun.write("src/index.html", renderFullPage(html, emotionCss));
+	await Bun.write(`src/${filename}`, renderFullPage(html, emotionCss, props));
 }
 
-generateHTML().catch(console.error);
+generateStaticHTML(<App />, "index.html", {
+	bootstrapScripts: ["./frontend.tsx"],
+}).catch(console.error);
+generateStaticHTML(<>Hello 404</>, "404.html").catch(console.error);
