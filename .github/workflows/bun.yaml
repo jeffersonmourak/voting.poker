@@ -1,11 +1,3 @@
-name: Deploy with bun
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun run scripts/homepage-codegen.tsx
-      - run: bun run build
+- uses: oven-sh/setup-bun@v2
+  with:
+    bun-version-file: ".bun-version"
