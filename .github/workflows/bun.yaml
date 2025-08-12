@@ -1,4 +1,4 @@
-name: Deploy with Bun
+name: Deploy with bun
 jobs:
   deploy:
     name: Deploy
