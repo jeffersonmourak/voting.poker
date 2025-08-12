@@ -1,9 +1,0 @@
-{
-  "name": "@voting.poker/core",
-  "version": "0.0.1",
-  "dependencies": {
-    "xstate": "^5.1.0",
-    "type-fest": "^4.15.0",
-    "uuid": "^9.0.0"
-  }
-}
