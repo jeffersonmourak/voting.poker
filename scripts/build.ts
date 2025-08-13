@@ -5,6 +5,9 @@ import { generateStaticHTML, type Meta } from "./homepage-codegen";
 import App from "@/App";
 import path from "node:path";
 
+// const BASE_URL = "https://voting.poker";
+const BASE_URL = "https://jeffersonmourak.com/voting.poker";
+
 async function bundleMeta(metaList: Meta[]) {
   const bundledMeta: Meta[] = [];
   const toBeDeleted = new Set<string>();
@@ -12,7 +15,7 @@ async function bundleMeta(metaList: Meta[]) {
   for (const metaItem of metaList) {
     const key = "name" in metaItem ? metaItem.name : metaItem.property;
 
-    if (!key.endsWith("image")) {
+    if (!key.endsWith("image") && !key.endsWith("icon")) {
       bundledMeta.push(metaItem);
       continue;
     }
@@ -33,7 +36,7 @@ async function bundleMeta(metaList: Meta[]) {
 
     bundledMeta.push({
       ...metaItem,
-      content: result.path.replace(dirPath, "."),
+      content: result.path.replace(dirPath, BASE_URL),
     });
 
     toBeDeleted.add(entryPoint.path);
@@ -66,7 +69,7 @@ async function main() {
       },
       {
         property: "og:url",
-        content: "https://voting.poker",
+        content: BASE_URL,
       },
       {
         property: "og:site_name",
@@ -111,7 +114,7 @@ async function main() {
       },
       {
         name: "link:icon",
-        content: "./favicon.ico",
+        content: "../src/favicon.ico",
       },
     ];
 
