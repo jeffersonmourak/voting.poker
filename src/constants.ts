@@ -1,6 +1,6 @@
 export const isDev =
   typeof global === "undefined"
-    ? import.meta.env.DEV
+    ? import.meta.env?.DEV ?? false
     : process && process.env.NODE_ENV === "development";
 
 export const siteHost = isDev

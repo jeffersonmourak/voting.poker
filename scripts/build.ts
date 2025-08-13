@@ -2,6 +2,9 @@
 
 import { build } from "bun";
 import { generatePages } from "./generatePages";
+import fs from "node:fs/promises";
+
+import { BunImageTransformPlugin } from "bun-image-transform";
 
 async function main() {
   console.log("🚀 Starting build process...");
@@ -12,21 +15,21 @@ async function main() {
     // Build index.html first
     console.log("📄 Building index.html...");
     const indexResult = await build({
-      entrypoints: ["./src/index.html"],
+      entrypoints: ["./src/_generated_index.html"],
       outdir: "./dist",
       sourcemap: "external",
       target: "browser",
       //   minify: true,
       define: {
-        "process.env.NODE_ENV": '"production"',
+        "process.env.NODE_ENV": '"development"',
       },
-      env: "BUN_PUBLIC_*",
+      env: "inline",
     });
 
     // Build 404.html second
     console.log("📄 Building 404.html...");
     const notFoundResult = await build({
-      entrypoints: ["./src/404.html"],
+      entrypoints: ["./src/_generated_404.html"],
       outdir: "./dist",
       sourcemap: "external",
       target: "browser",
@@ -35,9 +38,7 @@ async function main() {
         "process.env.NODE_ENV": '"production"',
       },
       env: "BUN_PUBLIC_*",
-      plugins: [
-        require("./node_modules/bun-image-transform/plugin.js").default,
-      ],
+      plugins: [BunImageTransformPlugin()],
     });
 
     console.log("✅ Build completed successfully!");
@@ -54,6 +55,11 @@ async function main() {
         `📄 Generated ${notFoundResult.outputs.length} files from 404.html`
       );
     }
+
+    // rename _generated_index.html to index.html
+    await fs.rename("./dist/_generated_index.html", "./dist/index.html");
+    // rename _generated_404.html to 404.html
+    await fs.rename("./dist/_generated_404.html", "./dist/404.html");
 
     await cleanup();
 

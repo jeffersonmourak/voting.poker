@@ -114,8 +114,8 @@ export async function generatePages() {
 
   const [bundleList, cleanupFilesList] = await bundleMeta(SEOMeta);
 
-  const indexPath = path.resolve(__dirname, "../src/index.html");
-  const notFoundPath = path.resolve(__dirname, "../src/404.html");
+  const indexPath = path.resolve(__dirname, "../src/_generated_index.html");
+  const notFoundPath = path.resolve(__dirname, "../src/_generated_404.html");
 
   cleanupFilesList.push(indexPath, notFoundPath);
 

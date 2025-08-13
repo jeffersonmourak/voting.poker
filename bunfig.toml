@@ -1,4 +1,4 @@
 [serve.static]
-env = "BUN_PUBLIC_*"
+env = "inline"
 [plugins]
 "./node_modules/bun-image-transform/plugin.js" = {}

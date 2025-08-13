@@ -6,6 +6,8 @@ out
 dist
 *.tgz
 
+_generated_*.html
+
 # code coverage
 coverage
 *.lcov
