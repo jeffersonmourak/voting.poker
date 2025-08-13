@@ -1,6 +1,6 @@
 <img src="https://voting.poker/OpenGraphFigure-nmkn0qj5.png" alt="Voting Poker Open Graph Figure"/>
 
-# [Voting Poker](https://voting.poker)
+# [Voting Poker](https://voting.poker) [![Deploy](https://github.com/jeffersonmourak/voting.poker/actions/workflows/bun.yaml/badge.svg?branch=main)](https://github.com/jeffersonmourak/voting.poker/actions/workflows/bun.yaml)
 
 is a tool for teams to vote on tasks, features, or anything else that needs a decision.
 
