@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 import { useRoom } from "../hooks/useRoom";
 import { AvatarEditorModal } from "@/components/AvatarEditorModal";
-import { identify } from "@/helpers/highlight";
+import { identify } from "@/helpers/analytics";
 
 interface IAvatarContextData {
 	open: boolean;

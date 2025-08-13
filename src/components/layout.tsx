@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "../theme";
 
 import "../globals.css";
+import AnalyticsProvider from "./AnalyticsProvider";
 
 export const metadata = {
 	title: "Voting Poker",
@@ -62,8 +63,10 @@ export default function Layout({
 }) {
 	return (
 		<ThemeProvider theme={theme}>
-			<CssBaseline />
-			{children}
+			<AnalyticsProvider>
+				<CssBaseline />
+				{children}
+			</AnalyticsProvider>
 		</ThemeProvider>
 	);
 }

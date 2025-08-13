@@ -1,6 +1,6 @@
 import { Button, Container, Paper, styled, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { identify } from "../helpers/highlight";
+import { identify } from "../helpers/analytics";
 import { useRoom } from "@/hooks/useRoom";
 
 const Root = styled(Box)(({ theme }) => ({
