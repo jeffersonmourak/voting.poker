@@ -1,4 +1,4 @@
-<img src="https://www.voting.poker/OG/OpenGraphFigure.png" alt="Voting Poker Open Graph Figure"/>
+<img src="https://voting.poker/OpenGraphFigure-nmkn0qj5.png" alt="Voting Poker Open Graph Figure"/>
 
 # [Voting Poker](https://voting.poker)
 
