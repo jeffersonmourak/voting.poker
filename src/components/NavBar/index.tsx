@@ -1,0 +1,85 @@
+import { Box, Button, useTheme } from "@mui/material";
+import { alpha, styled } from "@mui/system";
+import AppIdentification from "./AppIdentification";
+import { useVisibleSection } from "./hooks/useVisibleSection";
+import { Links } from "./Links";
+import { toNewRoom } from "@/helpers/link";
+
+const Root = styled(Box)(({ theme }) => ({
+	display: "flex",
+	width: "100%",
+	padding: 40,
+	justifyContent: "space-between",
+	alignItems: "center",
+	height: 128,
+	position: "fixed",
+	zIndex: 999,
+	backdropFilter: "blur(16px)",
+	transition: "background 0.2s ease-in-out",
+
+	[theme.breakpoints.down("md")]: {
+		gap: theme.spacing(1),
+	},
+}));
+
+const LinksContainer = styled(Box)(({ theme }) => ({
+	display: "flex",
+	gap: 48,
+}));
+
+const ActionButton = styled(Button)(({ theme }) => ({
+	background: theme.palette.common.white,
+
+	[theme.breakpoints.down("md")]: {
+		display: "none",
+	},
+
+	"&:hover, &:focus": {
+		color: theme.palette.common.black,
+	},
+}));
+
+export const NavBar = () => {
+	const { visibleSection } = useVisibleSection(64);
+	const theme = useTheme();
+
+	const manifestBackgroundColor = theme.palette.augmentColor({
+		color: { main: "#F8C3A9" },
+	});
+	const isDark = visibleSection > 0;
+
+	return (
+		<Root
+			sx={
+				isDark
+					? {
+							background: alpha(manifestBackgroundColor.light, 0.35),
+						}
+					: undefined
+			}
+		>
+			<AppIdentification />
+			<LinksContainer>
+				<Links />
+				<ActionButton
+					onClick={toNewRoom}
+					sx={
+						isDark
+							? {
+									background: manifestBackgroundColor.dark,
+
+									"&:hover, &:focus": {
+										color: theme.palette.common.white,
+									},
+								}
+							: undefined
+					}
+					variant="contained"
+					color={isDark ? "primary" : "secondary"}
+				>
+					Get a room
+				</ActionButton>
+			</LinksContainer>
+		</Root>
+	);
+};
