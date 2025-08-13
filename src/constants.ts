@@ -7,7 +7,7 @@ export const siteHost = isDev
   ? typeof location !== "undefined"
     ? location.host
     : "localhost:3000"
-  : "jeffersonmourak.com/voting.poker";
+  : "voting.poker";
 
 export const BASE_URL = isDev ? `http://${siteHost}` : `https://${siteHost}`;
 
