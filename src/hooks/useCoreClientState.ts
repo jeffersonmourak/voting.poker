@@ -1,14 +1,11 @@
-'use client';
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAblyBackend } from "./useAblyBackend";
+import { CoreClient, type CoreClientState } from "@/lib/core";
 import {
-  CoreClient,
-  CoreClientState,
   REGISTER_USER_ACTION_KEY,
-  REMOVE_USER_ACTION_KEY,
   UPDATE_USER_ACTION_KEY,
-} from '@voting.poker/core';
-import { useEffect, useMemo, useState } from 'react';
-import { useAblyBackend } from './useAblyBackend';
+  REMOVE_USER_ACTION_KEY,
+} from "@/lib/machines/voting/actions";
 
 export function useCoreClientState(roomId: string) {
   const { publish, user } = useAblyBackend(
@@ -29,16 +26,16 @@ export function useCoreClientState(roomId: string) {
     (e) => client.backendCallback(e)
   );
 
-  const client = useMemo(() => new CoreClient(roomId, user), [roomId]);
+  const client = useMemo(() => new CoreClient(roomId, user), [roomId, user]);
   const [state, setState] = useState(client.state);
 
   client.tapUserEvents = (event) => {
     publish(event);
   };
 
-  const handleSubscription = (clientState: CoreClientState) => {
+  const handleSubscription = useCallback((clientState: CoreClientState) => {
     setState(clientState);
-  };
+  }, []);
 
   useEffect(() => {
     const subscription = client.subscribe(handleSubscription);
@@ -46,7 +43,7 @@ export function useCoreClientState(roomId: string) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [client]);
+  }, [client, handleSubscription]);
 
   return { state, client, publish } as const;
 }
