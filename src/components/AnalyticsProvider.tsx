@@ -2,12 +2,18 @@
 
 import * as React from "react";
 
-import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { DataCollectionNotification } from "@/components/DataCollectionNotification";
 import { isDev } from "@/constants";
 import { debugAnalytics } from "@/helpers/debugAnalytics";
-import { tracker } from "@/helpers/analytics";
+import {
+	ConsentStatus,
+	getConsent,
+	identify,
+	saveConsent,
+	tracker,
+} from "@/helpers/analytics";
+import sillyName from "sillyname";
 
 interface IAnalyticsContext {
 	enabled: boolean;
@@ -21,10 +27,20 @@ export const AnalyticsContext = React.createContext<IAnalyticsContext>({
 
 const enableAnalytics = () => {
 	if (isDev) {
-		return debugAnalytics("init", "HIGHLIGHT");
+		return debugAnalytics("init", "OPEN REPLAY");
 	}
 
+	identify();
 	tracker.start();
+};
+
+const disableAnalytics = () => {
+	if (isDev) {
+		return debugAnalytics("stop", "OPEN REPLAY");
+	}
+
+	tracker.stop();
+	tracker.forceFlushBatch();
 };
 
 export default function AnalyticsProvider({
@@ -33,12 +49,15 @@ export default function AnalyticsProvider({
 	const [enabled, setEnabled] = React.useState(false);
 
 	useEffect(() => {
-		const hasAnswerd = Cookies.get("dataCollectionAccepted");
-		const hasAccepted = Cookies.get("dataCollectionAccepted") === "true";
+		const consentData = getConsent();
 
-		if (hasAnswerd && hasAccepted) {
-			enableAnalytics();
-			setEnabled(true);
+		if (consentData.status !== ConsentStatus.rejected) {
+			tracker.coldStart();
+
+			if (consentData.status === ConsentStatus.accepted) {
+				enableAnalytics();
+				setEnabled(true);
+			}
 		}
 	}, []);
 
@@ -46,9 +65,17 @@ export default function AnalyticsProvider({
 		if (consent) {
 			enableAnalytics();
 			setEnabled(true);
-			Cookies.set("dataCollectionAccepted", "true");
+			saveConsent({
+				status: ConsentStatus.accepted,
+				identifier: sillyName(),
+				timestamp: Date.now(),
+			});
 		} else {
-			Cookies.set("dataCollectionAccepted", "false");
+			saveConsent({
+				status: ConsentStatus.rejected,
+				timestamp: Date.now(),
+			});
+			disableAnalytics();
 		}
 	};
 
