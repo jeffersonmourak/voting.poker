@@ -5,10 +5,17 @@ import Tracker from "@openreplay/tracker";
 import trackerAssist from "@openreplay/tracker-assist";
 import Cookies from "js-cookie";
 import sillyName from "sillyname";
+import posthog from "posthog-js";
 
 export const tracker = new Tracker({
   projectKey: "rDQFS2nTrl0zWaahjpa7",
   capturePerformance: true,
+});
+
+posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
+  api_host: "https://us.i.posthog.com",
+  defaults: "2025-05-24",
+  person_profiles: "always",
 });
 
 tracker.use(trackerAssist());
@@ -122,6 +129,12 @@ function getAndMigrateConsent(): ConsentData {
 
 export const getConsent = () => {
   const consent = getAndMigrateConsent();
+
+  if (consent.status === ConsentStatus.accepted) {
+    posthog.identify(consent.identifier, {
+      agreedAt: consent.timestamp,
+    });
+  }
 
   return consent;
 };

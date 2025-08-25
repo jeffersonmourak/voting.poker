@@ -18,7 +18,10 @@ is a tool for teams to vote on tasks, features, or anything else that needs a de
 
 ## Data Collection and Analysis Advisory
 
-The web client uses [OpenReplay](https://www.openreplay.com/) for user interaction analysis, that will record sessions from those who allow the usage of cookies. The data collected is used to improve the user experience and the project itself.
+The web client uses [OpenReplay](https://www.openreplay.com/) and [PostHog](https://posthog.com/) for user interaction analysis, that will record sessions from those who allow the usage of cookies. The data collected is used to improve the user experience and the project itself.
+
+**Why am I using PostHog too?**
+I'm having difficulties to get reliable data from open replay, so I'm experimenting with posthog.
 
 If you don't want to be tracked, you can disable cookies on your browser or if you have already accepted the cookies, you can clear them on your browser settings.
 
