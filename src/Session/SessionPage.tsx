@@ -1,7 +1,7 @@
 import { RoomProvider, useRoom } from "../hooks/useRoom";
 import { AvatarContext, AvatarProvider } from "../components/AvatarProvider";
 import BasePage from "@/components/base-page";
-import { useContext } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Box, Modal, styled } from "@mui/material";
 import ModeratorModal from "@/components/ModeratorModal";
 import RoomDetails from "@/components/RoomDetails";
@@ -10,6 +10,7 @@ import type { CoreClientState } from "@/lib/core";
 import IdleStateComponent from "@/components/States/Idle";
 import PoolStateComponent from "@/components/States/Pool";
 import ResultStateComponent from "@/components/States/Result";
+import posthog from "posthog-js";
 
 const Root = styled(Box)(({ theme }) => ({
 	display: "flex",
@@ -28,7 +29,19 @@ function useRoomId() {
 		return;
 	}
 
-	return location.href.split("/").pop();
+	const roomId = useMemo(() => {
+		return location.href.split("/").pop();
+	}, []);
+
+	useEffect(() => {
+		if (!roomId) {
+			return;
+		}
+
+		posthog.group("Room", roomId);
+	}, [roomId]);
+
+	return roomId;
 }
 
 interface SwitchViewsProps {
