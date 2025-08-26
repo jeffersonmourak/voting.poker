@@ -5,7 +5,7 @@ import Tracker from "@openreplay/tracker";
 import trackerAssist from "@openreplay/tracker-assist";
 import Cookies from "js-cookie";
 import sillyName from "sillyname";
-import posthog from "posthog-js";
+import posthog, { type Properties } from "posthog-js";
 
 export const tracker = new Tracker({
   projectKey: "rDQFS2nTrl0zWaahjpa7",
@@ -37,20 +37,34 @@ export const identify = (user?: IdentifyArgs) => {
   }
 
   if (consentData.status === ConsentStatus.pending) {
-    tracker.setUserAnonymousID(sillyName());
+    const anonymousId = sillyName();
+    tracker.setUserAnonymousID(anonymousId);
+    posthog.alias(anonymousId);
+    posthog.setPersonProperties({
+      anonymous: true,
+    });
   } else {
     tracker.setUserID(consentData.identifier);
-    if (user !== undefined) tracker.setMetadata("session_user_id", user.id);
+    if (user !== undefined) {
+      tracker.setMetadata("session_user_id", user.id);
+      posthog.alias(user.id);
+    }
   }
+
+  const personProperties: Properties = {};
 
   if (user) {
     if (user?.roomId) {
       tracker.setMetadata("session_room_id", user.roomId);
+      personProperties.session_room_id = user.roomId;
     }
     for (const field of trackingFields) {
       tracker.setMetadata(field, `${user[field]}`);
+      personProperties[field] = `${user[field]}`;
     }
   }
+
+  posthog.setPersonProperties(personProperties);
 
   if (consentData.status === ConsentStatus.pending) {
     tracker.start();
@@ -135,6 +149,5 @@ export const getConsent = () => {
       agreedAt: consent.timestamp,
     });
   }
-
   return consent;
 };
