@@ -15,6 +15,11 @@ export const tracker = new Tracker({
 posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
   api_host: "https://us.i.posthog.com",
   defaults: "2025-05-24",
+  bootstrap: {
+    featureFlags: {
+      'activate_survey': false,
+    }
+  },
   person_profiles: "always",
 });
 
