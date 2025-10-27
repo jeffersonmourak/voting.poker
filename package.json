@@ -29,7 +29,7 @@
     "emoji-picker-react": "^4.4.12",
     "lodash": "^4.17.21",
     "luxon": "^2.3.0",
-    "posthog-js": "^1.260.2",
+    "posthog-js": "^1.281.0",
     "react": "^19",
     "react-dom": "^19",
     "react-drag-drop-files": "^2.3.10",
@@ -46,5 +46,6 @@
     "@types/luxon": "^3.7.1",
     "@types/react": "^19",
     "@types/react-dom": "^19"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
