@@ -1,0 +1,62 @@
+name: Upgrade Dependencies
+
+on:
+  schedule:
+    - cron: '0 5 * * 1' # Run every Monday at 5:00 AM UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  upgrade:
+    name: Upgrade Dependencies
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Check for outdated dependencies
+        id: outdated
+        run: |
+          {
+            echo 'OUTDATED_LOG<<EOF'
+            bun outdated || true
+            echo EOF
+          } >> "$GITHUB_ENV"
+
+      - name: Update dependencies
+        # "bun update" respects the version ranges in package.json (e.g. ^1.2.3).
+        # This updates the lockfile to the latest versions that DO NOT introduce breaking changes (according to SemVer).
+        # Specifically for posthog-js: "^1.298.1" allows updates to any 1.x.x version, but prevents 2.0.0.
+        run: bun update
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: upgrade dependencies"
+          title: "chore: upgrade dependencies"
+          body: |
+            This PR updates project dependencies to their latest compatible versions.
+
+            ### Upgrade Summary
+            <details>
+              <summary>Click to see outdated packages</summary>
+
+            ```
+            ${{ env.OUTDATED_LOG }}
+            ```
+
+            </details>
+          branch: chore/dependency-upgrade
+          delete-branch: true
+          base: main
