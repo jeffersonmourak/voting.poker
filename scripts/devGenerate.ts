@@ -1,3 +1,5 @@
 import { generatePages } from "./generatePages";
 
-const _ = generatePages();
+generatePages().then(() => {
+    process.exit(0);
+});

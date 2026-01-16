@@ -1,16 +1,29 @@
 import type { User } from "@/lib/core";
 import { debugAnalytics } from "./debugAnalytics";
 import { isDev } from "@/constants";
-import Tracker from "@openreplay/tracker";
 import trackerAssist from "@openreplay/tracker-assist";
 import Cookies from "js-cookie";
 import sillyName from "sillyname";
-import posthog, { type Properties } from "posthog-js";
+import posthogOriginal, { type Properties } from "posthog-js";
 
-export const tracker = new Tracker({
-  projectKey: "rDQFS2nTrl0zWaahjpa7",
-  capturePerformance: true,
+const posthog = new Proxy(posthogOriginal, {
+  get(target, prop, receiver) {
+    const originalValue = Reflect.get(target, prop, receiver);
+
+    if (typeof originalValue === "function") {
+      return function (this: unknown, ...args: unknown[]) {
+        if (process.env.NODE_ENV === "development") {
+          return debugAnalytics("posthog", String(prop), args);
+        }
+        
+        return (originalValue as (...args: unknown[]) => unknown).apply(this, args);
+      };
+    }
+
+    return originalValue;
+  },
 });
+
 
 posthog.setPersonPropertiesForFlags({ 'agreedAt': null });
 
@@ -25,7 +38,7 @@ posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
   person_profiles: "always",
 });
 
-tracker.use(trackerAssist());
+
 
 const trackingFields = ["name", "emoji", "avatar", "moderator"] as const;
 
@@ -35,7 +48,7 @@ export interface IdentifyArgs extends Omit<User, "vote"> {
 
 export const identify = (user?: IdentifyArgs) => {
   if (isDev) {
-    return debugAnalytics("identify", user);
+    return debugAnalytics("user", "identify", user);
   }
 
   const consentData = getConsent();
@@ -45,15 +58,15 @@ export const identify = (user?: IdentifyArgs) => {
 
   if (consentData.status === ConsentStatus.pending) {
     const anonymousId = sillyName();
-    tracker.setUserAnonymousID(anonymousId);
+
     posthog.alias(anonymousId);
     posthog.setPersonProperties({
       anonymous: true,
     });
   } else {
-    tracker.setUserID(consentData.identifier);
+
     if (user !== undefined) {
-      tracker.setMetadata("session_user_id", user.id);
+
       posthog.alias(user.id);
     }
   }
@@ -62,26 +75,19 @@ export const identify = (user?: IdentifyArgs) => {
 
   if (user) {
     if (user?.roomId) {
-      tracker.setMetadata("session_room_id", user.roomId);
       personProperties.session_room_id = user.roomId;
     }
     for (const field of trackingFields) {
-      tracker.setMetadata(field, `${user[field]}`);
       personProperties[field] = `${user[field]}`;
     }
   }
 
   posthog.setPersonProperties(personProperties);
-
-  if (consentData.status === ConsentStatus.pending) {
-    tracker.start();
-    tracker.forceFlushBatch();
-  }
 };
 
 export const consent = (consent: boolean) => {
   if (isDev) {
-    return debugAnalytics("consent", consent);
+    return debugAnalytics("user", "consent", consent);
   }
 };
 

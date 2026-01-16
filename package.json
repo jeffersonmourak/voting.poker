@@ -7,7 +7,7 @@
   "module": "src/index.tsx",
   "scripts": {
     "dev": "NODE_ENV=development BUN_PUBLIC_SITE_HOST=localhost:3000 bun run scripts/devGenerate.ts && bun --hot src/index.tsx",
-    "build": "bun run scripts/build.ts",
+    "build": "NODE_ENV=production bun run scripts/build.ts",
     "start": "NODE_ENV=production bun src/index.tsx"
   },
   "dependencies": {
