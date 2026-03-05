@@ -36,7 +36,7 @@ posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
     }
   },
   person_profiles: "always",
-  cookieless_mode: "always",
+  cookieless_mode: "on_reject",
 });
 
 
