@@ -35,8 +35,7 @@ posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
       'activate_survey': false,
     }
   },
-  person_profiles: "always",
-  cookieless_mode: "on_reject",
+  person_profiles: "always"
 });
 
 
