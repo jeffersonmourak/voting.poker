@@ -15,7 +15,7 @@ const posthog = new Proxy(posthogOriginal, {
         if (process.env.NODE_ENV === "development") {
           return debugAnalytics("posthog", String(prop), args);
         }
-        
+
         return (originalValue as (...args: unknown[]) => unknown).apply(this, args);
       };
     }
@@ -36,6 +36,7 @@ posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
     }
   },
   person_profiles: "always",
+  cookieless_mode: "always",
 });
 
 
