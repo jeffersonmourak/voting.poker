@@ -28,7 +28,7 @@ const posthog = new Proxy(posthogOriginal, {
 posthog.setPersonPropertiesForFlags({ 'agreedAt': null });
 
 posthog.init("phc_q4uAbtOL08ekE237YhrpiIB49z6HedJyPfz9N93Eqye", {
-  api_host: "https://us.i.posthog.com",
+  api_host: "https://t.voting.poker",
   defaults: "2025-05-24",
   bootstrap: {
     featureFlags: {
