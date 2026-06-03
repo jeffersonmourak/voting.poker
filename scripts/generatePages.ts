@@ -1,7 +1,7 @@
-import { BASE_URL } from "@/constants";
+import { BASE_URL } from "@/app/constants";
 import { generateStaticHTML, type Meta } from "./codegen";
 import App from "@/App";
-import Session from "@/Session";
+import Session from "@/features/room/Session";
 import { build } from "bun";
 import path from "node:path";
 

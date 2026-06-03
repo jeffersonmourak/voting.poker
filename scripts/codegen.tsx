@@ -1,9 +1,4 @@
-import {
-	renderToReadableStream,
-	renderToStaticMarkup,
-	renderToString,
-} from "react-dom/server";
-import App from "../src/App";
+import { renderToString } from "react-dom/server";
 import path from "node:path";
 
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,7 +7,7 @@ import { CacheProvider } from "@emotion/react";
 import createEmotionServer from "@emotion/server/create-instance";
 
 import createCache from "@emotion/cache";
-import theme from "../src/theme";
+import theme from "../src/app/theme";
 import type { FunctionComponent } from "react";
 
 function createEmotionCache() {

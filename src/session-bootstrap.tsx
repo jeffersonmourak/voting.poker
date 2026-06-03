@@ -1,13 +1,12 @@
 /**
- * This file is the entry point for the React app, it sets up the root
- * element and renders the App component to the DOM.
- *
- * It is included in `src/index.html`.
+ * Client entry for the room SPA. Served via `404.html` (the GitHub Pages
+ * fallback that backs every `/<roomId>` URL); mounts the Session tree
+ * into #root.
  */
 
-import { hydrateRoot, createRoot } from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
-import Session from "./Session";
+import Session from "@/features/room/Session";
 
 const elem = document.getElementById("root");
 if (!elem) {
