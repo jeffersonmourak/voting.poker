@@ -4,18 +4,18 @@ declare module "*.svg" {
 }
 
 declare module "*.jpg" {
-    const content: string;
-    export default string;
+  const content: string;
+  export default content;
 }
 
 declare module "*.png" {
-    const content: string;
-    export default string;
+  const content: string;
+  export default content;
 }
 
 declare module "*.gif" {
-    const content: string;
-    export default string;
+  const content: string;
+  export default content;
 }
 
-declare module 'sillyname';
+declare module "sillyname";
