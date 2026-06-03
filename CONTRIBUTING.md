@@ -80,13 +80,9 @@ For most contributions, after your first pull request is accepted and merged, yo
 
 - **Follow existing coding style and conventions.** Keep your code consistent with the style, formatting, and conventions in the rest of the code base. When possible, these will be enforced with a linter. Consistency makes it easier to review and modify in the future.
 
-- **Include test coverage.** Add unit tests or UI tests when possible. Follow existing patterns for implementing tests.
-
-- **Update the example project** if one exists to exercise any new functionality you have added.
+- **Verify your change.** There's no automated test suite yet — run the app with `bun run dev` and confirm the behavior. Linting runs in CI (`bun run lint`); please keep it clean. If you add tests, document how to run them.
 
 - **Add documentation.** Document your changes with code doc comments or in existing guides.
-
-- **Update the CHANGELOG** for all enhancements and bug fixes. Include the corresponding issue number if one exists, and your GitHub username. (example: "- Fixed crash in profile view. #123 @jessesquires")
 
 - **Use the repo's default branch.** Branch from and [submit your pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) to the repo's default branch. Usually this is `main`, but it could be `dev`, `develop`, or `master`.
 
@@ -100,48 +96,30 @@ For most contributions, after your first pull request is accepted and merged, yo
 
 ## :memo: Writing Commit Messages
 
-Please [write a great commit message](https://chris.beams.io/posts/git-commit/).
-
-1. Separate subject from body with a blank line
-1. Limit the subject line to 50 characters
-1. Capitalize the subject line
-1. Do not end the subject line with a period
-1. Use the imperative mood in the subject line (example: "Fix networking issue")
-1. Wrap the body at about 72 characters
-1. Use the body to explain **why**, *not what and how* (the code shows that!)
-1. If applicable, prefix the title with the relevant component name. (examples: "[Docs] Fix typo", "[Profile] Fix missing avatar")
+This project uses [Conventional Commits](https://www.conventionalcommits.org/),
+matching the dominant pattern in `git log`:
 
 ```
-[TAG] Short summary of changes in 50 chars or less
+<type>(<scope>): <description>
+```
 
-Add a more detailed explanation here, if necessary. Possibly give 
-some background about the issue being fixed, etc. The body of the 
-commit message can be several paragraphs. Further paragraphs come 
-after blank lines and please do proper word-wrap.
+- **Type** — one of `feat`, `fix`, `docs`, `chore`, `ci`, `refactor`, `perf`,
+  `test`, `build`.
+- **Scope** (optional) — the area touched, e.g. `core`, `machine`, `ably`, `ui`,
+  `build`.
+- **Description** — imperative mood, lowercase, no trailing period, ideally
+  under 70 characters.
+- Separate the subject from the body with a blank line. Use the body to explain
+  **why**, not what or how (the diff already shows that); wrap it at ~72 columns.
+- Reference issues in a footer when relevant (`Resolves: #123`).
 
-Wrap it to about 72 characters or so. In some contexts, 
-the first line is treated as the subject of the commit and the 
-rest of the text as the body. The blank line separating the summary 
-from the body is critical (unless you omit the body entirely); 
-various tools like `log`, `shortlog` and `rebase` can get confused 
-if you run the two together.
+Examples:
 
-Explain the problem that this commit is solving. Focus on why you
-are making this change as opposed to how or what. The code explains 
-how or what. Reviewers and your future self can read the patch, 
-but might not understand why a particular solution was implemented.
-Are there side effects or other unintuitive consequences of this
-change? Here's the place to explain them.
-
- - Bullet points are okay, too
-
- - A hyphen or asterisk should be used for the bullet, preceded
-   by a single space, with blank lines in between
-
-Note the fixed or relevant GitHub issues at the end:
-
-Resolves: #123
-See also: #456, #789
+```
+feat(room): reveal votes when the moderator ends the pool
+fix(ably): ignore presence events from unknown clients
+docs: document the realtime sync protocol
+chore: upgrade dependencies
 ```
 
 ## :white_check_mark: Code Review

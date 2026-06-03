@@ -154,9 +154,9 @@ Analytics are **opt-in and disabled in development**:
 - Only when **accepted** does `AnalyticsProvider` enable tracking. `identify()`
   then attaches user properties (name, emoji, avatar, moderator, room id) to
   PostHog; rejected users are never identified.
-- Two systems run in parallel: **PostHog** (product analytics, self-hosted proxy
-  at `t.voting.poker`) and **OpenReplay** (session replay). Rooms are grouped in
-  PostHog by room id (`SessionPage.useRoomId` → `posthog.group("Room", roomId)`).
+- Analytics go to **PostHog** (product analytics, self-hosted proxy at
+  `t.voting.poker`). Rooms are grouped by room id
+  (`SessionPage.useRoomId` → `posthog.group("Room", roomId)`).
 
 See the repository [`README.md`](../README.md) for the user-facing privacy
 advisory and data-collection details.
@@ -170,4 +170,4 @@ advisory and data-collection details.
 | `shared/utils/stringToColor.ts` | Deterministic color from a string (avatar fallback). |
 | `shared/utils/valueColorScale.ts` + `percentageToColor.ts` | Map an estimate value to a color/height on a `log10` scale. |
 | `shared/utils/toBase64.ts` | Encode uploaded avatar images. |
-| `features/analytics/analytics.ts` / `debugAnalytics.ts` | PostHog/OpenReplay identify + consent; dev-mode debug proxy. |
+| `features/analytics/analytics.ts` / `debugAnalytics.ts` | PostHog identify + consent; dev-mode debug proxy. |

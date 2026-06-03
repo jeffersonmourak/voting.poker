@@ -146,9 +146,9 @@ their feature (`src/features/room/cards/`, `src/features/avatar/`). Details in
 
 - **Theme** (`src/app/theme.ts`): a dark MUI theme with custom button variants and
   the Mont typeface.
-- **Analytics** (`src/features/analytics/analytics.ts`, `AnalyticsProvider`): PostHog +
-  OpenReplay, gated behind a cookie-consent banner and disabled in development
-  (calls are routed through a debug proxy instead).
+- **Analytics** (`src/features/analytics/analytics.ts`, `AnalyticsProvider`): PostHog,
+  gated behind a cookie-consent banner and disabled in development (calls are
+  routed through a debug proxy instead).
 - **Constants** (`src/app/constants.ts`): environment detection (`isDev`), base URL,
   and the public Ably / Giphy keys.
 

@@ -66,7 +66,7 @@ machine processes the same events, they converge on the same state.
 | Realtime | [Ably](https://ably.com/) modular SDK (presence + pub/sub) |
 | Reactive streams | [RxJS](https://rxjs.dev/) (card backgrounds, avatar nudges) |
 | Media | [Giphy](https://developers.giphy.com/) (GIF card faces & avatars) |
-| Analytics | [PostHog](https://posthog.com/) + [OpenReplay](https://www.openreplay.com/) (consent-gated) |
+| Analytics | [PostHog](https://posthog.com/) (consent-gated) |
 | Hosting | GitHub Pages (static), custom domain `voting.poker` |
 
 ## Local development
