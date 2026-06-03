@@ -25,7 +25,7 @@ vars for the static server.
 
 `dev` and `dev`'s `BUN_PUBLIC_SITE_HOST=localhost:3000` make URLs resolve against
 localhost; `build` runs with `NODE_ENV=production` so `isDev`
-(`src/constants.ts`) is false and the real `voting.poker` base URL is used.
+(`src/app/constants.ts`) is false and the real `voting.poker` base URL is used.
 
 ## The two entry points
 
@@ -106,13 +106,13 @@ Since no file named after a room id exists, every room URL falls through to
 the URL:
 
 ```ts
-// src/Session/SessionPage.tsx
+// src/features/room/SessionPage.tsx
 const roomId = location.href.split("/").pop();
 ```
 
 So no client-side router is needed: the "route" is just the last path segment,
 and a missing-page handler is repurposed as the SPA entry. Creating a room
-(`helpers/link.ts → toNewRoom`) simply sets `window.location.href` to
+(`shared/utils/link.ts → toNewRoom`) simply sets `window.location.href` to
 `<BASE_URL>/<uuid>`.
 
 ### The dev/`start` server
@@ -135,7 +135,7 @@ production, so room URLs work locally too.
 
 ## Configuration & secrets
 
-- **`src/constants.ts`** holds the public Ably and Giphy keys. These are
+- **`src/app/constants.ts`** holds the public Ably and Giphy keys. These are
   client-side **publishable** keys (the app is keyless/authless by design), so
   they ship in the bundle. `isDev`, `siteHost`, and `BASE_URL` are derived here
   from `NODE_ENV` / `BUN_PUBLIC_SITE_HOST`.

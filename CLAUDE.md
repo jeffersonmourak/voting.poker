@@ -39,7 +39,7 @@ time with [Bun](https://bun.sh/) and served from GitHub Pages at `voting.poker`.
 
 Useful environment variables:
 
-- `NODE_ENV` — `development` flips `isDev` (`src/constants.ts`): localhost URLs and the
+- `NODE_ENV` — `development` flips `isDev` (`src/app/constants.ts`): localhost URLs and the
   analytics debug proxy (no PostHog/OpenReplay network calls). `production` uses the real
   `voting.poker` base URL and live analytics.
 - `BUN_PUBLIC_SITE_HOST` — host used to resolve URLs in dev. `BUN_PUBLIC_*` vars are
@@ -64,15 +64,15 @@ client-side router.
 
 **The GitHub Pages trick:** Pages serves `404.html` for any path with no matching file,
 so `voting.poker/<roomId>` falls through to the room app. The room id is just the last
-path segment (`location.href.split("/").pop()` in `src/Session/SessionPage.tsx`).
-Creating a room (`src/helpers/link.ts`) generates a UUID and navigates to `/<uuid>` —
+path segment (`location.href.split("/").pop()` in `src/features/room/SessionPage.tsx`).
+Creating a room (`src/shared/utils/link.ts`) generates a UUID and navigates to `/<uuid>` —
 no registration. `src/index.tsx` is a tiny `Bun.serve()` that mirrors the same split
 (`/` → index, `/*` → 404 app) for dev and `bun start`.
 
 ## Runtime architecture (the one path every interaction takes)
 
 ```
-React view  ──intent (vote/start/stop)──▶  CoreClient (src/lib/core.ts)
+React view  ──intent (vote/start/stop)──▶  CoreClient (src/core/CoreClient.ts)
                                               │  #publishEvent does BOTH:
                           ┌───────────────────┤
        apply locally  ◀──┘                    └──▶ tapUserEvents ──▶ useAblyBackend.publish
@@ -86,10 +86,10 @@ React view  ──intent (vote/start/stop)──▶  CoreClient (src/lib/core.ts
       actor subscription ──▶ #computeState ──▶ React setState ──▶ re-render
 ```
 
-The layers, top to bottom: **UI** (`src/components`, `src/Session`) → **React glue**
-(`src/hooks/useRoom.tsx`, `useCoreClientState.ts`) → **domain bridge** `CoreClient`
-(`src/lib/core.ts`) → **state machine** (`src/lib/machines/voting/*`) → **transport**
-(`src/hooks/useAblyBackend.ts`). Full treatment in `docs/architecture.md`.
+The layers, top to bottom: **UI** (`src/features/*`, `src/app`) → **React glue**
+(`src/core/realtime/useRoom.tsx`, `useCoreClientState.ts`) → **domain bridge** `CoreClient`
+(`src/core/CoreClient.ts`) → **state machine** (`src/core/machine/*`) → **transport**
+(`src/core/realtime/useAblyBackend.ts`). Full treatment in `docs/architecture.md`.
 
 ## Facts that materially shape edits
 
@@ -124,7 +124,7 @@ The layers, top to bottom: **UI** (`src/components`, `src/Session`) → **React 
    the seat. `votes` is keyed by user id and cleared by `clearPool` on every `StartPool`.
 8. **Analytics are opt-in and dev-disabled.** PostHog/OpenReplay only fire in production
    after cookie consent; in dev every PostHog call is routed through a debug proxy
-   (`src/helpers/analytics.ts`). Don't add tracking that bypasses consent.
+   (`src/features/analytics/analytics.ts`). Don't add tracking that bypasses consent.
 
 ## The realtime wire protocol is a stable surface
 
@@ -132,16 +132,16 @@ Cross-client sync depends on every browser agreeing on a set of string constants
 are an implicit protocol: two clients on different versions must still interoperate, and
 an in-flight `MODERATOR_SYNC` must still deserialize. Treat them as version-locked.
 
-- **`VotingStates`** values (`src/lib/machines/voting/states.ts`): `state:idle`,
+- **`VotingStates`** values (`src/core/machine/states.ts`): `state:idle`,
   `state:pool`, `state:pool:vote`, `state:pool:result`. These travel inside `ModeratorSync`.
 - **`VotingEvents`** values (`events.ts`): `event:pool:start|end|vote`,
   `event:user:register|update|remove|moderatorSync`.
-- **Ably message names** (`src/hooks/useAblyBackend.ts`): `START_SESSION`, `END_SESSION`,
+- **Ably message names** (`src/core/realtime/useAblyBackend.ts`): `START_SESSION`, `END_SESSION`,
   `VOTE`, `MODERATOR_SYNC`, and the presence `data` payload shape (`User`).
 
 Do not rename or repurpose these casually; if you must change the protocol, change both
 the publish and subscribe sides together and assume a mixed-version window in production.
-The public Ably and Giphy keys in `src/constants.ts` are **client-side publishable keys**
+The public Ably and Giphy keys in `src/app/constants.ts` are **client-side publishable keys**
 shipped intentionally (the tool is keyless/no-auth) — they are not secrets to scrub.
 
 ## Tests, fixtures, and verifying changes
@@ -205,19 +205,19 @@ No attribution trailers in the body either.
 
 ## Files worth knowing about
 
-- `src/lib/core.ts` — `CoreClient`: the domain bridge (intents, role-aware view state,
+- `src/core/CoreClient.ts` — `CoreClient`: the domain bridge (intents, role-aware view state,
   network tap, moderator sync). The first file to read.
-- `src/lib/machines/voting/` — the XState machine (`states.ts`, `events.ts`, `actions.ts`,
+- `src/core/machine/` — the XState machine (`states.ts`, `events.ts`, `actions.ts`,
   `guards.ts`, `context.ts`, `index.ts`). The behavioral source of truth.
-- `src/hooks/useAblyBackend.ts` — the only Ably integration: presence ⇄ roster, pub/sub
+- `src/core/realtime/useAblyBackend.ts` — the only Ably integration: presence ⇄ roster, pub/sub
   ⇄ phase/votes, and the `publish()` reverse map.
-- `src/hooks/useCoreClientState.ts`, `src/hooks/useRoom.tsx` — wire `CoreClient` ⇄ Ably ⇄
+- `src/core/realtime/useCoreClientState.ts`, `src/core/realtime/useRoom.tsx` — wire `CoreClient` ⇄ Ably ⇄
   React; expose `{ state, roomId, updateUser }` via context.
-- `src/Session/SessionPage.tsx` — composes providers and maps machine state → view
-  (`SwitchViews`). `src/components/States/{Idle,Pool,Result}.tsx` are the phase views.
+- `src/features/room/SessionPage.tsx` — composes providers and maps machine state → view
+  (`SwitchViews`). `src/features/room/states/{Idle,Pool,Result}.tsx` are the phase views.
 - `scripts/{build,generatePages,codegen,devGenerate}.ts` — the static pre-render +
   Bun bundle pipeline (Emotion critical-CSS extraction, two HTML entries, `dist/`).
-- `src/index.tsx` — dev/`start` Bun server. `src/constants.ts` — env detection + public keys.
-- `src/theme.ts` — dark MUI theme. `src/observables/*` — RxJS streams behind card faces
-  and avatar nudges.
+- `src/index.tsx` — dev/`start` Bun server. `src/app/constants.ts` — env detection + public keys.
+- `src/app/theme.ts` — dark MUI theme. `src/features/{room/cards,avatar}/*Observable.ts`
+  — RxJS streams behind card faces and avatar nudges.
 - `docs/` — authoritative architecture docs (see *What this project is*).

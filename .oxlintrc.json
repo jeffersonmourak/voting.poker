@@ -11,7 +11,7 @@
   "ignorePatterns": ["dist", "node_modules", "src/_generated_*.html"],
   "overrides": [
     {
-      "files": ["src/hooks/useAblyBackend.ts"],
+      "files": ["src/core/realtime/useAblyBackend.ts"],
       "rules": {
         "react-hooks/exhaustive-deps": "off"
       }

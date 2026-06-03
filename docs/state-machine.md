@@ -1,11 +1,11 @@
 # The Voting State Machine
 
-> Source: `src/lib/machines/voting/`
+> Source: `src/core/machine/`
 
 The voting machine is the **behavioral source of truth** for a room. Everything
 else — the UI, the network — exists to render its state or to feed it events.
 It is an [XState 5](https://stately.ai/docs) machine, created by
-`initializeMachine(context)` in `src/lib/machines/voting/index.ts`.
+`initializeMachine(context)` in `src/core/machine/index.ts`.
 
 Each browser runs its **own instance** of this machine (wrapped by `CoreClient`,
 see [`realtime-sync.md`](./realtime-sync.md)). Synchronization is achieved by
@@ -21,7 +21,7 @@ feeding every instance the same stream of events.
 | `context.ts` | `User`, `RoomId`, and `VotingContext` (the extended state). |
 | `actions.ts` | `assign` reducers that mutate context (record vote, add/remove user, …). |
 | `guards.ts` | Predicates that gate transitions (is-moderator, sync-target checks). |
-| `helpers/transitions.ts` | `makeUserTransitions()` — the roster events shared by every state. |
+| `transitions.ts` | `makeUserTransitions()` — the roster events shared by every state. |
 
 ## Context (extended state)
 
@@ -169,7 +169,7 @@ sync and *how it reaches only the newcomer* are covered in
 ## Shared roster transitions
 
 Every state spreads in `makeUserTransitions(currentState)`
-(`helpers/transitions.ts`), which adds self-targeting `RegisterUser`,
+(`transitions.ts`), which adds self-targeting `RegisterUser`,
 `UpdateUser`, and `RemoveUser` handlers. This is why roster changes (people
 joining, leaving, or editing their profile) work in **any** phase without
 disturbing the current phase.

@@ -26,20 +26,20 @@ From the network at the bottom up to pixels at the top:
 ┌────────────────────────────────────────────────────────────────────────┐
 │  7. Cross-cutting: theme · analytics (PostHog/OpenReplay) · constants  │
 ├────────────────────────────────────────────────────────────────────────┤
-│  6. UI layer            src/components, src/Session, src/observables   │
+│  6. UI layer            src/features/{landing,room,avatar}, src/app    │
 │      React + MUI views, RxJS-driven card/nudge effects                 │
 ├────────────────────────────────────────────────────────────────────────┤
-│  5. React integration   src/hooks (useRoom, useCoreClientState)        │
+│  5. React integration   src/core/realtime (useRoom, useCoreClientState)│
 │      Context provider + glue between React, CoreClient, and Ably       │
 ├────────────────────────────────────────────────────────────────────────┤
-│  4. Domain bridge       src/lib/core.ts  (CoreClient)                  │
+│  4. Domain bridge       src/core/CoreClient.ts  (CoreClient)                  │
 │      Translates UI intents ⇄ machine events; computes view state;      │
 │      drives moderator sync; "taps" outgoing events to the network      │
 ├────────────────────────────────────────────────────────────────────────┤
-│  3. State machine       src/lib/machines/voting/*                      │
+│  3. State machine       src/core/machine/*                      │
 │      XState machine: states, events, context, actions, guards          │
 ├────────────────────────────────────────────────────────────────────────┤
-│  2. Realtime transport  src/hooks/useAblyBackend.ts                    │
+│  2. Realtime transport  src/core/realtime/useAblyBackend.ts                    │
 │      Ably presence (roster) + pub/sub (voting events)                  │
 ├────────────────────────────────────────────────────────────────────────┤
 │  1. Delivery / routing  scripts/*, *-bootstrap.tsx, src/index.tsx      │
@@ -60,7 +60,7 @@ The clever part: on **GitHub Pages**, any path that doesn't match a real file is
 served `404.html`. So visiting `https://voting.poker/<roomId>` serves the
 `404.html` document, which boots the room app. The room id is simply the last
 path segment (`location.href.split("/").pop()`, see
-`src/Session/SessionPage.tsx`). Creating a room (`src/helpers/link.ts`) just
+`src/features/room/SessionPage.tsx`). Creating a room (`src/shared/utils/link.ts`) just
 generates a UUID and navigates to `/<uuid>` — no registration step.
 
 `src/index.tsx` is a small Bun `serve()` used for **local dev and `bun start`**;
@@ -69,7 +69,7 @@ it mirrors the same routing (`/` → index, `/*` → not-found). Full details in
 
 ### 2. Realtime transport — `useAblyBackend`
 
-`src/hooks/useAblyBackend.ts` owns the single Ably connection. It joins a channel
+`src/core/realtime/useAblyBackend.ts` owns the single Ably connection. It joins a channel
 named after the room id and exposes two things:
 
 - **Presence** → the participant roster. `enter`/`present`/`update`/`leave`
@@ -85,7 +85,7 @@ event into the right Ably presence update or channel message. A `DefaultUser`
 created per browser tab and used as the Ably `clientId`. See
 [`realtime-sync.md`](./realtime-sync.md).
 
-### 3. State machine — `src/lib/machines/voting`
+### 3. State machine — `src/core/machine`
 
 An XState 5 machine with four states (`Idle`, `Pool`, `PoolVote`, `PoolResult`)
 and a context of `{ users, roomId, votes }`. Events drive transitions; actions
@@ -95,7 +95,7 @@ Full reference in [`state-machine.md`](./state-machine.md).
 
 ### 4. Domain bridge — `CoreClient`
 
-`src/lib/core.ts` is the heart of the client. It:
+`src/core/CoreClient.ts` is the heart of the client. It:
 
 - **Owns the actor.** Creates and starts the XState actor for the room.
 - **Exposes intents.** `vote()`, `startSession()`, `endSession()` are surfaced
@@ -114,16 +114,16 @@ Full reference in [`state-machine.md`](./state-machine.md).
 
 ### 5. React integration — hooks
 
-- `src/hooks/useCoreClientState.ts` constructs the `CoreClient`, wires the Ably
+- `src/core/realtime/useCoreClientState.ts` constructs the `CoreClient`, wires the Ably
   backend's callbacks into it, subscribes React state to machine snapshots, and
   sets `client.tapUserEvents = publish`. This is the seam where the domain layer,
   the transport, and React meet.
-- `src/hooks/useRoom.tsx` wraps the above in a React context (`RoomProvider` /
+- `src/core/realtime/useRoom.tsx` wraps the above in a React context (`RoomProvider` /
   `useRoom`) and exposes `{ state, roomId, updateUser }` to the component tree.
 
 ### 6. UI layer
 
-`src/Session/SessionPage.tsx` composes the providers and picks a view per state:
+`src/features/room/SessionPage.tsx` composes the providers and picks a view per state:
 
 ```
 BasePage
@@ -133,22 +133,23 @@ BasePage
          ├─ ModeratorModal          (shown when no moderator present)
          ├─ RoomDetails             (timer · moderator controls · roster · invite)
          └─ SwitchViews
-            ├─ Idle   → States/Idle.tsx     ("waiting to start")
-            ├─ Pool   → States/Pool.tsx     (the card grid)
-            └─ Result → States/Result.tsx   (tallied results)
+            ├─ Idle   → states/Idle.tsx     ("waiting to start")
+            ├─ Pool   → states/Pool.tsx     (the card grid)
+            └─ Result → states/Result.tsx   (tallied results)
 ```
 
-Cards and avatar nudges are driven by **RxJS observables**
-(`src/observables/*`). Details in [`ui-layer.md`](./ui-layer.md).
+Cards and avatar nudges are driven by **RxJS observables** co-located with
+their feature (`src/features/room/cards/`, `src/features/avatar/`). Details in
+[`ui-layer.md`](./ui-layer.md).
 
 ### 7. Cross-cutting concerns
 
-- **Theme** (`src/theme.ts`): a dark MUI theme with custom button variants and
+- **Theme** (`src/app/theme.ts`): a dark MUI theme with custom button variants and
   the Mont typeface.
-- **Analytics** (`src/helpers/analytics.ts`, `AnalyticsProvider`): PostHog +
+- **Analytics** (`src/features/analytics/analytics.ts`, `AnalyticsProvider`): PostHog +
   OpenReplay, gated behind a cookie-consent banner and disabled in development
   (calls are routed through a debug proxy instead).
-- **Constants** (`src/constants.ts`): environment detection (`isDev`), base URL,
+- **Constants** (`src/app/constants.ts`): environment detection (`isDev`), base URL,
   and the public Ably / Giphy keys.
 
 ## End-to-end data flow: casting a vote
@@ -156,10 +157,10 @@ Cards and avatar nudges are driven by **RxJS observables**
 This is the canonical path; start/stop/register follow the same shape.
 
 ```
- ① User clicks a card in States/Pool.tsx
+ ① User clicks a card in states/Pool.tsx
        │  onClick={() => vote(value)}
        ▼
- ② CoreClient.#voteAction  (src/lib/core.ts)
+ ② CoreClient.#voteAction  (src/core/CoreClient.ts)
        │  records vote on local user, then #publishEvent(Vote)
        ▼
  ③ #publishEvent does TWO things:
@@ -168,7 +169,7 @@ This is the canonical path; start/stop/register follow the same shape.
                                   │
                                   ▼
  ④ useCoreClientState: tapUserEvents = publish
-       │  publish(Vote)  (src/hooks/useAblyBackend.ts)
+       │  publish(Vote)  (src/core/realtime/useAblyBackend.ts)
        ▼
  ⑤ Ably channel.publish("VOTE", { vote, createdBy, ... })
                                   │
@@ -190,7 +191,7 @@ This is the canonical path; start/stop/register follow the same shape.
  ⑨ actor subscription fires → #computeState → setState (React)
        │
        ▼
- ⑩ States/Pool.tsx re-renders; the chosen card shows as selected,
+ ⑩ states/Pool.tsx re-renders; the chosen card shows as selected,
     and the user's avatar badge updates in SessionVotesSummary
 ```
 

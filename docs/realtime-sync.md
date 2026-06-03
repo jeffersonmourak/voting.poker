@@ -1,7 +1,7 @@
 # Realtime Synchronization
 
-> Sources: `src/hooks/useAblyBackend.ts`, `src/lib/core.ts`,
-> `src/hooks/useCoreClientState.ts`, `src/hooks/useRoom.tsx`
+> Sources: `src/core/realtime/useAblyBackend.ts`, `src/core/CoreClient.ts`,
+> `src/core/realtime/useCoreClientState.ts`, `src/core/realtime/useRoom.tsx`
 
 Voting Poker has no server to hold the canonical room state. Instead, each
 browser runs its own copy of the [voting state machine](./state-machine.md), and
@@ -19,7 +19,7 @@ already in progress.
         ▼
  ┌──────────────────┐   tapUserEvents (out)     ┌──────────────────┐
  │   CoreClient     │ ───────────────────────▶  │  useAblyBackend  │
- │ (src/lib/core.ts)│                           │   .publish()     │
+ │ (src/core/CoreClient.ts)│                           │   .publish()     │
  │                  │ ◀───────────────────────  │                  │
  │  wraps XState    │   backendCallback (in)    │  Ably channel    │
  │  actor           │   register/update/remove  │  (presence +     │
@@ -99,7 +99,7 @@ events to named Ably messages, and `channel.subscribe` maps them back:
 
 ## CoreClient: the domain bridge
 
-`CoreClient` (`src/lib/core.ts`) wraps the XState actor and is the only thing the
+`CoreClient` (`src/core/CoreClient.ts`) wraps the XState actor and is the only thing the
 rest of the app talks to. Its responsibilities:
 
 ### Computing view state (`#computeState`)
@@ -235,6 +235,6 @@ mid-round (with current votes) or on the results screen.
 - **No persistence.** State lives only in the connected browsers and in Ably's
   in-flight delivery. If everyone leaves, the room is gone; reopening the same
   URL starts fresh at `Idle`.
-- **Public Ably key.** The Ably key in `src/constants.ts` is a client-side
+- **Public Ably key.** The Ably key in `src/app/constants.ts` is a client-side
   publishable key — anyone with a room URL can join that channel. This is by
   design for a frictionless, no-auth tool.

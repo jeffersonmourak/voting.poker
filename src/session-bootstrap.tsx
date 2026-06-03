@@ -6,7 +6,7 @@
 
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
-import Session from "./Session";
+import Session from "@/features/room/Session";
 
 const elem = document.getElementById("root");
 if (!elem) {
