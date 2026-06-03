@@ -23,28 +23,28 @@ zoom into individual layers.
 From the network at the bottom up to pixels at the top:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│  7. Cross-cutting: theme · analytics (PostHog/OpenReplay) · constants  │
-├────────────────────────────────────────────────────────────────────────┤
-│  6. UI layer            src/features/{landing,room,avatar}, src/app    │
-│      React + MUI views, RxJS-driven card/nudge effects                 │
-├────────────────────────────────────────────────────────────────────────┤
-│  5. React integration   src/core/realtime (useRoom, useCoreClientState)│
-│      Context provider + glue between React, CoreClient, and Ably       │
-├────────────────────────────────────────────────────────────────────────┤
-│  4. Domain bridge       src/core/CoreClient.ts  (CoreClient)                  │
-│      Translates UI intents ⇄ machine events; computes view state;      │
-│      drives moderator sync; "taps" outgoing events to the network      │
-├────────────────────────────────────────────────────────────────────────┤
-│  3. State machine       src/core/machine/*                      │
-│      XState machine: states, events, context, actions, guards          │
-├────────────────────────────────────────────────────────────────────────┤
-│  2. Realtime transport  src/core/realtime/useAblyBackend.ts                    │
-│      Ably presence (roster) + pub/sub (voting events)                  │
-├────────────────────────────────────────────────────────────────────────┤
-│  1. Delivery / routing  scripts/*, *-bootstrap.tsx, src/index.tsx      │
-│      Bun SSG build, two HTML entry points, GitHub Pages routing        │
-└────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│  7. Cross-cutting: theme · constants (app/) · analytics (features/)      │
+├──────────────────────────────────────────────────────────────────────────┤
+│  6. UI layer            src/features/{landing,room,avatar} · src/app     │
+│      React + MUI views, RxJS-driven card/nudge effects                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│  5. React integration   src/core/realtime (useRoom, useCoreClientState)  │
+│      Context provider + glue between React, CoreClient, and Ably         │
+├──────────────────────────────────────────────────────────────────────────┤
+│  4. Domain bridge       src/core/CoreClient.ts                           │
+│      Translates UI intents ⇄ machine events; computes view state;        │
+│      drives moderator sync; "taps" outgoing events to the network        │
+├──────────────────────────────────────────────────────────────────────────┤
+│  3. State machine       src/core/machine/*                               │
+│      XState machine: states, events, context, actions, guards            │
+├──────────────────────────────────────────────────────────────────────────┤
+│  2. Realtime transport  src/core/realtime/useAblyBackend.ts              │
+│      Ably presence (roster) + pub/sub (voting events)                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│  1. Delivery / routing  scripts/*, *-bootstrap.tsx, src/index.tsx        │
+│      Bun SSG build, two HTML entry points, GitHub Pages routing          │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 1. Delivery & routing
