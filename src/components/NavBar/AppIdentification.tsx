@@ -46,7 +46,7 @@ export default function AppIdentification() {
 	return (
 		<Root>
 			<Logo
-				// biome-ignore lint/security/noDangerouslySetInnerHtml: injecting logo svg for static rendering
+				// Injecting the logo SVG inline so it renders in the static HTML.
 				dangerouslySetInnerHTML={{ __html: AppLogo }}
 				sx={
 					isDark

@@ -91,13 +91,7 @@ export const removeUserActionAssign = {
 };
 
 export const clearPoolActionAssign = {
-  votes: ({
-    event,
-    context,
-  }: {
-    event: Events;
-    context: VotingContext;
-  }) => ({}),
+  votes: () => ({}),
 };
 
 export const moderatorSyncVotesAction = {

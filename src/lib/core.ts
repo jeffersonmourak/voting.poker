@@ -17,7 +17,6 @@ type IdleModeratorEvents = {
   startSession: () => void;
 };
 
-// biome-ignore lint/complexity/noBannedTypes: !!
 type IdleUserEvents = {};
 
 type PoolModeratorEvents = {
@@ -217,8 +216,7 @@ class CoreClient {
     const { votes, users, roomId } = machineStateSnapshot.context;
     const moderator = user?.moderator ?? false;
 
-    const moderatorEmpty =
-      users.length === 0 || users.every((u) => !u.moderator);
+    const moderatorEmpty = users.every((u) => !u.moderator);
 
     const sharedState: SharedMachineStates = {
       currentUser: users.find((u) => u.id === user.id) ?? user,

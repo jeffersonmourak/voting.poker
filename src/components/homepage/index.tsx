@@ -9,7 +9,7 @@ import { LandingGrahic } from "../LandingGraphic";
 import brazucaGraphic from "./brazuca.jpg";
 import { toNewRoom } from "@/helpers/link";
 
-const LandingGraphicSection = styled(Box)(({ theme }) => ({
+const LandingGraphicSection = styled(Box)(() => ({
   width: "100%",
   minHeight: "100vh",
   display: "flex",
@@ -56,7 +56,7 @@ const CallToActionText = styled(Box)(({ theme }) => ({
   },
 }));
 
-const CallToActionLink = styled("a")(({ theme }) => ({
+const CallToActionLink = styled("a")(() => ({
   color: "#43BA7F !important",
   textDecoration: "none",
   whiteSpace: "nowrap",

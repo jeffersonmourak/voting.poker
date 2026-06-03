@@ -1,7 +1,6 @@
 import type { User } from "@/lib/core";
 import { debugAnalytics } from "./debugAnalytics";
 import { isDev } from "@/constants";
-import trackerAssist from "@openreplay/tracker-assist";
 import Cookies from "js-cookie";
 import sillyName from "sillyname";
 import posthogOriginal, { type Properties } from "posthog-js";

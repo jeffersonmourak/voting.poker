@@ -1,7 +1,6 @@
 import { serve } from "bun";
 import index from "./_generated_index.html";
 import notFound from "./_generated_404.html";
-import { generatePages } from "scripts/generatePages";
 
 const server = serve({
 	routes: {

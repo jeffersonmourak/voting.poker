@@ -7,7 +7,6 @@ import { DataCollectionNotification } from "@/components/DataCollectionNotificat
 import {
   ConsentStatus,
   getConsent,
-  identify,
   saveConsent,
 } from "@/helpers/analytics";
 import sillyName from "sillyname";

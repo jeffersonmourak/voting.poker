@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "NODE_ENV=development BUN_PUBLIC_SITE_HOST=localhost:3000 bun run scripts/devGenerate.ts && bun --hot src/index.tsx",
     "build": "NODE_ENV=production bun run scripts/build.ts",
-    "start": "NODE_ENV=production bun src/index.tsx"
+    "start": "NODE_ENV=production bun src/index.tsx",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
   "dependencies": {
     "@emotion/css": "^11.13.5",
@@ -45,7 +47,8 @@
     "@types/lodash": "^4.17.24",
     "@types/luxon": "^3.7.1",
     "@types/react": "^19.2.15",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "oxlint": "^1.68.0"
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

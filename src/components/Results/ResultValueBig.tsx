@@ -2,13 +2,11 @@ import {
 	Avatar,
 	AvatarGroup,
 	Box,
-	type Theme,
 	Tooltip,
 	Typography,
 	darken,
 	styled,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import type { User } from "@/lib/core";
 import { avatarProps } from "@/helpers/avatarProps";
 
@@ -78,75 +76,6 @@ const Totals = styled(Box)(({ theme }) => ({
 	alignItems: "center",
 	justifyContent: "flex-start",
 	gap: theme.spacing(3),
-}));
-
-const useStyle = makeStyles<Theme, { color: string }>((theme) => ({
-	root: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: theme.spacing(2),
-		backgroundColor: darken(theme.palette.background.paper, 0.4),
-		borderRadius: theme.spacing(2),
-		padding: `${theme.spacing(3)} ${theme.spacing(4)}`,
-	},
-	result: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "flex-start",
-		gap: theme.spacing(2),
-		width: theme.spacing(50),
-
-		[theme.breakpoints.down("sm")]: {
-			width: "100%",
-		},
-	},
-	totals: {
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-		justifyContent: "flex-start",
-		gap: theme.spacing(3),
-	},
-	people: {
-		marginTop: theme.spacing(2),
-		flex: 1,
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "flex-start",
-		gap: theme.spacing(1),
-	},
-	resultTitle: {
-		position: "relative",
-		textAlign: "center",
-		borderRadius: theme.shape.borderRadius,
-		color: "transparent",
-		transform: "rotate(45deg)",
-		backgroundColor: ({ color }) => color,
-		width: theme.spacing(10),
-		height: theme.spacing(10),
-
-		"&::before": {
-			position: "absolute",
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center",
-			content: "attr(data-value)",
-			...theme.typography.h3,
-			color: ({ color }) => darken(color, 0.9),
-			transform: "rotate(-45deg)",
-			width: theme.spacing(10),
-			height: theme.spacing(10),
-			top: 0,
-			left: 0,
-		},
-	},
-	resultTitleSmall: {
-		"&::before": {
-			...theme.typography.h4,
-		},
-	},
 }));
 
 interface ResultValueBigProps {

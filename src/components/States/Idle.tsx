@@ -61,7 +61,7 @@ const ModeratorWarningBlock = styled(Box)(({ theme }) => ({
 	width: "100%",
 }));
 
-const ModeratorWarningGraphicBlock = styled(Box)(({ theme }) => ({
+const ModeratorWarningGraphicBlock = styled(Box)(() => ({
 	position: "relative",
 	width: 80,
 	transform: "scale(0.7)",
@@ -71,7 +71,7 @@ const ModeratorWarningGraphicBlock = styled(Box)(({ theme }) => ({
 	alignItems: "center",
 }));
 
-const ModeratorWarningGraphicImage = styled("img")(({ theme }) => ({}));
+const ModeratorWarningGraphicImage = styled("img")(() => ({}));
 
 interface PoolStateComponentProps {
 	state: AnyIdleResultState;

@@ -4,8 +4,6 @@ import type { IGif } from "@giphy/js-types";
 import {
 	type GifOverlayProps,
 	Grid,
-	SearchBar,
-	SearchContext,
 	SearchContextManager,
 } from "@giphy/react-components";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
@@ -14,7 +12,6 @@ import {
 	TextField,
 	type Theme,
 	Typography,
-	lighten,
 	styled,
 	useMediaQuery,
 	useTheme,
@@ -37,50 +34,6 @@ const Root = styled(Box)(({ theme }) => ({
 	display: "flex",
 	gap: theme.spacing(2),
 	flexDirection: "column",
-}));
-
-const GiphySearchBar = styled(SearchBar)(({ theme }) => ({
-	backgroundColor: "transparent !important",
-	borderRadius: `${theme.spacing(1)} !important`,
-	overflow: "hidden",
-	padding: 0,
-	display: "flex",
-	gap: theme.spacing(2),
-
-	"& input": {
-		backgroundColor: "#292929",
-		color: theme.palette.text.primary,
-		padding: `${theme.spacing(1)} ${theme.spacing(0)} ${theme.spacing(1)} ${theme.spacing(2)}`,
-		height: 42,
-		borderRadius: `${theme.spacing(1)} !important`,
-	},
-	"& div": {
-		padding: `${theme.spacing(0)} ${theme.spacing(2)}`,
-		width: "80px",
-		"& > div": {
-			background: `${theme.palette.common.black} !important`,
-		},
-	},
-
-	"& div:hover": {
-		"& > div": {
-			background: `${lighten(theme.palette.common.black, 0.4)} !important`,
-		},
-	},
-
-	"& div > div": {
-		background: `${theme.palette.primary.light} !important`,
-		color: theme.palette.text.secondary,
-		borderRadius: theme.spacing(1),
-		padding: `${theme.spacing(0)} ${theme.spacing(2)}`,
-		transition: "background-color 0.2s ease",
-	},
-
-	"& div > div::before": {
-		background: "transparent !important",
-		content: '""',
-		animation: "none",
-	},
 }));
 
 const GridBox = styled(Box)(({ theme }) => ({
@@ -173,7 +126,6 @@ const Components = ({
 	onSelect: (url: string | null) => void;
 }) => {
 	const [selectedGif, setSelectedGif] = useState<IGif | null>(null);
-	const { searchKey } = useContext(SearchContext);
 	const [searchTerm, setSearchTerm] = useState("");
 	const { width } = useWindowSize();
 

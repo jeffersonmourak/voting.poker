@@ -3,8 +3,6 @@ import type { VotingStates } from './states';
 
 type Id<T> = T extends infer U ? {[K in keyof U]: U[K]} : never;
 
-// biome-ignore lint/suspicious/noExplicitAny: !
-// biome-ignore lint/complexity/noBannedTypes: !!
 export type BaseEvent<N, T extends Record<string, any> = {}> = Id<{type: N; createdBy: string} & T>;
 
 export enum VotingEvents {

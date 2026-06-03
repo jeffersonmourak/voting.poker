@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { styled } from '@mui/system';
 import { useVisibleSection } from './hooks/useVisibleSection';
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
   display: 'flex',
   gap: 48,
   height: 40,

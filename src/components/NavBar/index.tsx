@@ -22,7 +22,7 @@ const Root = styled(Box)(({ theme }) => ({
 	},
 }));
 
-const LinksContainer = styled(Box)(({ theme }) => ({
+const LinksContainer = styled(Box)(() => ({
 	display: "flex",
 	gap: 48,
 }));

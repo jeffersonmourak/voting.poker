@@ -55,15 +55,15 @@ const EditButton = styled(IconButton)(({ theme }) => ({
 	},
 }));
 
-const UploadFileIcon = styled(FileUploadRoundedIcon)(({ theme }) => ({
+const UploadFileIcon = styled(FileUploadRoundedIcon)(() => ({
 	fontSize: "3rem",
 }));
 
-const DeleteIcon = styled(DeleteRoundedIcon)(({ theme }) => ({
+const DeleteIcon = styled(DeleteRoundedIcon)(() => ({
 	fontSize: "3rem",
 }));
 
-const EditIcon = styled(EditRoundedIcon)(({ theme }) => ({
+const EditIcon = styled(EditRoundedIcon)(() => ({
 	fontSize: "3rem",
 }));
 

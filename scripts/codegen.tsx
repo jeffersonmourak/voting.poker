@@ -1,9 +1,4 @@
-import {
-	renderToReadableStream,
-	renderToStaticMarkup,
-	renderToString,
-} from "react-dom/server";
-import App from "../src/App";
+import { renderToString } from "react-dom/server";
 import path from "node:path";
 
 import CssBaseline from "@mui/material/CssBaseline";

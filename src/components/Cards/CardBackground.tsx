@@ -10,7 +10,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { FloatValue } from "./FloatValue";
 import { toBackgroundColor } from "./helpers/toBackgroundColor";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 
 const useStyles = (props: {
 	height: number;

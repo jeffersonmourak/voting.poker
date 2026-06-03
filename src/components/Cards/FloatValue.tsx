@@ -1,7 +1,6 @@
 import { cx } from "@emotion/css";
 import {
 	Box,
-	type ClassNameMap,
 	type Theme,
 	Typography,
 	alpha,

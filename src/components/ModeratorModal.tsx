@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { identify } from "../helpers/analytics";
 import { useRoom } from "@/hooks/useRoom";
 
-const Root = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(() => ({
 	width: "100%",
 	height: "100vh",
 	display: "flex",

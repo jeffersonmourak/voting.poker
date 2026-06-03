@@ -20,7 +20,7 @@ const app = (
 
 if (import.meta.hot) {
 	// With hot module reloading, `import.meta.hot.data` is persisted.
-	const root = import.meta.hot.data.root ?? hydrateRoot(elem, app);
+	import.meta.hot.data.root ??= hydrateRoot(elem, app);
 } else {
 	// The hot module reloading API is not available in production.
 	hydrateRoot(elem, app);

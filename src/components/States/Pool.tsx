@@ -45,7 +45,7 @@ const CARD_VALUES = [
 	"☕️",
 ];
 
-const PoolStateComponent: React.FC<PoolStateComponentProps> = ({ state }) => {
+const PoolStateComponent: React.FC<PoolStateComponentProps> = () => {
 	const room = useRoom();
 
 	if (

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
 const AnimatedDigits = styled(Typography)<{ "data-in-session": boolean }>(
-	({ theme, "data-in-session": inSession }) => ({
+	({ "data-in-session": inSession }) => ({
 		transition: "color 0.5s, height 0.3s",
 		color: inSession ? "inherit" : "transparent",
 		height: inSession ? "28px" : 0,

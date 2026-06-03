@@ -19,7 +19,6 @@ const AvatarTooltip = styled(({ className, ...props }: TooltipProps) => (
 
 interface AvatarCTAProps {
 	disabled?: boolean;
-	// biome-ignore lint/suspicious/noExplicitAny: !
 	children: React.ReactElement<any, any>;
 }
 

@@ -82,7 +82,10 @@ export function useAblyBackend(
     }
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: this needs to run only once
+  // Runs once: the channel is created per-room and its subscriptions are wired
+  // up a single time, then torn down on unmount. Adding channel/callbacks as
+  // deps would re-subscribe on every change, so exhaustive-deps is disabled for
+  // this file in .oxlintrc.json.
   useEffect(() => {
     channel.subscribe((message) => {
       const { data, name, clientId } = message;

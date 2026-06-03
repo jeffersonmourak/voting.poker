@@ -126,7 +126,7 @@ export const AvatarEditorModal = ({
 	};
 
 	const handleSelect = () => {
-		data && onChange(data);
+		if (data) onChange(data);
 		handleClose();
 	};
 
@@ -137,7 +137,6 @@ export const AvatarEditorModal = ({
 		setAnchorEl(null);
 	};
 
-	// biome-ignore lint/suspicious/noExplicitAny: !
 	const onClickEmoji = (event: any) => {
 		setAnchorEl(event.currentTarget);
 	};
