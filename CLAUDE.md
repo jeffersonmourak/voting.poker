@@ -10,9 +10,11 @@ It is a **fully client-side single-page app**: there is no application server an
 database. The entire room — the participant roster, the current voting phase, and
 everyone's votes — lives in an [XState 5](https://stately.ai/docs) state machine that
 runs *inside each participant's browser*. Browsers keep their copies of that machine in
-agreement by relaying machine events to one another over [Ably](https://ably.com/) (a
-hosted realtime presence + pub/sub service). The static HTML/JS is pre-rendered at build
-time with [Bun](https://bun.sh/) and served from GitHub Pages at `voting.poker`.
+agreement by sending machine events to one another **peer-to-peer over WebRTC data
+channels**, with [Ably](https://ably.com/) (a hosted realtime presence + pub/sub
+service) as the signaling layer: presence roster, SDP/ICE handshake, and a relay
+fallback for peers that can't connect directly. The static HTML/JS is pre-rendered at
+build time with [Bun](https://bun.sh/) and served from GitHub Pages at `voting.poker`.
 
 `docs/` is the authoritative deep-dive (read it before non-trivial changes):
 `docs/architecture.md` (layers + end-to-end vote flow), `docs/state-machine.md`,
@@ -90,12 +92,14 @@ no registration. `src/index.tsx` is a tiny `Bun.serve()` that mirrors the same s
 React view  ──intent (vote/start/stop)──▶  CoreClient (src/core/CoreClient.ts)
                                               │  #publishEvent does BOTH:
                           ┌───────────────────┤
-       apply locally  ◀──┘                    └──▶ tapUserEvents ──▶ useAblyBackend.publish
+       apply locally  ◀──┘                    └──▶ tapUserEvents ──▶ useRealtimeBackend.publish
        (optimistic)                                                       │
-            │                                                Ably channel = roomId
-            │                                                  (presence + pub/sub)
+            │                                          PeerManager data channels (P2P)
+            │                                          · queued per-peer until open
+            │                                          · Ably relay if a pair can't connect
+            │                                          · signaling via Ably "RTC_SIGNAL"
             ▼                                                       │
-      XState actor  ◀── backendCallback ◀── channel.subscribe ◀─────┘  (echo + peers)
+      XState actor  ◀── backendCallback ◀── toPoolEvent ◀───────────┘  (peers)
             │
             ▼
       actor subscription ──▶ #computeState ──▶ React setState ──▶ re-render
@@ -104,7 +108,8 @@ React view  ──intent (vote/start/stop)──▶  CoreClient (src/core/CoreCl
 The layers, top to bottom: **UI** (`src/features/*`, `src/app`) → **React glue**
 (`src/core/realtime/useRoom.tsx`, `useCoreClientState.ts`) → **domain bridge** `CoreClient`
 (`src/core/CoreClient.ts`) → **state machine** (`src/core/machine/*`) → **transport**
-(`src/core/realtime/useAblyBackend.ts`). Full treatment in `docs/architecture.md`.
+(`src/core/realtime/useRealtimeBackend.ts` + `PeerManager.ts`). Full treatment in
+`docs/architecture.md`.
 
 ## Facts that materially shape edits
 
@@ -117,23 +122,30 @@ The layers, top to bottom: **UI** (`src/features/*`, `src/app`) → **React glue
    network both ways. UI components call intents off the state object
    (`state.vote(v)`, `state.startSession()`); they never touch the actor or Ably.
 3. **Outgoing intents are applied locally AND broadcast.** `#publishEvent` calls
-   `this.#actor.send(event)` (optimistic) and `tapUserEvents(event)` (→ Ably publish).
-   The originator also receives its own echoed message and re-applies it; **votes are
+   `this.#actor.send(event)` (optimistic) and `tapUserEvents(event)` (→ data-channel
+   broadcast, Ably relay for unreachable peers). Data channels deliver no self-echo, but
+   the Ably fallback does, and a relayed event can reach a peer twice; **votes are
    idempotent** (`votes[userId] = value`), so this is safe. Keep new events idempotent or
-   guard the echo.
+   guard against duplicate delivery.
 4. **`backendCallback` is deliberately defensive.** It drops events from unknown senders
    and events that don't fit the current local state. Preserve that filtering when adding
    event types, or a stray/out-of-order message can corrupt the machine.
-5. **Presence vs. pub/sub split.** Ably **presence** carries the roster (`enter`/`present`
-   → register, `update` → profile edit, `leave` → remove). Ably **pub/sub messages**
-   carry phase + votes. `User` is published as presence `data`, so the `User` shape is a
-   wire contract (see next section).
-6. **Machines start at `Idle`; late joiners catch up via moderator sync.** Ably does not
-   replay history, so a newcomer who joins mid-round would be stuck in `Idle`. The
+5. **Presence vs. data-channel split.** Ably **presence** carries the roster
+   (`enter`/`present` → register, `update` → profile edit, `leave` → remove) *and* drives
+   peer discovery (`PeerManager.connect`/`disconnect` run before the roster callback).
+   **WebRTC data channels** carry phase + votes, with Ably pub/sub as the per-peer relay
+   fallback (10s open timeout or ICE failure) and the carrier of targeted `RTC_SIGNAL`
+   handshake messages. Receivers drop Ably pool messages from senders whose channel is
+   open, so one sender's events never interleave across transports. `User` is published
+   as presence `data`, so the `User` shape is a wire contract (see next section).
+6. **Machines start at `Idle`; late joiners catch up via moderator sync.** Nothing
+   replays history, so a newcomer who joins mid-round would be stuck in `Idle`. The
    moderator's browser detects each newcomer and sends a **targeted** `ModeratorSync`
-   (carrying current `state` + `votes`) that only the newcomer applies. This is the most
-   non-obvious mechanism in the app — read `docs/realtime-sync.md` before touching
-   `CoreClient.register`, the `Idle` `ModeratorSync` transitions, or the sync guards.
+   (carrying current `state` + `votes`) that only the newcomer applies. It is queued on
+   the newcomer's peer entry until their data channel opens (relayed via Ably if it never
+   does). This is the most non-obvious mechanism in the app — read
+   `docs/realtime-sync.md` before touching `CoreClient.register`, the `Idle`
+   `ModeratorSync` transitions, the sync guards, or `PeerManager`'s send queue.
 7. **Exactly one moderator.** `registerUserActionAssign` demotes a second self-claimed
    moderator. When the room is `moderatorEmpty`, `ModeratorModal` prompts someone to take
    the seat. `votes` is keyed by user id and cleared by `clearPool` on every `StartPool`.
@@ -151,8 +163,11 @@ an in-flight `MODERATOR_SYNC` must still deserialize. Treat them as version-lock
   `state:pool`, `state:pool:vote`, `state:pool:result`. These travel inside `ModeratorSync`.
 - **`VotingEvents`** values (`events.ts`): `event:pool:start|end|vote`,
   `event:user:register|update|remove|moderatorSync`.
-- **Ably message names** (`src/core/realtime/useAblyBackend.ts`): `START_SESSION`, `END_SESSION`,
-  `VOTE`, `MODERATOR_SYNC`, and the presence `data` payload shape (`User`).
+- **Message names** (`src/core/realtime/useRealtimeBackend.ts`): `START_SESSION`,
+  `END_SESSION`, `VOTE`, `MODERATOR_SYNC` (same names whether framed as
+  `{ name, data }` JSON on a data channel or as an Ably message on the relay fallback),
+  plus the signaling-only Ably message `RTC_SIGNAL` (`{ target, payload }`) and the
+  presence `data` payload shape (`User`).
 
 Do not rename or repurpose these casually; if you must change the protocol, change both
 the publish and subscribe sides together and assume a mixed-version window in production.
@@ -168,7 +183,9 @@ then build-and-deploy (there is no test gate). Verify behavior manually:
   claims the moderator seat via the modal. Confirm: starting a session, casting votes
   (each tab sees the other's vote badges), ending/revealing, and a **third tab joining
   mid-round** catching up correctly (moderator sync).
-- Watch the console for the `Session` error boundary and any Ably connection errors.
+- Watch the console for the `Session` error boundary and any Ably/WebRTC connection
+  errors. To confirm events are riding the data channels (not the Ably fallback), check
+  `chrome://webrtc-internals` or instrument `RTCDataChannel.prototype.send`.
 
 If you add tests, there is no established pattern to follow — propose the harness (and a
 `test` script) with the change.
@@ -235,9 +252,12 @@ The same convention is documented for outside contributors in `CONTRIBUTING.md`.
   network tap, moderator sync). The first file to read.
 - `src/core/machine/` — the XState machine (`states.ts`, `events.ts`, `actions.ts`,
   `guards.ts`, `context.ts`, `index.ts`). The behavioral source of truth.
-- `src/core/realtime/useAblyBackend.ts` — the only Ably integration: presence ⇄ roster, pub/sub
-  ⇄ phase/votes, and the `publish()` reverse map.
-- `src/core/realtime/useCoreClientState.ts`, `src/core/realtime/useRoom.tsx` — wire `CoreClient` ⇄ Ably ⇄
+- `src/core/realtime/useRealtimeBackend.ts` — the transport: Ably presence ⇄ roster +
+  peer discovery, data channels ⇄ phase/votes (Ably relay fallback), `RTC_SIGNAL`
+  signaling, and the `publish()` reverse map.
+- `src/core/realtime/PeerManager.ts` — the WebRTC mesh: one connection + data channel per
+  peer, perfect negotiation, per-peer send queue, relay-fallback detection.
+- `src/core/realtime/useCoreClientState.ts`, `src/core/realtime/useRoom.tsx` — wire `CoreClient` ⇄ transport ⇄
   React; expose `{ state, roomId, updateUser }` via context.
 - `src/features/room/SessionPage.tsx` — composes providers and maps machine state → view
   (`SwitchViews`). `src/features/room/states/{Idle,Pool,Result}.tsx` are the phase views.

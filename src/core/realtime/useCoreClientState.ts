@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAblyBackend } from "./useAblyBackend";
+import { useRealtimeBackend } from "./useRealtimeBackend";
 import { CoreClient, type CoreClientState } from "@/core/CoreClient";
 import {
   REGISTER_USER_ACTION_KEY,
@@ -8,7 +8,7 @@ import {
 } from "@/core/machine/actions";
 
 export function useCoreClientState(roomId: string) {
-  const { publish, user } = useAblyBackend(
+  const { publish, user } = useRealtimeBackend(
     roomId,
     (user, action) => {
       switch (action) {
