@@ -9,6 +9,7 @@ import {
   REMOVE_USER_ACTION_KEY,
 } from "@/core/machine/actions";
 import { type Events, VotingEvents } from "@/core/machine/events";
+import { capture } from "@/features/analytics/analytics";
 import {
   BaseRealtime,
   FetchRequest,
@@ -105,10 +106,27 @@ export function useRealtimeBackend(
             poolEventCallback(event);
           }
         },
-        onRelay: (_peerId, undelivered) => {
+        onRelay: (_peerId, undelivered, info) => {
           for (const message of undelivered) {
             channel.publish(message.name, message.data);
           }
+
+          capture("p2p_relay_fallback", {
+            room_id: roomId,
+            reason: info.reason,
+            time_since_connect_ms: info.timeSinceConnectMs,
+            peer_count: info.peerCount,
+            undelivered_count: undelivered.length,
+          });
+        },
+        onChannelOpen: (_peerId, info) => {
+          capture("p2p_channel_opened", {
+            room_id: roomId,
+            time_to_open_ms: info.timeToOpenMs,
+            reconnect: info.reconnect,
+            peer_count: info.peerCount,
+            candidate_type: info.candidateType,
+          });
         },
       }),
     [channel]

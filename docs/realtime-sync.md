@@ -138,7 +138,17 @@ named messages (`START_SESSION`, `VOTE`, …), and subsequent sends publish to
 Ably directly. Receivers accept Ably pool messages only from senders whose data
 channel is *not* open, so the same sender's events can never interleave across
 the two transports. If the channel later opens (e.g. an ICE restart succeeds),
-the pair returns to P2P delivery automatically.
+the pair returns to P2P delivery automatically. A browser where
+`RTCPeerConnection` cannot be constructed at all (WebRTC blocked by a privacy
+browser or extension) creates relay-born peer entries, so it still participates
+fully — everything just rides Ably, as it did before the P2P transport.
+
+Transport health is reported through the consent-gated analytics wrapper
+(`capture` in `src/features/analytics/analytics.ts`): `p2p_channel_opened`
+(`time_to_open_ms`, `reconnect`, `candidate_type`, `peer_count`) and
+`p2p_relay_fallback` (`reason: timeout | connection_failed | channel_closed |
+webrtc_unavailable`, `time_since_connect_ms`, `undelivered_count`). These are
+the numbers to watch when deciding whether a TURN server is worth adding.
 
 ## CoreClient: the domain bridge
 

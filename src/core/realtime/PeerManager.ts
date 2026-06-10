@@ -8,6 +8,29 @@ export type SignalPayload = {
   candidate?: RTCIceCandidateInit;
 };
 
+export type RelayReason =
+  | "timeout"
+  | "connection_failed"
+  | "channel_closed"
+  | "webrtc_unavailable";
+
+export type RelayFallbackInfo = {
+  reason: RelayReason;
+  /** ms between the peer entry being created and the fallback. */
+  timeSinceConnectMs: number;
+  peerCount: number;
+};
+
+export type ChannelOpenInfo = {
+  /** ms between the peer entry being created and the channel opening. */
+  timeToOpenMs: number;
+  /** True when this channel re-opened after a failure or relay spell. */
+  reconnect: boolean;
+  peerCount: number;
+  /** Local ICE candidate type in use ("host", "srflx", …); best-effort. */
+  candidateType?: string;
+};
+
 type PeerManagerCallbacks = {
   /** Carry an SDP description or ICE candidate to `target` over the signaling layer (Ably). */
   onSignal: (target: string, payload: SignalPayload) => void;
@@ -18,7 +41,13 @@ type PeerManagerCallbacks = {
    * failed). `undelivered` holds messages queued for that peer; the caller must
    * republish them over the signaling layer.
    */
-  onRelay: (peerId: string, undelivered: PeerMessage[]) => void;
+  onRelay: (
+    peerId: string,
+    undelivered: PeerMessage[],
+    info: RelayFallbackInfo
+  ) => void;
+  /** A peer's data channel opened (or re-opened). Telemetry only. */
+  onChannelOpen?: (peerId: string, info: ChannelOpenInfo) => void;
 };
 
 const ICE_SERVERS: RTCIceServer[] = [
@@ -30,7 +59,8 @@ const OPEN_TIMEOUT_MS = 10_000;
 
 type Peer = {
   id: string;
-  connection: RTCPeerConnection;
+  /** Null when RTCPeerConnection construction failed (WebRTC blocked/absent). */
+  connection: RTCPeerConnection | null;
   channel: RTCDataChannel | null;
   /** Perfect-negotiation role: the polite side rolls back on offer collision. */
   polite: boolean;
@@ -41,7 +71,35 @@ type Peer = {
   /** True while this peer's traffic must be relayed over the signaling layer. */
   relay: boolean;
   openTimer: ReturnType<typeof setTimeout> | null;
+  createdAt: number;
+  everOpened: boolean;
 };
+
+/** Best-effort: the local candidate type of the selected ICE pair. */
+async function selectedCandidateType(
+  connection: RTCPeerConnection
+): Promise<string | undefined> {
+  try {
+    const stats = await connection.getStats();
+    const entries = [...stats.values()];
+    const transport = entries.find(
+      (entry) => entry.type === "transport" && entry.selectedCandidatePairId
+    );
+    const pair = transport
+      ? stats.get(transport.selectedCandidatePairId)
+      : entries.find(
+          (entry) =>
+            entry.type === "candidate-pair" &&
+            entry.nominated &&
+            entry.state === "succeeded"
+        );
+    const local = pair && stats.get(pair.localCandidateId);
+
+    return local?.candidateType;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * A full mesh of WebRTC data channels, one per peer, with Ably demoted to
@@ -69,7 +127,7 @@ class PeerManager {
 
     const peer = this.#peers.get(peerId) ?? this.#createPeer(peerId);
 
-    if (this.#selfId < peerId && !peer.channel) {
+    if (this.#selfId < peerId && peer.connection && !peer.channel) {
       this.#attachChannel(
         peer,
         peer.connection.createDataChannel(DATA_CHANNEL_LABEL)
@@ -85,6 +143,10 @@ class PeerManager {
     const peer = this.#peers.get(from) ?? this.#createPeer(from);
     const { connection } = peer;
     const { description, candidate } = payload;
+
+    if (!connection) {
+      return;
+    }
 
     try {
       if (description) {
@@ -167,7 +229,7 @@ class PeerManager {
     }
 
     peer.channel?.close();
-    peer.connection.close();
+    peer.connection?.close();
   }
 
   /**
@@ -182,7 +244,14 @@ class PeerManager {
   }
 
   #createPeer(peerId: string): Peer {
-    const connection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    let connection: RTCPeerConnection | null = null;
+
+    try {
+      connection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    } catch {
+      // WebRTC blocked or absent (privacy browsers/extensions). The peer is
+      // born in relay mode so its traffic rides the signaling layer instead.
+    }
 
     const peer: Peer = {
       id: peerId,
@@ -194,10 +263,24 @@ class PeerManager {
       queue: [],
       relay: false,
       openTimer: null,
+      createdAt: Date.now(),
+      everOpened: false,
     };
 
+    if (!connection) {
+      peer.relay = true;
+      this.#peers.set(peerId, peer);
+      this.#callbacks.onRelay(peerId, [], {
+        reason: "webrtc_unavailable",
+        timeSinceConnectMs: 0,
+        peerCount: this.#peers.size,
+      });
+
+      return peer;
+    }
+
     peer.openTimer = setTimeout(
-      () => this.#fallBackToRelay(peer),
+      () => this.#fallBackToRelay(peer, "timeout"),
       OPEN_TIMEOUT_MS
     );
 
@@ -221,7 +304,7 @@ class PeerManager {
 
     connection.onconnectionstatechange = () => {
       if (connection.connectionState === "failed") {
-        this.#fallBackToRelay(peer);
+        this.#fallBackToRelay(peer, "connection_failed");
         connection.restartIce();
       }
     };
@@ -251,6 +334,20 @@ class PeerManager {
       for (const message of queued) {
         channel.send(JSON.stringify(message));
       }
+
+      const reconnect = peer.everOpened;
+      peer.everOpened = true;
+
+      if (this.#callbacks.onChannelOpen && peer.connection) {
+        void selectedCandidateType(peer.connection).then((candidateType) => {
+          this.#callbacks.onChannelOpen?.(peer.id, {
+            timeToOpenMs: Date.now() - peer.createdAt,
+            reconnect,
+            peerCount: this.#peers.size,
+            candidateType,
+          });
+        });
+      }
     };
 
     channel.onmessage = ({ data }) => {
@@ -263,13 +360,13 @@ class PeerManager {
 
     channel.onclose = () => {
       if (this.#peers.has(peer.id)) {
-        this.#fallBackToRelay(peer);
+        this.#fallBackToRelay(peer, "channel_closed");
       }
     };
   }
 
   #signalLocalDescription(peer: Peer) {
-    const { localDescription } = peer.connection;
+    const localDescription = peer.connection?.localDescription;
 
     if (localDescription) {
       this.#callbacks.onSignal(peer.id, {
@@ -278,7 +375,7 @@ class PeerManager {
     }
   }
 
-  #fallBackToRelay(peer: Peer) {
+  #fallBackToRelay(peer: Peer, reason: RelayReason) {
     if (peer.openTimer) {
       clearTimeout(peer.openTimer);
       peer.openTimer = null;
@@ -293,7 +390,11 @@ class PeerManager {
     const undelivered = peer.queue;
     peer.queue = [];
 
-    this.#callbacks.onRelay(peer.id, undelivered);
+    this.#callbacks.onRelay(peer.id, undelivered, {
+      reason,
+      timeSinceConnectMs: Date.now() - peer.createdAt,
+      peerCount: this.#peers.size,
+    });
   }
 }
 
