@@ -184,8 +184,10 @@ then build-and-deploy (there is no test gate). Verify behavior manually:
   (each tab sees the other's vote badges), ending/revealing, and a **third tab joining
   mid-round** catching up correctly (moderator sync).
 - Watch the console for the `Session` error boundary and any Ably/WebRTC connection
-  errors. To confirm events are riding the data channels (not the Ably fallback), check
-  `chrome://webrtc-internals` or instrument `RTCDataChannel.prototype.send`.
+  errors. In a room tab, `window.nerdPoking` (`src/core/realtime/nerdPoking.ts`) is a
+  live inspector: phase, roster with per-participant transport (`local`/`p2p`/`relay`),
+  votes, and per-peer connection diagnostics. For deeper digging use
+  `chrome://webrtc-internals`.
 
 If you add tests, there is no established pattern to follow — propose the harness (and a
 `test` script) with the change.

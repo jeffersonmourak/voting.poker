@@ -150,6 +150,12 @@ Transport health is reported through the consent-gated analytics wrapper
 webrtc_unavailable`, `time_since_connect_ms`, `undelivered_count`). These are
 the numbers to watch when deciding whether a TURN server is worth adding.
 
+For ad-hoc inspection, every room tab exposes `window.nerdPoking`
+(`src/core/realtime/nerdPoking.ts`) — a read-only, getter-backed view of the
+live room: `phase`, `roomSize`, `moderator`, `participants` (each annotated
+with its transport: `local`, `p2p`, `relay`, `connecting`), `votes`, and
+`connections` (per-peer channel/connection state and queue depth).
+
 ## CoreClient: the domain bridge
 
 `CoreClient` (`src/core/CoreClient.ts`) wraps the XState actor and is the only thing the

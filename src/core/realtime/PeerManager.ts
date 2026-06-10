@@ -21,6 +21,17 @@ export type RelayFallbackInfo = {
   peerCount: number;
 };
 
+export type PeerDiagnostics = {
+  id: string;
+  /** How this peer's events travel right now. */
+  transport: "p2p" | "relay" | "connecting";
+  channelState: RTCDataChannelState | null;
+  connectionState: RTCPeerConnectionState | null;
+  polite: boolean;
+  queuedMessages: number;
+  everOpened: boolean;
+};
+
 export type ChannelOpenInfo = {
   /** ms between the peer entry being created and the channel opening. */
   timeToOpenMs: number;
@@ -213,6 +224,23 @@ class PeerManager {
 
   isOpen(peerId: string): boolean {
     return this.#peers.get(peerId)?.channel?.readyState === "open";
+  }
+
+  /** Live per-peer diagnostics (powers the `nerdPoking` console inspector). */
+  snapshot(): PeerDiagnostics[] {
+    return [...this.#peers.values()].map((peer) => ({
+      id: peer.id,
+      transport: peer.relay
+        ? "relay"
+        : peer.channel?.readyState === "open"
+          ? "p2p"
+          : "connecting",
+      channelState: peer.channel?.readyState ?? null,
+      connectionState: peer.connection?.connectionState ?? null,
+      polite: peer.polite,
+      queuedMessages: peer.queue.length,
+      everOpened: peer.everOpened,
+    }));
   }
 
   disconnect(peerId: string) {

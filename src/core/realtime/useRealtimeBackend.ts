@@ -16,7 +16,7 @@ import {
   RealtimePresence,
   WebSocketTransport,
 } from "ably/modular";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import sillyname from "sillyname";
 import { v4 as uuidV4 } from "uuid";
 import { PeerManager, type PeerMessage } from "./PeerManager";
@@ -268,8 +268,11 @@ export function useRealtimeBackend(
     }
   };
 
+  const connections = useCallback(() => peers.snapshot(), [peers]);
+
   return {
     user: DefaultUser,
     publish,
+    connections,
   };
 }
