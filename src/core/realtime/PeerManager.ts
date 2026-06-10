@@ -120,14 +120,25 @@ async function selectedCandidateType(
  * sent before a channel opens are queued; if the channel never opens the peer
  * flips to relay mode and the caller falls back to publishing over Ably.
  */
+type PeerManagerOptions = {
+  /** How long a data channel may stay unopened before falling back to relay. */
+  openTimeoutMs?: number;
+};
+
 class PeerManager {
   #selfId: string;
   #peers = new Map<string, Peer>();
   #callbacks: PeerManagerCallbacks;
+  #openTimeoutMs: number;
 
-  constructor(selfId: string, callbacks: PeerManagerCallbacks) {
+  constructor(
+    selfId: string,
+    callbacks: PeerManagerCallbacks,
+    options: PeerManagerOptions = {}
+  ) {
     this.#selfId = selfId;
     this.#callbacks = callbacks;
+    this.#openTimeoutMs = options.openTimeoutMs ?? OPEN_TIMEOUT_MS;
   }
 
   /** Idempotent: ensures a connection to `peerId` exists, dialing if we are the lower id. */
@@ -309,7 +320,7 @@ class PeerManager {
 
     peer.openTimer = setTimeout(
       () => this.#fallBackToRelay(peer, "timeout"),
-      OPEN_TIMEOUT_MS
+      this.#openTimeoutMs
     );
 
     connection.onnegotiationneeded = async () => {

@@ -3,18 +3,21 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   build:
-    name: Build
+    name: Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun run lint
+      - run: bun test
       - run: bun run build
       - name: Upload build artifacts
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
@@ -25,6 +28,7 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name == 'push'
     permissions:
       pages: write
       id-token: write

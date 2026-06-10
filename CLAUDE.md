@@ -51,6 +51,8 @@ confident summary.
 | `bun run build` | Production build. `NODE_ENV=production bun run scripts/build.ts` → static site in `dist/`. |
 | `bun start` | Serve a production build locally via the Bun server (`NODE_ENV=production bun src/index.tsx`). |
 | `bun run lint` | Lint with [oxlint](https://oxc.rs/) (`bun run lint:fix` auto-fixes). Also runs in CI before the build. |
+| `bun test` | Unit tests (`src/**/*.test.ts`). Runs in CI on pushes to `main` and on PRs. |
+| `bun run test:e2e` | Playwright multi-tab e2e suite (`e2e/`), auto-starts the dev server on port 4173. Local only (live Ably). |
 
 Useful environment variables:
 
@@ -66,8 +68,8 @@ Useful environment variables:
 **Linting** is [oxlint](https://oxc.rs/): `bun run lint` (`lint:fix` to auto-fix), config
 in `.oxlintrc.json` (`correctness` as error, react/typescript/unicorn plugins). It runs
 in CI ahead of the build (`.github/workflows/bun.yaml`), so keep it clean. `tsconfig.json`
-is `strict`, but there is no separate typecheck script and no test suite — see
-*Verifying changes* below.
+is `strict`, but there is no separate typecheck script — see *Tests and verifying
+changes* below for the test suite.
 
 ## Entry points & routing
 
@@ -174,23 +176,33 @@ the publish and subscribe sides together and assume a mixed-version window in pr
 The public Ably and Giphy keys in `src/app/constants.ts` are **client-side publishable keys**
 shipped intentionally (the tool is keyless/no-auth) — they are not secrets to scrub.
 
-## Tests, fixtures, and verifying changes
+## Tests and verifying changes
 
-There is currently **no automated test suite or fixture corpus**. CI runs `bun run lint`
-then build-and-deploy (there is no test gate). Verify behavior manually:
+Two tiers, both expected to stay green:
 
-- `bun run dev`, open the **same room URL in two browser tabs**. The first participant
-  claims the moderator seat via the modal. Confirm: starting a session, casting votes
-  (each tab sees the other's vote badges), ending/revealing, and a **third tab joining
-  mid-round** catching up correctly (moderator sync).
-- Watch the console for the `Session` error boundary and any Ably/WebRTC connection
-  errors. In a room tab, `window.nerdPoking` (`src/core/realtime/nerdPoking.ts`) is a
-  live inspector: phase, roster with per-participant transport (`local`/`p2p`/`relay`),
-  votes, and per-peer connection diagnostics. For deeper digging use
-  `chrome://webrtc-internals`.
+- **`bun test`** — unit tests, co-located `src/**/*.test.ts` (bun's built-in runner;
+  `[test] root = "src"` in `bunfig.toml` keeps it away from `e2e/`). Coverage:
+  the machine (`src/core/machine/machine.test.ts`), `CoreClient`
+  (`src/core/CoreClient.test.ts`), **multi-client convergence**
+  (`src/core/convergence.test.ts` — an in-memory `Room` harness wiring N
+  `CoreClient`s the way the transport does; *the* established pattern for new
+  room-logic tests), and `PeerManager`
+  (`src/core/realtime/PeerManager.test.ts` with the WebRTC fakes in
+  `webrtcFakes.ts`; pass `{ openTimeoutMs }` to test the relay timeout).
+  Shared user factory: `src/core/testFixtures.ts`. CI runs `bun test` on every
+  push to `main` **and every pull request** (`.github/workflows/bun.yaml`).
+- **`bun run test:e2e`** — Playwright specs in `e2e/` (config:
+  `playwright.config.ts`; auto-starts the dev server on **port 4173**). They
+  drive real multi-tab rooms over live Ably signaling: full round over data
+  channels (with wire-attribution assertions), late joiners, and the
+  WebRTC-disabled relay fallback. Network-dependent, so **not** in the CI
+  gate — run locally before merging transport-affecting changes.
 
-If you add tests, there is no established pattern to follow — propose the harness (and a
-`test` script) with the change.
+For manual poking: `bun run dev`, same room URL in two tabs, claim moderator,
+run a round; `window.nerdPoking` (`src/core/realtime/nerdPoking.ts`) is a live
+inspector — phase, roster with per-participant transport
+(`local`/`p2p`/`relay`), votes, per-peer connection diagnostics. Deeper:
+`chrome://webrtc-internals`.
 
 ## Finding the active work
 
