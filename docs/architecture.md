@@ -7,8 +7,10 @@ zoom into individual layers.
 ## Guiding principles
 
 1. **No backend.** There is no application server and no database. All room
-   state is computed in the browser. The only remote dependency at runtime is
-   Ably (realtime relay) and a few third-party media/analytics services.
+   state is computed in the browser. Voting traffic flows peer-to-peer over
+   WebRTC data channels; the only remote dependencies at runtime are Ably
+   (presence, WebRTC signaling, and a relay fallback) and a few third-party
+   media/analytics services.
 2. **State machine as the source of truth.** Room behavior is expressed once, as
    an XState machine. The UI is a pure function of machine state; networking is
    just a transport for machine events.
@@ -39,8 +41,9 @@ From the network at the bottom up to pixels at the top:
 │  3. State machine       src/core/machine/*                               │
 │      XState machine: states, events, context, actions, guards            │
 ├──────────────────────────────────────────────────────────────────────────┤
-│  2. Realtime transport  src/core/realtime/useAblyBackend.ts              │
-│      Ably presence (roster) + pub/sub (voting events)                    │
+│  2. Realtime transport  src/core/realtime/useRealtimeBackend.ts          │
+│      WebRTC data-channel mesh (voting events, via PeerManager.ts)        │
+│      + Ably presence (roster) · signaling · relay fallback               │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  1. Delivery / routing  scripts/*, *-bootstrap.tsx, src/index.tsx        │
 │      Bun SSG build, two HTML entry points, GitHub Pages routing          │
@@ -67,22 +70,28 @@ generates a UUID and navigates to `/<uuid>` — no registration step.
 it mirrors the same routing (`/` → index, `/*` → not-found). Full details in
 [`build-and-deploy.md`](./build-and-deploy.md).
 
-### 2. Realtime transport — `useAblyBackend`
+### 2. Realtime transport — `useRealtimeBackend` + `PeerManager`
 
-`src/core/realtime/useAblyBackend.ts` owns the single Ably connection. It joins a channel
-named after the room id and exposes two things:
+`src/core/realtime/useRealtimeBackend.ts` owns the single Ably connection and a
+WebRTC mesh (`src/core/realtime/PeerManager.ts`). It joins an Ably channel named
+after the room id and splits responsibilities across the two:
 
-- **Presence** → the participant roster. `enter`/`present`/`update`/`leave`
-  presence events map to `RegisterUser`/`UpdateUser`/`RemoveUser` machine
-  actions.
-- **Pub/sub messages** → voting events. Named messages
-  (`START_SESSION`, `END_SESSION`, `VOTE`, `MODERATOR_SYNC`) map to machine
-  events.
+- **Ably presence** → the participant roster *and* peer discovery.
+  `enter`/`present`/`update`/`leave` presence events map to
+  `RegisterUser`/`UpdateUser`/`RemoveUser` machine actions, and each
+  register-type event also dials a WebRTC connection to that peer.
+- **WebRTC data channels** → voting events. Named messages
+  (`START_SESSION`, `END_SESSION`, `VOTE`, `MODERATOR_SYNC`) travel directly
+  between browsers, one reliable/ordered channel per peer pair.
+- **Ably pub/sub** → the supporting cast: targeted `RTC_SIGNAL` messages carry
+  SDP offers/answers and ICE candidates, and the old named messages remain as a
+  per-peer relay fallback for pairs whose data channel never opens.
 
 It also returns a `publish(event)` function that does the reverse: turn a machine
-event into the right Ably presence update or channel message. A `DefaultUser`
-(random UUID + a [`sillyname`](https://www.npmjs.com/package/sillyname)) is
-created per browser tab and used as the Ably `clientId`. See
+event into the right presence update, data-channel send, or fallback publish. A
+`DefaultUser` (random UUID + a
+[`sillyname`](https://www.npmjs.com/package/sillyname)) is created per browser
+tab and used as the Ably `clientId` and WebRTC peer id. See
 [`realtime-sync.md`](./realtime-sync.md).
 
 ### 3. State machine — `src/core/machine`
@@ -114,8 +123,8 @@ Full reference in [`state-machine.md`](./state-machine.md).
 
 ### 5. React integration — hooks
 
-- `src/core/realtime/useCoreClientState.ts` constructs the `CoreClient`, wires the Ably
-  backend's callbacks into it, subscribes React state to machine snapshots, and
+- `src/core/realtime/useCoreClientState.ts` constructs the `CoreClient`, wires the
+  realtime backend's callbacks into it, subscribes React state to machine snapshots, and
   sets `client.tapUserEvents = publish`. This is the seam where the domain layer,
   the transport, and React meet.
 - `src/core/realtime/useRoom.tsx` wraps the above in a React context (`RoomProvider` /
@@ -169,18 +178,19 @@ This is the canonical path; start/stop/register follow the same shape.
                                   │
                                   ▼
  ④ useCoreClientState: tapUserEvents = publish
-       │  publish(Vote)  (src/core/realtime/useAblyBackend.ts)
+       │  publish(Vote)  (src/core/realtime/useRealtimeBackend.ts)
        ▼
- ⑤ Ably channel.publish("VOTE", { vote, createdBy, ... })
-                                  │
-            ┌─────────────────────┴───────────────────────┐
-            ▼                                             ▼
-   (this browser, echo)                          (every other browser)
-            │                                             │
-            ▼                                             ▼
- ⑥ channel.subscribe callback → poolEventCallback(Vote)
-       │                                                  │
-       ▼                                                  ▼
+ ⑤ PeerManager.broadcast({ name: "VOTE", data: { vote, createdBy, … } })
+       │  one send per peer data channel
+       │  (peers without an open channel: queued, or relayed via
+       │   Ably channel.publish("VOTE", …) as the fallback)
+       ▼
+                                         (every other browser)
+                                                  │
+                                                  ▼
+ ⑥ datachannel onmessage → toPoolEvent → poolEventCallback(Vote)
+                                                  │
+                                                  ▼
  ⑦ CoreClient.backendCallback(Vote)
        │  validates sender is a known user & state allows it
        │  this.#actor.send(Vote)
@@ -197,10 +207,11 @@ This is the canonical path; start/stop/register follow the same shape.
 
 Two things worth noting:
 
-- **Optimistic + echo.** The originating client applies the vote locally in step
-  ③ *and* re-applies the echoed message in step ⑦. Votes are idempotent
-  (writing the same `votes[userId] = value` twice is harmless), so the echo
-  doesn't cause drift.
+- **Optimistic + idempotent.** The originating client applies the vote locally in
+  step ③; peers apply it in step ⑦. Data channels deliver no self-echo, but the
+  Ably fallback path does, and the originator re-applies it. Votes are idempotent
+  (writing the same `votes[userId] = value` twice is harmless), so neither path
+  causes drift.
 - **Guarding at the edge.** `backendCallback` ignores events from unknown senders
   and events that don't make sense in the current state, so a stray message
   can't corrupt the machine.
@@ -210,9 +221,9 @@ Two things worth noting:
 | State | Owner | Synced via |
 |---|---|---|
 | Participant roster (`users`) | each machine's `context.users` | Ably **presence** |
-| Voting phase (`Idle`/`Pool`/…) | each machine's state value | Ably **pub/sub** (`START_/END_SESSION`) + moderator sync |
-| Votes (`votes`) | each machine's `context.votes` | Ably **pub/sub** (`VOTE`) + moderator sync |
-| Current user identity | `DefaultUser` in `useAblyBackend` | local; published into presence |
+| Voting phase (`Idle`/`Pool`/…) | each machine's state value | **WebRTC data channels** (`START_/END_SESSION`; Ably fallback) + moderator sync |
+| Votes (`votes`) | each machine's `context.votes` | **WebRTC data channels** (`VOTE`; Ably fallback) + moderator sync |
+| Current user identity | `DefaultUser` in `useRealtimeBackend` | local; published into presence |
 | Profile edits (name/emoji/avatar) | machine `context.users` | Ably **presence** `update` |
 | Consent / analytics identity | cookies + PostHog | local + PostHog |
 

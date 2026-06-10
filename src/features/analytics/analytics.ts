@@ -84,6 +84,19 @@ export const identify = (user?: IdentifyArgs) => {
   posthog.setPersonProperties(personProperties);
 };
 
+export const capture = (event: string, properties?: Properties) => {
+  if (isDev) {
+    return debugAnalytics("posthog", `capture:${event}`, properties);
+  }
+
+  const consentData = getConsent();
+  if (consentData.status === ConsentStatus.rejected) {
+    return;
+  }
+
+  posthog.capture(event, properties);
+};
+
 export const consent = (consent: boolean) => {
   if (isDev) {
     return debugAnalytics("user", "consent", consent);

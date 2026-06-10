@@ -2,3 +2,7 @@
 env = "inline"
 [plugins]
 "./node_modules/bun-image-transform/plugin.js" = {}
+
+[test]
+# Collect only src/**/*.test.ts; e2e/*.spec.ts belongs to Playwright.
+root = "src"

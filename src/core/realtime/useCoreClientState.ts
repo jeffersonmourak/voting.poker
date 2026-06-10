@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAblyBackend } from "./useAblyBackend";
+import { attachNerdPoking } from "./nerdPoking";
+import { useRealtimeBackend } from "./useRealtimeBackend";
 import { CoreClient, type CoreClientState } from "@/core/CoreClient";
 import {
   REGISTER_USER_ACTION_KEY,
@@ -8,7 +9,7 @@ import {
 } from "@/core/machine/actions";
 
 export function useCoreClientState(roomId: string) {
-  const { publish, user } = useAblyBackend(
+  const { publish, user, connections } = useRealtimeBackend(
     roomId,
     (user, action) => {
       switch (action) {
@@ -39,11 +40,13 @@ export function useCoreClientState(roomId: string) {
 
   useEffect(() => {
     const subscription = client.subscribe(handleSubscription);
+    const detachNerdPoking = attachNerdPoking(client, user.id, connections);
 
     return () => {
+      detachNerdPoking();
       subscription.unsubscribe();
     };
-  }, [client, handleSubscription]);
+  }, [client, handleSubscription, connections, user.id]);
 
   return { state, client, publish } as const;
 }

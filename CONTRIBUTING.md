@@ -80,7 +80,7 @@ For most contributions, after your first pull request is accepted and merged, yo
 
 - **Follow existing coding style and conventions.** Keep your code consistent with the style, formatting, and conventions in the rest of the code base. When possible, these will be enforced with a linter. Consistency makes it easier to review and modify in the future.
 
-- **Verify your change.** There's no automated test suite yet — run the app with `bun run dev` and confirm the behavior. Linting runs in CI (`bun run lint`); please keep it clean. If you add tests, document how to run them.
+- **Verify your change.** Run the unit tests with `bun test` (they run in CI on every pull request) and keep `bun run lint` clean. For changes touching the realtime transport or room flow, also run the Playwright e2e suite locally with `bun run test:e2e`, and/or open the same room in two browser tabs via `bun run dev` and confirm the behavior. New logic should come with tests — see the existing `src/**/*.test.ts` files for the patterns.
 
 - **Add documentation.** Document your changes with code doc comments or in existing guides.
 

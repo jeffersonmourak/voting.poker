@@ -11,7 +11,9 @@
     "build": "NODE_ENV=production bun run scripts/build.ts",
     "start": "NODE_ENV=production bun src/index.tsx",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "test": "bun test",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@emotion/css": "^11.13.5",
@@ -42,6 +44,7 @@
     "xstate": "^5.31.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/bun": "latest",
     "@types/lodash": "^4.17.24",
     "@types/luxon": "^3.7.1",
