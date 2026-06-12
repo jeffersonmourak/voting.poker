@@ -56,6 +56,7 @@ function renderFullPage(
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <link rel="stylesheet" href="./globals.css" />
 		  <link rel="icon" href="./favicon.ico" type="image/x-icon" sizes="101x100" />
+		  <link rel="me" href="https://mastodon.social/@jeffersonmourak" />
         </head>
         <body>
           <div id="root">${html}</div>
