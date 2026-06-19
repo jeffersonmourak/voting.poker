@@ -77,7 +77,10 @@ export class FakeRTCPeerConnection {
     return new Map<string, unknown>();
   }
 
-  restartIce() {}
+  restartIceCount = 0;
+  restartIce() {
+    this.restartIceCount += 1;
+  }
 
   close() {
     this.connectionState = "closed";

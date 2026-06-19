@@ -61,12 +61,35 @@ type PeerManagerCallbacks = {
   onChannelOpen?: (peerId: string, info: ChannelOpenInfo) => void;
 };
 
+// STUN yields host/server-reflexive candidates; public TURN (Open Relay
+// Project, keyless static credentials — same publishable-key model as the Ably
+// and Giphy keys in src/app/constants.ts) relays the rest, so symmetric-NAT
+// peers still connect P2P instead of looping ICE restarts and riding the Ably
+// signaling channel forever. Best-effort: if these endpoints are unreachable
+// the peer simply falls back to relay, as it did before. Multiple ports/TCP
+// give corporate firewalls that block UDP a path on 443.
 const ICE_SERVERS: RTCIceServer[] = [
   { urls: ["stun:stun.l.google.com:19302", "stun:stun.cloudflare.com:3478"] },
+  {
+    urls: [
+      "turn:openrelay.metered.ca:80",
+      "turn:openrelay.metered.ca:443",
+      "turn:openrelay.metered.ca:443?transport=tcp",
+    ],
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
 ];
 
 const DATA_CHANNEL_LABEL = "events";
 const OPEN_TIMEOUT_MS = 10_000;
+/**
+ * ICE restarts allowed on a `failed` connection before we give up on P2P for
+ * that peer. Without a cap an un-connectable pair (e.g. symmetric NAT with no
+ * working TURN) restarts ICE on every `failed` transition, and each restart
+ * re-floods the Ably signaling channel with a fresh offer + candidate batch.
+ */
+const MAX_ICE_RESTARTS = 1;
 
 type Peer = {
   id: string;
@@ -84,6 +107,8 @@ type Peer = {
   openTimer: ReturnType<typeof setTimeout> | null;
   createdAt: number;
   everOpened: boolean;
+  /** ICE restarts spent since the last clean open; caps the retry loop. */
+  iceRestarts: number;
 };
 
 /** Best-effort: the local candidate type of the selected ICE pair. */
@@ -304,6 +329,7 @@ class PeerManager {
       openTimer: null,
       createdAt: Date.now(),
       everOpened: false,
+      iceRestarts: 0,
     };
 
     if (!connection) {
@@ -342,9 +368,19 @@ class PeerManager {
     };
 
     connection.onconnectionstatechange = () => {
-      if (connection.connectionState === "failed") {
-        this.#fallBackToRelay(peer, "connection_failed");
+      if (connection.connectionState !== "failed") {
+        return;
+      }
+
+      // Relay covers the gap while we retry. Cap the retries: once the budget
+      // is spent we abandon P2P for this peer so it stops re-flooding signaling.
+      this.#fallBackToRelay(peer, "connection_failed");
+
+      if (peer.iceRestarts < MAX_ICE_RESTARTS) {
+        peer.iceRestarts += 1;
         connection.restartIce();
+      } else {
+        this.#abandonConnection(peer);
       }
     };
 
@@ -366,6 +402,7 @@ class PeerManager {
       }
 
       peer.relay = false;
+      peer.iceRestarts = 0;
 
       const queued = peer.queue;
       peer.queue = [];
@@ -412,6 +449,30 @@ class PeerManager {
         description: localDescription.toJSON(),
       });
     }
+  }
+
+  /**
+   * Permanently give up on P2P for this peer: tear the RTCPeerConnection down so
+   * it stops emitting ICE candidates and renegotiation offers over the signaling
+   * layer. The peer entry stays in the map in relay mode (its traffic keeps
+   * flowing over Ably) and is never re-dialed — connect()'s guard sees no
+   * connection. A fresh connect() after the peer leaves and rejoins builds a new
+   * connection from scratch.
+   */
+  #abandonConnection(peer: Peer) {
+    const { connection } = peer;
+
+    if (!connection) {
+      return;
+    }
+
+    peer.connection = null;
+    peer.channel = null;
+    connection.onicecandidate = null;
+    connection.onnegotiationneeded = null;
+    connection.onconnectionstatechange = null;
+    connection.ondatachannel = null;
+    connection.close();
   }
 
   #fallBackToRelay(peer: Peer, reason: RelayReason) {

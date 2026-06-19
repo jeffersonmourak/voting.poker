@@ -183,6 +183,49 @@ describe("relay fallback", () => {
   });
 });
 
+describe("ICE restart cap", () => {
+  test("caps ICE restarts, then tears the connection down to stop signaling", () => {
+    const { manager } = makeManager("aaa", { openTimeoutMs: 60_000 });
+    manager.connect("bbb");
+    const connection = lastConnection();
+
+    // First failure: relay covers the gap and we retry once.
+    connection.simulateFailure();
+    expect(connection.restartIceCount).toBe(1);
+    expect(connection.connectionState).toBe("failed");
+
+    // Second failure: retry budget spent, so the connection is torn down — no
+    // further ICE restart, handlers detached so it stops emitting signaling.
+    connection.simulateFailure();
+    expect(connection.restartIceCount).toBe(1);
+    expect(connection.connectionState).toBe("closed");
+    expect(connection.onicecandidate).toBeNull();
+    expect(connection.onnegotiationneeded).toBeNull();
+
+    // The peer stays tracked and relayed; broadcast still routes it over Ably.
+    expect(manager.snapshot()[0].transport).toBe("relay");
+    expect(manager.broadcast(MSG)).toBe(true);
+  });
+
+  test("a clean reopen restores the ICE-restart budget", () => {
+    const { manager } = makeManager("aaa", { openTimeoutMs: 60_000 });
+    manager.connect("bbb");
+    const connection = lastConnection();
+    const channel = connection.channels[0];
+
+    connection.simulateFailure();
+    expect(connection.restartIceCount).toBe(1);
+
+    // A successful open resets the budget, so a later failure retries again
+    // rather than abandoning the connection.
+    channel.simulateOpen();
+    connection.simulateFailure();
+
+    expect(connection.restartIceCount).toBe(2);
+    expect(connection.connectionState).toBe("failed");
+  });
+});
+
 describe("broadcast", () => {
   test("reaches every open peer and reports relay need for the rest", () => {
     const { manager } = makeManager("aaa", { unavailable: false });
