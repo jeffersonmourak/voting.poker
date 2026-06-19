@@ -33,6 +33,10 @@ const DefaultUser: User = {
 const ablyClient = new BaseRealtime({
   key: ablyKey,
   clientId: DefaultUser.id,
+  // We apply our own events optimistically (CoreClient#publishEvent) and register
+  // the local user explicitly, so we never need our own publishes echoed back.
+  // Dropping the echo removes one self-copy from every signal/vote/presence we send.
+  echoMessages: false,
   plugins: {
     WebSocketTransport,
     RealtimePresence,
@@ -132,44 +136,45 @@ export function useRealtimeBackend(
     [channel]
   );
 
-  channel.presence.subscribe(
-    ["enter", "leave", "present", "update"],
-    (presence) => {
-      const id = presence.clientId;
-      const userData = presence.data;
-      const user: User = { ...userData, id };
-
-      const actionKeys: Record<string, PresenceAction> = {
-        present: REGISTER_USER_ACTION_KEY,
-        enter: REGISTER_USER_ACTION_KEY,
-        update: UPDATE_USER_ACTION_KEY,
-        leave: REMOVE_USER_ACTION_KEY,
-      };
-
-      if (!actionKeys[presence.action]) {
-        return;
-      }
-
-      // Presence doubles as peer discovery: dial (or tear down) the WebRTC
-      // connection before the roster callback runs, so a ModeratorSync fired
-      // by CoreClient.register finds the peer entry and queues on it.
-      if (id !== DefaultUser.id) {
-        if (presence.action === "leave") {
-          peers.disconnect(id);
-        } else {
-          peers.connect(id);
-        }
-      }
-
-      presenceCallback(user, actionKeys[presence.action]);
-    }
-  );
-
   // Runs once: the channel is created per-room and its subscriptions are wired
-  // up a single time, then torn down on unmount. Adding channel/callbacks as
-  // deps would re-subscribe on every change, so exhaustive-deps is disabled for
-  // this file in .oxlintrc.json.
+  // up a single time, then torn down on unmount. Subscribing in the render body
+  // leaked a fresh presence listener on every render; adding channel/callbacks
+  // as deps would re-subscribe on every change, so exhaustive-deps is disabled
+  // for this file in .oxlintrc.json.
   useEffect(() => {
+    channel.presence.subscribe(
+      ["enter", "leave", "present", "update"],
+      (presence) => {
+        const id = presence.clientId;
+        const userData = presence.data;
+        const user: User = { ...userData, id };
+
+        const actionKeys: Record<string, PresenceAction> = {
+          present: REGISTER_USER_ACTION_KEY,
+          enter: REGISTER_USER_ACTION_KEY,
+          update: UPDATE_USER_ACTION_KEY,
+          leave: REMOVE_USER_ACTION_KEY,
+        };
+
+        if (!actionKeys[presence.action]) {
+          return;
+        }
+
+        // Presence doubles as peer discovery: dial (or tear down) the WebRTC
+        // connection before the roster callback runs, so a ModeratorSync fired
+        // by CoreClient.register finds the peer entry and queues on it.
+        if (id !== DefaultUser.id) {
+          if (presence.action === "leave") {
+            peers.disconnect(id);
+          } else {
+            peers.connect(id);
+          }
+        }
+
+        presenceCallback(user, actionKeys[presence.action]);
+      }
+    );
+
     channel.subscribe((message) => {
       const { data, name, clientId } = message;
 
@@ -202,8 +207,15 @@ export function useRealtimeBackend(
 
     channel.presence.enter(presenceUser);
 
+    // Register the local user up front rather than waiting to receive our own
+    // presence "enter" back: echoMessages is off, and self-registration must not
+    // depend on an echo. The machine's register is idempotent, so if the echo
+    // does arrive the second register is a no-op.
+    presenceCallback(DefaultUser, REGISTER_USER_ACTION_KEY);
+
     return () => {
       peers.destroy();
+      channel.presence.unsubscribe();
       channel.presence.leave();
       channel.unsubscribe();
     };
