@@ -32,7 +32,7 @@
     "emoji-picker-react": "^4.19.1",
     "lodash": "^4.18.1",
     "luxon": "^2.5.2",
-    "posthog-js": "^1.417.1",
+    "posthog-js": "^1.418.10",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-drag-drop-files": "^2.4.0",
@@ -47,10 +47,10 @@
     "@playwright/test": "^1.62.1",
     "@types/bun": "latest",
     "@types/lodash": "^4.17.25",
-    "@types/luxon": "^3.7.4",
+    "@types/luxon": "^3.7.5",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "oxlint": "^1.78.0"
+    "@types/react-dom": "^19.2.5",
+    "oxlint": "^1.79.0"
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
