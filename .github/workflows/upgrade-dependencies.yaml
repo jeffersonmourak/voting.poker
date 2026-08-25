@@ -39,6 +39,16 @@ jobs:
         # Specifically for posthog-js: "^1.298.1" allows updates to any 1.x.x version, but prevents 2.0.0.
         run: bun update
 
+      # Run the Deploy workflow's checks here as well: PRs opened with the
+      # default GITHUB_TOKEN do not trigger `pull_request` workflows, so
+      # without this gate an upgrade that breaks lint/tests only fails after
+      # it is merged to main (see the oxlint 1.79 upgrade in PR #52).
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun test
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
