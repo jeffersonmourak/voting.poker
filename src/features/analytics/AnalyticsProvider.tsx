@@ -36,6 +36,10 @@ export default function AnalyticsProvider({
 
     if (consentData.status !== ConsentStatus.rejected) {
       if (consentData.status === ConsentStatus.accepted) {
+        // The home page hydrates build-time HTML, so consent has to be read
+        // post-mount: deriving it in the initial state would make the client's
+        // first render disagree with the pre-rendered markup.
+        // oxlint-disable-next-line react/set-state-in-effect
         setEnabled(true);
       }
     }

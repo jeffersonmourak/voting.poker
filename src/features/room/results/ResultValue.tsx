@@ -8,85 +8,76 @@ import {
 	Tooltip,
 	Typography,
 	darken,
-	useTheme,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { useRef } from "react";
+import theme from "@/app/theme";
 
-const useStyle = (props: { color: string }) => {
-	const theme = useTheme();
+const useStyle = makeStyles<Theme, { color: string }>(
+	(theme) => ({
+		root: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+			gap: theme.spacing(2),
+		},
+		result: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "flex-start",
+			gap: theme.spacing(2),
+			width: theme.spacing(50),
 
-	const hook = useRef(
-		makeStyles<Theme, { color: string }>(
-			(theme) => ({
-				root: {
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					gap: theme.spacing(2),
-				},
-				result: {
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "flex-start",
-					gap: theme.spacing(2),
-					width: theme.spacing(50),
+			[theme.breakpoints.down("sm")]: {
+				width: "100%",
+			},
+		},
+		totals: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "flex-start",
+			gap: theme.spacing(2),
+		},
+		people: {
+			flex: 1,
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "flex-start",
+			gap: theme.spacing(1),
+		},
+		resultTitle: {
+			position: "relative",
+			textAlign: "center",
+			borderRadius: theme.shape.borderRadius,
+			color: "transparent",
+			transform: "rotate(45deg)",
+			backgroundColor: ({ color }) => color,
+			width: theme.spacing(6),
+			height: theme.spacing(6),
 
-					[theme.breakpoints.down("sm")]: {
-						width: "100%",
-					},
-				},
-				totals: {
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "flex-start",
-					gap: theme.spacing(2),
-				},
-				people: {
-					flex: 1,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "flex-start",
-					gap: theme.spacing(1),
-				},
-				resultTitle: {
-					position: "relative",
-					textAlign: "center",
-					borderRadius: theme.shape.borderRadius,
-					color: "transparent",
-					transform: "rotate(45deg)",
-					backgroundColor: ({ color }) => color,
-					width: theme.spacing(6),
-					height: theme.spacing(6),
-
-					"&::before": {
-						position: "absolute",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						content: "attr(data-value)",
-						...theme.typography.h6,
-						color: ({ color }) => darken(color, 0.9),
-						transform: "rotate(-45deg)",
-						width: theme.spacing(6),
-						height: theme.spacing(6),
-						top: 0,
-						left: 0,
-					},
-				},
-				separator: {
-					width: 10,
-					height: 10,
-					backgroundColor: theme.palette.success.main,
-					borderRadius: "50%",
-				},
-			}),
-			{ defaultTheme: theme },
-		),
-	).current;
-
-	return hook(props);
-};
+			"&::before": {
+				position: "absolute",
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				content: "attr(data-value)",
+				...theme.typography.h6,
+				color: ({ color }) => darken(color, 0.9),
+				transform: "rotate(-45deg)",
+				width: theme.spacing(6),
+				height: theme.spacing(6),
+				top: 0,
+				left: 0,
+			},
+		},
+		separator: {
+			width: 10,
+			height: 10,
+			backgroundColor: theme.palette.success.main,
+			borderRadius: "50%",
+		},
+	}),
+	{ defaultTheme: theme },
+);
 
 interface ResultValueProps {
 	value: string;

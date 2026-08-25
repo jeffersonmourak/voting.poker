@@ -11,7 +11,7 @@ import { avatarProps } from "@/shared/utils/avatarProps";
 import { toBase64 } from "@/shared/utils/toBase64";
 import type { User } from "@/core/CoreClient";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FileUploader as DragAndDropFiles } from "react-drag-drop-files";
 import { AvatarCTA } from "@/features/avatar/AvatarCTA";
 
@@ -195,20 +195,17 @@ export const FileUploader = ({
 		handleChange(fileString);
 	};
 
-	useEffect(() => {
-		if (!!uploadedFile && value !== uploadedFile) {
-			setUploadedFile(null);
-		}
-	}, [value, uploadedFile]);
+	const activeUpload =
+		uploadedFile !== null && value === uploadedFile ? uploadedFile : null;
 
-	if (uploadedFile) {
+	if (activeUpload) {
 		return (
 			<RootPaper data-is-dragging={draggingFile} variant="outlined">
 				<Preview
 					onHoverChange={setUploadDisabled}
 					onClickEmoji={onClickEmoji}
 					onClick={() => handleChange(null)}
-					user={{ ...user, avatar: uploadedFile }}
+					user={{ ...user, avatar: activeUpload }}
 				/>
 			</RootPaper>
 		);

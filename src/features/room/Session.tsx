@@ -45,11 +45,11 @@ const canUseDOM = !!(
 	window.document.createElement
 );
 
-export function Session() {
-	const LazySession = canUseDOM
-		? lazy(() => import("./SessionPage"))
-		: () => null;
+const LazySession = canUseDOM
+	? lazy(() => import("./SessionPage"))
+	: () => null;
 
+export function Session() {
 	return (
 		<ErrorBoundary>
 			<Suspense fallback={<div>Loading...</div>}>

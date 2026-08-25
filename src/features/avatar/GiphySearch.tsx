@@ -18,13 +18,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useWindowSize } from "@uidotdev/usehooks";
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 const SelectContext = createContext<{ selectedGif: IGif | null }>({
 	selectedGif: null,
@@ -135,15 +129,14 @@ const Components = ({
 	const gridWidth = isMobile ? (width ?? window.screen.width) : 600;
 	const gridColumns = (width ?? window.screen.width) < 500 ? 2 : 3;
 
-	useEffect(() => {
-		if (avatarUrl !== selectedGif?.images.downsized_large.url) {
-			setSelectedGif(null);
-		}
-	}, [selectedGif, avatarUrl]);
+	const activeGif =
+		selectedGif !== null && avatarUrl === selectedGif.images.downsized_large.url
+			? selectedGif
+			: null;
 
 	const handleSelectGif = useCallback(
 		(gif: IGif) => {
-			if (selectedGif?.id === gif.id) {
+			if (activeGif?.id === gif.id) {
 				setSelectedGif(null);
 				onSelect(null);
 				return;
@@ -151,7 +144,7 @@ const Components = ({
 			setSelectedGif(gif);
 			onSelect(gif.images.downsized_large.url);
 		},
-		[selectedGif, onSelect],
+		[activeGif, onSelect],
 	);
 
 	const fetchGifs = (offset: number) => {
@@ -172,7 +165,7 @@ const Components = ({
 				}
 			/>
 			<GridBox>
-				<SelectContext.Provider value={{ selectedGif }}>
+				<SelectContext.Provider value={{ selectedGif: activeGif }}>
 					<Grid
 						key={searchTerm}
 						noLink

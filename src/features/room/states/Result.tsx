@@ -75,7 +75,7 @@ const ResultStateComponent: React.FC<Result> = ({ state }) => {
 	const votesEntries = Object.entries(state.votes);
 
 	const sessionVotesResult = Object.entries(
-		groupBy(votesEntries, ([_, vote]) => vote),
+		groupBy(votesEntries, ([, vote]) => vote),
 	).map(([vote, ids]) => {
 		const users = ids.map(([id]) => {
 			const user = state.users.find((user) => user.id === id);

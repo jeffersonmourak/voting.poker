@@ -26,10 +26,8 @@ const useMessages = (disabled = false) => {
 	const [data, setData] = useState<{
 		message?: string;
 		open: boolean;
-		disabled?: boolean;
 	}>({
 		open: false,
-		disabled,
 	});
 	const messageSubscription = useRef<Subscription>(null);
 
@@ -55,16 +53,12 @@ const useMessages = (disabled = false) => {
 	useEffect(() => {
 		if (disabled) {
 			messageSubscription.current?.unsubscribe();
-			setData((prev) => ({
-				...prev,
-				open: false,
-				disabled,
-			}));
 		}
 	}, [disabled]);
 
 	return {
 		...data,
+		open: data.open && !disabled,
 		unsubscribe,
 	};
 };

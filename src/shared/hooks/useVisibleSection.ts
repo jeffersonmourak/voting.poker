@@ -50,9 +50,7 @@ export const useElementScroll = (element: HTMLElement | null) => {
   }, [element]);
 
   const scrollElement = (scroll: number) => {
-    if (element) {
-      element.scrollTop = scroll;
-    }
+    element?.scrollTo({ top: scroll });
   };
 
   return {

@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Paper from "@mui/material/Paper";
 import EmojiPicker, { Theme as EmojiTheme } from "emoji-picker-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import GiphyLogo from "@/assets/PoweredBy_Giphy.gif";
 
@@ -112,10 +112,8 @@ export const AvatarEditorModal = ({
 	);
 	const [anchorEl, setAnchorEl] = useState(null);
 
-	const scrollElementRef = useRef<HTMLDivElement>(null);
-	const { scrollTop, scrollElement } = useElementScroll(
-		scrollElementRef.current,
-	);
+	const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
+	const { scrollTop, scrollElement } = useElementScroll(scrollEl);
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -155,7 +153,7 @@ export const AvatarEditorModal = ({
 			>
 				<ModalRoot>
 					<ModalPaper
-						ref={scrollElementRef}
+						ref={setScrollEl}
 						elevation={12}
 						sx={{ maxHeight: "900px", height: "100%" }}
 					>
