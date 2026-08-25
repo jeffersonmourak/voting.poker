@@ -130,7 +130,9 @@ type ConsentData =
   | AcceptedConsentData;
 
 export function saveConsent(consent: ConsentData) {
-  Cookies.set("dataCollectionAccepted", JSON.stringify(consent));
+  Cookies.set("dataCollectionAccepted", JSON.stringify(consent), {
+    expires: 365,
+  });
 }
 
 function getAndMigrateConsent(): ConsentData {

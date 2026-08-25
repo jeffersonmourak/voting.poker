@@ -10,7 +10,7 @@ import {
 	Typography,
 } from "@mui/material";
 import Cookies from "js-cookie";
-import { useContext, useState } from "react";
+import { useContext, useState, useSyncExternalStore } from "react";
 import { AnalyticsContext } from "./AnalyticsProvider";
 
 const Root = styled(Paper)(({ theme }) => ({
@@ -41,15 +41,22 @@ const Actions = styled(Box)(({ theme }) => ({
 	gap: theme.spacing(4),
 }));
 
-export const DataCollectionNotification = () => {
-	const isSSR = typeof window === "undefined";
+const emptySubscribe = () => () => {};
 
-	const [hide, setHide] = useState(isSSR);
+export const DataCollectionNotification = () => {
+	// The page is pre-rendered without a DOM, so the banner must stay out of
+	// the first client render too: showing it during hydration would make the
+	// client tree disagree with the pre-rendered HTML.
+	const hydrated = useSyncExternalStore(
+		emptySubscribe,
+		() => true,
+		() => false,
+	);
+	const [hide, setHide] = useState(false);
 	const { consent } = useContext(AnalyticsContext);
 	const hasAnswerd = Cookies.get("dataCollectionAccepted");
-	const hasAccepted = Cookies.get("dataCollectionAccepted") === "true";
 
-	if (hide || hasAnswerd || hasAccepted) {
+	if (!hydrated || hide || hasAnswerd) {
 		return null;
 	}
 
